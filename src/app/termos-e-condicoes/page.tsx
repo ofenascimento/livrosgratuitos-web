@@ -6,7 +6,7 @@ function TermosDeServico() {
     return (
         <div>
             <Navbar />
-            <div className='flex flex-wrap-reverse justify-center'>
+            <div className='flex flex-wrap-reverse justify-center mx-6 md:mx-0'>
                 <div className='container rounded flex flex-wrap bg-white flex-col py-6'>
                     <h1 className='text-3xl font-bold'>Termos de Serviço</h1>
                     <br />
