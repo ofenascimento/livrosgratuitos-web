@@ -1,3 +1,4 @@
+'use client'
 import Footer from '@/app/components/Footer/Footer'
 import Navbar from '@/app/components/Navbar/Navbar'
 import { useSearchParams } from 'next/navigation';
