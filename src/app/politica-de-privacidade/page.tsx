@@ -1,11 +1,18 @@
+'use client'
 import Footer from '@/app/components/Footer/Footer';
 import Navbar from '@/app/components/Navbar/Navbar';
 import React from 'react';
+import { useSearchParams } from 'next/navigation'
 
 function Privacidade() {
+    const searchParams = useSearchParams();
+    const hideMenu = searchParams.get('hideMenu');
+
     return (
         <div>
-            <Navbar />
+            {
+                !hideMenu && <Navbar />
+            }
             <div className='flex flex-wrap-reverse justify-center mx-6 md:mx-0'>
                 <div className='container rounded flex flex-wrap bg-white flex-col py-6'>
                     <h1 className='text-3xl font-bold'>Política de Privacidade</h1>

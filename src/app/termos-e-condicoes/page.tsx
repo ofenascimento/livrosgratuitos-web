@@ -1,11 +1,17 @@
 import Footer from '@/app/components/Footer/Footer'
 import Navbar from '@/app/components/Navbar/Navbar'
+import { useSearchParams } from 'next/navigation';
 import React from 'react'
 
 function TermosDeServico() {
+    const searchParams = useSearchParams();
+    const hideMenu = searchParams.get('hideMenu');
+    
     return (
         <div>
-            <Navbar />
+            {
+                !hideMenu && <Navbar />
+            }
             <div className='flex flex-wrap-reverse justify-center mx-6 md:mx-0'>
                 <div className='container rounded flex flex-wrap bg-white flex-col py-6'>
                     <h1 className='text-3xl font-bold'>Termos de Serviço</h1>
