@@ -6,12 +6,12 @@ import { useSearchParams } from 'next/navigation'
 
 function Privacidade() {
     const searchParams = useSearchParams();
-    const hideMenu = searchParams.get('hideMenu');
+    const isApp = searchParams.get('app');
 
     return (
         <div>
             {
-                !hideMenu && <Navbar />
+                !isApp && <Navbar />
             }
             <div className='flex flex-wrap-reverse justify-center mx-6 md:mx-0'>
                 <div className='container rounded flex flex-wrap bg-white flex-col py-6'>
@@ -86,7 +86,10 @@ function Privacidade() {
                 </div>
             </div>
 
-            <Footer />
+            {
+                !isApp && <Footer />
+            }
+            
         </div>
     );
 }
