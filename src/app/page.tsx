@@ -1,12 +1,12 @@
 import Image from "next/image";
-import Navbar from "./components/Navbar/Navbar";
-import Hero from "./components/Hero/Hero";
-import CardInfo from "./components/CardInfo/CardInfo";
-import Accordion from "./components/Accordion/Accordion";
-import Card from "./components/Card/Card";
-import PostPreview from "./components/PostPreview/PostPreview";
-import Footer from "./components/Footer/Footer";
-import { SEO } from "./components/SEO";
+import Navbar from "../components/Navbar/Navbar";
+import Hero from "../components/Hero/Hero";
+import CardInfo from "../components/CardInfo/CardInfo";
+import Accordion from "../components/Accordion/Accordion";
+import Card from "../components/Card/Card";
+import PostPreview from "../components/PostPreview/PostPreview";
+import Footer from "../components/Footer/Footer";
+import { SEO } from "../components/SEO";
 
 export default function Home() {
   return (

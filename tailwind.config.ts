@@ -21,7 +21,12 @@ const config: Config = {
       },
       colors: {
         "main" : "#7B66FF"
-      }
+      },
+      fontFamily: {
+       
+        poppins: ["var(--font-poppins)"],
+       
+      },
     },
   },
   plugins: [],
