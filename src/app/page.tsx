@@ -19,7 +19,7 @@ export default function Home() {
         className='w-full flex flex-col justify-center items-center mt-10'
       >
         <div className="container px-4 md:px-0">
-          <h1 className=' text-title font-semibold mb-8'>Perguntas frequentes</h1>
+          <h1 className=' text-title font-semibold mb-8 text-white'>Perguntas frequentes</h1>
           <Accordion
             title='O aplicativo é realmente 100% gratuito?'
             content='Sim, nosso aplicativo é 100% gratuito. Comprometemo-nos a fornecer acesso irrestrito a uma rica coleção de livros sem qualquer custo para nossos usuários. Acreditamos que o conhecimento e a cultura devem ser acessíveis a todos.'

@@ -14,18 +14,20 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       fontSize: {
-        "title": "2.30rem"
+        title: "2.30rem",
       },
       backgroundColor: {
-        "main" : "#7B66FF"
+        main: "#7B66FF",
       },
       colors: {
-        "main" : "#7B66FF"
+        main: "#7B66FF",
+        dark: {
+          background: "#1B2123",
+        },
       },
       fontFamily: {
-       
         poppins: ["var(--font-poppins)"],
-       
+        inter: ["var(--font-inter)"],
       },
     },
   },
