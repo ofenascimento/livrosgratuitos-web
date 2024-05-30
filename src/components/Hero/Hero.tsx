@@ -29,8 +29,8 @@ const Hero = () => {
           </p>
           <GooglePlayButton />
         </div>
-        <div className=" w-2/4 flex flex-wrap justify-center items-center mt-6 md:mt-0">
-          <Image src="/preview.png?v=7" width={650} height={300} alt="" />
+        <div className=" w-full md:w-2/4 flex flex-wrap justify-center items-center mt-6 md:mt-0">
+          <Image src="/preview.png?v=7o" width={650} height={300} alt="" />
         </div>
       </div>
     </div>
