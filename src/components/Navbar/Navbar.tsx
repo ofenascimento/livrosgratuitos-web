@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-import { MdOutlineEmail } from "react-icons/md";
+import { MdPersonAdd } from "react-icons/md";
 
 export default function Navbar() {
   const [navbar, setNavbar] = useState(false);
@@ -13,7 +13,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between md:block">
             <a href="/">
               <img
-                src="/logo-dark.png"
+                src="/logo.png"
                 style={{ width: "auto", height: "50px" }}
                 alt=""
               />
@@ -56,30 +56,62 @@ export default function Navbar() {
             </div>
           </div>
         </div>
+        <div className="hidden lg:block">
+          <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white font-medium">
+            
+            <li className="">
+              <Link href="mailto:contato@qr-code-pix.com.br">Catálogo de livros</Link>
+            </li>
+            <li className="">
+              <Link href="mailto:contato@qr-code-pix.com.br">Categorias</Link>
+            </li>
+            <li className="">
+              <Link href="mailto:contato@qr-code-pix.com.br">Autores</Link>
+            </li>
+            <li className="">
+              <Link href="mailto:contato@qr-code-pix.com.br">Blog</Link>
+            </li>
+           
+            <li className="">
+              <Link href="mailto:contato@qr-code-pix.com.br">Procurar livro</Link>
+            </li>
+            
+          </ul>
+        </div>
         <div>
+          {/* Navbar Desktop */}
           <div
-            className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
-              navbar ? "block" : "hidden"
-            }`}
+            className={`flex-1 justify-self-center pb-3 mt-8 hidden md:block md:pb-0 md:mt-0 `}
           >
-            <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white font-poppins">
-              <li className="">
-                <Link href="mailto:contato@qr-code-pix.com.br">Blog</Link>
-              </li>
-              <li className="">
+            <ul className="flex gap-2 text-white">
+              <li className=" font-semibold ">
                 <Link href="mailto:contato@qr-code-pix.com.br">
-                  Perguntas Frequentes
+                  <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full">Entrar</h1>
                 </Link>
               </li>
               <li className="">
                 <Link href="mailto:contato@qr-code-pix.com.br">
-                  <div
-                    className="flex gap-2 text-black font-medium rounded-full px-6 py-2 justify-center items-center"
-                    style={{
-                      background: "linear-gradient(80deg, #7B66FF,  #24ff8e)",
-                    }}
-                  >
-                    Contato <MdOutlineEmail />
+                  <div className="flex gap-2 bg-main text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                    Criar conta
+                  </div>
+                </Link>
+              </li>
+            </ul>
+          </div>
+          {/* Navbar Mobile */}
+          <div
+            className={`flex-1 justify-self-center pb-3 mt-8 md:hidden md:pb-0 md:mt-0 ${
+              navbar ? "block" : "hidden"
+            }`}
+          >
+            <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white">
+              <li className="">
+                <Link href="mailto:contato@qr-code-pix.com.br">Login</Link>
+              </li>
+              <li className="">
+                <Link href="mailto:contato@qr-code-pix.com.br">
+                  <div className="flex gap-2 bg-main text-white font-medium rounded-full px-6 py-2 justify-center items-center">
+                    Criar conta
                   </div>
                 </Link>
               </li>

@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental: {
-      missingSuspenseWithCSRBailout: false,
-    },
-  };
-  
-  export default nextConfig;
-  
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
+  images: {
+    domains: ["firebasestorage.googleapis.com"],
+  },
+};
+
+export default nextConfig;

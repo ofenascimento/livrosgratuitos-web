@@ -28,6 +28,19 @@ const config: Config = {
       fontFamily: {
         poppins: ["var(--font-poppins)"],
         inter: ["var(--font-inter)"],
+        raleway: ["var(--font-raleway)"],
+      },
+      width: {
+        "9/10": "90%",
+      },
+      animation: {
+        border: "border 4s ease infinite",
+      },
+      keyframes: {
+        border: {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
       },
     },
   },
