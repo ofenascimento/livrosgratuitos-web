@@ -18,7 +18,21 @@ export default function Navbar() {
                 alt=""
               />
             </a>
-            <div className="md:hidden">
+            <div className="md:hidden flex gap-2">
+              <div className=" font-semibold ">
+                <Link href="mailto:contato@qr-code-pix.com.br">
+                  <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-white">
+                    Entrar
+                  </h1>
+                </Link>
+              </div>
+              <div className="">
+                <Link href="mailto:contato@qr-code-pix.com.br">
+                  <div className="flex gap-2 bg-main text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                    Criar conta
+                  </div>
+                </Link>
+              </div>
               <button
                 className="p-2 text-black rounded-md outline-none focus:border-gray-400 focus:border"
                 onClick={() => setNavbar(!navbar)}
@@ -58,10 +72,6 @@ export default function Navbar() {
         </div>
         <div className="hidden lg:block">
           <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white font-medium">
-            
-            <li className="">
-              <Link href="mailto:contato@qr-code-pix.com.br">Catálogo de livros</Link>
-            </li>
             <li className="">
               <Link href="mailto:contato@qr-code-pix.com.br">Categorias</Link>
             </li>
@@ -71,11 +81,12 @@ export default function Navbar() {
             <li className="">
               <Link href="mailto:contato@qr-code-pix.com.br">Blog</Link>
             </li>
-           
             <li className="">
-              <Link href="mailto:contato@qr-code-pix.com.br">Procurar livro</Link>
+              <Link href="mailto:contato@qr-code-pix.com.br">Sobre nós</Link>
             </li>
-            
+            <li className="">
+              <Link href="mailto:contato@qr-code-pix.com.br">Contato</Link>
+            </li>
           </ul>
         </div>
         <div>
@@ -86,7 +97,9 @@ export default function Navbar() {
             <ul className="flex gap-2 text-white">
               <li className=" font-semibold ">
                 <Link href="mailto:contato@qr-code-pix.com.br">
-                  <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full">Entrar</h1>
+                  <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full">
+                    Entrar
+                  </h1>
                 </Link>
               </li>
               <li className="">

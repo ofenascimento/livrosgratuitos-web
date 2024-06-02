@@ -23,3 +23,14 @@
     text-wrap: balance;
   }
 }
+
+.bg-blured {
+  background-image: url('https://tools4css.com/background.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+body {
+  background-color: #000000;
+}

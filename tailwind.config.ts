@@ -20,7 +20,11 @@ const config: Config = {
         main: "#7B66FF",
       },
       colors: {
-        main: "#7B66FF",
+        main: {
+          100: "#aa9ef6",
+          700: "#7B66FF",
+        },
+
         dark: {
           background: "#1B2123",
         },

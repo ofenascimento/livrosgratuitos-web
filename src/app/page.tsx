@@ -7,16 +7,22 @@ import Footer from "../components/Footer/Footer";
 import { SEO } from "../components/SEO";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
 import Title from "@/components/Title/Title";
+import StorySlider from "@/components/StorySlider/StorySlider";
+import SearchInput from "@/components/SearchInput/SearchInput";
+import BookList from "@/components/BookList/BookList";
+import TitleWithEmoji from "@/components/TitleWithEmoji/TitleWithEmoji";
 
 export default function Home() {
   return (
     <>
       <SEO shouldExcludeTitleSuffix title="Livros Gratuitos" />
-      <Navbar />
-      <Hero />
-      <CardInfo />
-      <BookCatalog />
-      <div className="w-full flex flex-col justify-center items-center mt-10">
+      <StorySlider />
+      <TitleWithEmoji />
+      
+
+      <SearchInput />
+      <BookList />
+      {/* <div className="w-full flex flex-col justify-center items-center mt-10">
         <div className="container px-4 md:px-0">
           <Title
             title={
@@ -56,7 +62,7 @@ export default function Home() {
         </div>
 
         <Footer />
-      </div>
+      </div> */}
     </>
   );
 }
