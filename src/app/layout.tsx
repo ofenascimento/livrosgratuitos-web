@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins, Inter, Raleway } from "next/font/google"; // Importe a fonte Raleway
+import { Poppins, Inter, Raleway } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} ${inter.variable} ${raleway.variable} font-inter `}
+        className={`${poppins.variable} ${inter.variable} ${raleway.variable}  font-raleway `}
       >
         <div className="min-h-screen flex items-center justify-center bg-black bg-blured">
           <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 rounded-lg ">

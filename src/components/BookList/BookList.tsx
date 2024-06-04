@@ -1,11 +1,13 @@
-'use client'
+"use client";
 import React from "react";
 import useFetchBooks from "@/hooks/useFetchBooks";
+import Loader from "@/components/Loader/Loader";
+import Link from "next/link";
 
 export default function BookList() {
-  const { books, isLoading } = useFetchBooks({ q: "8", sort: "true" });
+  const { books, isLoading } = useFetchBooks({ q: "8", categoria: 'Romance' });
 
-    if(isLoading) return <h1 className="bg-white">loadign</h1>
+  if (isLoading) return <Loader />;
 
   return (
     <div className="w-full flex justify-center items-center flex-wrap">
@@ -24,14 +26,19 @@ export default function BookList() {
             </div>
             <div className="flex flex-col flex-grow justify-between p-4 w-[70%]">
               <div className=" flex flex-col">
-                <h1 className="text-md font-bold text-white leading-4">{item.titulo}</h1>
+                <h1 className="text-sm font-bold text-white leading-4">
+                  {item.titulo}
+                </h1>
                 <span className=" text-sm text-white mt-1">{item.autor}</span>
               </div>
-              <button className="  hover:bg-main-900  text-white text-sm  font-semibold  cursor-pointer rounded-lg bg-white bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 bg-[length:400%_400% p-[0.12rem]">
-              <span className="block text-sm rounded-md bg-slate-900 px-6 py-3 font-medium text-white">
-                      Ler agora
-                    </span>
-              </button>
+              <Link href={"/livro"}>
+                <div className="hover:bg-main-900  text-white text-sm  font-semibold  cursor-pointer rounded-lg bg-main  p-[0.12rem] mt-2">
+                  {" "}
+                  <span className=" text-center block text-sm rounded-md bg-slate-900 px-6 py-3 font-medium text-white">
+                    Ler agora
+                  </span>
+                </div>
+              </Link>
             </div>
           </div>
         ))}

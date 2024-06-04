@@ -9,7 +9,7 @@ const Hero = () => {
     <div className="  w-full flex justify-center items-center mt-10 flex-wrap">
       <div className="container  flex flex-wrap justify-center items-center">
         <div className="w-full md:w-2/4 flex flex-col flex-wrap justify-center md:justify-start items-center md:items-start">
-          <h3 className=" rounded-full px-4 py-1  bg-main-100 text-white text-sm mb-2">Veja as últimas notícias no nosso BLOG</h3>
+          <h3 className=" rounded-full px-4 py-1  bg-main-100  bg-main- text-white text-sm mb-2">Veja as últimas notícias no nosso BLOG</h3>
           <Title
             title={
               <>

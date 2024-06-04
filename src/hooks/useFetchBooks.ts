@@ -39,7 +39,6 @@ const useFetchBooks = (params: Params) => {
         throw new Error(`Http error: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
       setBooks(data);
     } catch (error) {
       setError(

@@ -9,7 +9,7 @@ export default function SearchInput() {
         <input
           placeholder="Procure pelo título do livro"
           type="text"
-          className=" bg-gray-700 w-full lg:w-[400px]"
+          className=" bg-gray-700 w-full lg:w-[400px] outline-none focus:border-none focus:placeholder-transparent text-white"
         />
         <HiOutlineSearch size={18} color="#ffffff" />
       </div>

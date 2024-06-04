@@ -39,7 +39,7 @@ const TitleWithEmoji: React.FC = () => {
             </>
           }
         />
-        <span className="emoji-switcher mb-12 bg-orange-200 ml-4  hidden lg:block">
+        <span className="emoji-switcher mb-12 bg-orange-200 ml-4">
           {emojis.map((emoji, index) => (
             <span
               key={index}
