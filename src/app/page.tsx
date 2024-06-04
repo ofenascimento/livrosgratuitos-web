@@ -11,17 +11,20 @@ import StorySlider from "@/components/StorySlider/StorySlider";
 import SearchInput from "@/components/SearchInput/SearchInput";
 import BookList from "@/components/BookList/BookList";
 import TitleWithEmoji from "@/components/TitleWithEmoji/TitleWithEmoji";
+import Discover from "@/components/DiscoverList/DiscoverList";
 
 export default function Home() {
   return (
     <>
       <SEO shouldExcludeTitleSuffix title="Livros Gratuitos" />
       <StorySlider />
-      <TitleWithEmoji />
-      
-
-      <SearchInput />
+      {/* <TitleWithEmoji />
+      <SearchInput /> */}
+      <Title customClassName="items-start" title="Favoritos do site" />
       <BookList />
+      <Title customClassName="items-start" title="Descruba uma nova história" />
+      <Discover />
+
       {/* <div className="w-full flex flex-col justify-center items-center mt-10">
         <div className="container px-4 md:px-0">
           <Title

@@ -4,8 +4,8 @@ import useFetchBooks from "@/hooks/useFetchBooks";
 import Loader from "@/components/Loader/Loader";
 import Link from "next/link";
 
-export default function BookList() {
-  const { books, isLoading } = useFetchBooks({ destaque: "true" });
+export default function Discover() {
+  const { books, isLoading } = useFetchBooks({ q: '9', sort: 'true' });
 
   if (isLoading) return <Loader />;
 
@@ -22,7 +22,7 @@ export default function BookList() {
                 <img src={item.capa} style={{width: 200, height: 'auto'}} className=" h-full object-cover" alt="" />
 
                 <div className="flex flex-col justify-between p-4 w-full">
-                  <div className="flex flex-col justify-center items-center h-12">
+                  <div className="flex flex-col justify-center items-center h-14">
                     <h1 className="text-sm text-center font-bold text-white leading-4">
                       {item.titulo}
                     </h1>

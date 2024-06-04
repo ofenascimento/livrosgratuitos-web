@@ -1,3 +1,4 @@
+import { urlApi } from "@/utils/url";
 import { useEffect, useState } from "react";
 
 interface IBook {
@@ -12,7 +13,7 @@ interface IBook {
   descricao: string;
 }
 
-export const useFetchBook = () => {
+export const useFetchBook = (id: string) => {
   const [book, setBook] = useState<IBook | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -21,7 +22,8 @@ export const useFetchBook = () => {
     setIsLoading(true);
     try {
       const url =
-        "http://fluted-alloy-416520.rj.r.appspot.com/livros/public/65eeabf7822f5ccbb5d70831";
+        `${urlApi}/livros/public/${id}`;
+        console.log(url)
       const response = await fetch(url);
 
       if (!response.ok) {

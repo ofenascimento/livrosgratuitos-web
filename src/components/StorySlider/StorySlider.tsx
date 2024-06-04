@@ -1,5 +1,4 @@
 import React from "react";
-import style from "./StorySlider.module.css";
 
 export const categoriesMock = [
   {
@@ -46,13 +45,22 @@ export const categoriesMock = [
 
 const StorySlider = () => {
   return (
-    <div className={style.slide}>
-      <div className={style.scrollingWrapper}>
+    <div className="w-full overflow-x-auto py-4 scrollbar-hide lg:flex lg:justify-center lg:items-center">
+      <div className="flex gap-4">
         {categoriesMock.map((item, index) => (
-          <div className={style.boxSlide} key={index}>
-            <a href={item.cover} target="_blank">
-              <img src={item.cover} alt={item.title} />
-              <span className={style.text}>{item.title}</span>
+          <div
+            key={index}
+            className="flex-shrink-0 w-24"
+          >
+            <a href={item.cover} className=" flex flex-col justify-center items-center" target="_blank" rel="noopener noreferrer">
+              <img
+                src={item.cover}
+                alt={item.title}
+                className="h-24 w-24 object-cover rounded-full"
+              />
+              <span className="block text-center text-white py-2">
+                {item.title}
+              </span>
             </a>
           </div>
         ))}
