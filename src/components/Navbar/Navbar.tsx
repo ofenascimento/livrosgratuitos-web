@@ -132,7 +132,7 @@ export default function Navbar() {
               </li>
               <li className=" font-semibold ">
                 <Link href="mailto:contato@qr-code-pix.com.br">
-                  <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full">
+                  <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-black dark:text-white">
                     Entrar
                   </h1>
                 </Link>

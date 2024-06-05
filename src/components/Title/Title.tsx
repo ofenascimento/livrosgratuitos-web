@@ -9,7 +9,7 @@ const Title = (props: ITitle) => {
         className={`${props.customClassName} flex flex-col justify-center font-PoppinsMedium `}
       >
         <h1
-          className={`text-2xl md:text-2xl lg:text-2xl text-white font-black text-center ${props.titleClassName}`}
+          className={`text-2xl md:text-2xl lg:text-2xl dark:text-white text-black font-black text-center ${props.titleClassName}`}
         >
           {props.title}
         </h1>
