@@ -22,12 +22,14 @@ export default function Home() {
       <SearchInput /> */}
       <Title customClassName="items-start" title="Favoritos do site" />
       <BookList />
+
       <Title customClassName="items-start" title="Descruba uma nova história" />
       <Discover />
 
-      {/* <div className="w-full flex flex-col justify-center items-center mt-10">
+      <div className="w-full flex flex-col justify-center items-center mt-10">
         <div className="container px-4 md:px-0">
           <Title
+            customClassName=" items-start"
             title={
               <>
                 Ficou com alguma {"  "}
@@ -63,9 +65,7 @@ export default function Home() {
             content="Utilize a barra de pesquisa na parte superior da tela para digitar o título do livro, o nome do título ou palavras-chave relacionadas."
           />
         </div>
-
-        <Footer />
-      </div> */}
+      </div>
     </>
   );
 }

@@ -44,7 +44,7 @@ export const useFetchBook = (id: string) => {
 
   useEffect(() => {
     fetchBook();
-  }, []);
+  }, [id]);
 
   return { book, isLoading, error };
 };

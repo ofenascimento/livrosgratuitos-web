@@ -2,7 +2,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-import { MdPersonAdd } from "react-icons/md";
+import { MdPerson, MdFavoriteBorder } from "react-icons/md";
+import { FaMoon, FaSun } from "react-icons/fa";
+
+import SearchInput from "../SearchInput/SearchInput";
 
 export default function Navbar() {
   const [navbar, setNavbar] = useState(false);
@@ -18,18 +21,19 @@ export default function Navbar() {
                 alt=""
               />
             </a>
-            <div className="md:hidden flex gap-2">
-              <div className=" font-semibold ">
-                <Link href="mailto:contato@qr-code-pix.com.br">
-                  <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-white">
-                    Entrar
-                  </h1>
-                </Link>
-              </div>
+            <div className="md:hidden flex gap-2 justify-center items-center">
+              <button className="bg-gray-200 px-3 py-3 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full">
+                {true ? (
+                  <FaSun color="#A0AFBF" size={20} />
+                ) : (
+                  <FaMoon size={20} />
+                )}
+              </button>
               <div className="">
                 <Link href="mailto:contato@qr-code-pix.com.br">
-                  <div className="flex gap-2 bg-main text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                    Criar conta
+                  <div className="flex gap-2 bg-main-400 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                    Minha conta
+                    <MdPerson size={20} />
                   </div>
                 </Link>
               </div>
@@ -71,7 +75,7 @@ export default function Navbar() {
           </div>
         </div>
         <div className="hidden lg:block">
-          <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white font-medium">
+          {/* <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white font-medium">
             <li className="">
               <Link href="mailto:contato@qr-code-pix.com.br">Categorias</Link>
             </li>
@@ -87,7 +91,8 @@ export default function Navbar() {
             <li className="">
               <Link href="mailto:contato@qr-code-pix.com.br">Contato</Link>
             </li>
-          </ul>
+          </ul> */}
+          <SearchInput />
         </div>
         <div>
           {/* Navbar Desktop */}
@@ -95,6 +100,23 @@ export default function Navbar() {
             className={`flex-1 justify-self-center pb-3 mt-8 hidden md:block md:pb-0 md:mt-0 `}
           >
             <ul className="flex gap-2 text-white">
+              <li>
+                <button className="bg-gray-200 px-3 py-3 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full">
+                  {true ? (
+                    <FaSun color="#A0AFBF" size={20} />
+                  ) : (
+                    <FaMoon size={20} />
+                  )}
+                </button>
+              </li>
+              <li>
+                <button
+                  className="px-3 py-3 rounded-full text-white flex flex-row justify-center items-center gap-2"
+                  style={{ backgroundColor: "#FF407D" }}
+                >
+                  <MdFavoriteBorder size={20} />
+                </button>
+              </li>
               <li className=" font-semibold ">
                 <Link href="mailto:contato@qr-code-pix.com.br">
                   <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full">
@@ -104,8 +126,9 @@ export default function Navbar() {
               </li>
               <li className="">
                 <Link href="mailto:contato@qr-code-pix.com.br">
-                  <div className="flex gap-2 bg-main text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                  <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
                     Criar conta
+                    <MdPerson size={20} />
                   </div>
                 </Link>
               </li>
@@ -124,7 +147,7 @@ export default function Navbar() {
               <li className="">
                 <Link href="mailto:contato@qr-code-pix.com.br">
                   <div className="flex gap-2 bg-main text-white font-medium rounded-full px-6 py-2 justify-center items-center">
-                    Criar conta
+                    Minha conta
                   </div>
                 </Link>
               </li>

@@ -4,8 +4,8 @@ import { HiOutlineSearch } from "react-icons/hi";
 
 export default function SearchInput() {
   return (
-    <div className="flex justify-center items-center  mt-2">
-      <div className="gap-2 bg-gray-700 p-4 flex items-center rounded-xl w-full lg:mx-auto md:w-[80%] justify-between">
+    <div className="flex justify-center items-center">
+      <div className="gap-2 bg-gray-700 p-4 flex items-center rounded-full w-full lg:mx-auto md:w-[80%] justify-between">
         <input
           placeholder="Procure pelo título do livro"
           type="text"
