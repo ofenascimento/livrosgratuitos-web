@@ -21,6 +21,7 @@ export const useFetchBook = (id: string) => {
   const fetchBook = async () => {
     setIsLoading(true);
     try {
+      console.log(urlApi);
       const url =
         `${urlApi}/livros/public/${id}`;
         console.log(url)

@@ -1,3 +1,4 @@
+import { urlApi } from "@/utils/url";
 import { useEffect, useState } from "react";
 
 interface Params {
@@ -31,7 +32,7 @@ const useFetchBooks = (params: Params) => {
             `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
         )
         .join("&");
-      const url = `https://fluted-alloy-416520.rj.r.appspot.com/livros/public${
+      const url = `${urlApi}/livros/public${
         queryString ? `?${queryString}` : ""
       }`;
       const response = await fetch(url);
