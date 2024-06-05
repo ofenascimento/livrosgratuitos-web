@@ -14,7 +14,7 @@ export default function Navbar() {
 
   useEffect(() => {
     console.log(theme);
-  }, []);
+  }, [theme]);
 
   return (
     <nav className="w-full">
