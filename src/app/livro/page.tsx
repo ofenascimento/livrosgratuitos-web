@@ -1,18 +1,31 @@
 "use client";
 import Discover from "@/components/DiscoverList/DiscoverList";
+import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import Title from "@/components/Title/Title";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 
 function Livros() {
   const searchParams = useSearchParams();
   const bookId = searchParams.get("bookId");
-  console.log(bookId);
-  const { book } = useFetchBook(bookId ?? "");
-  if (!book) return null;
+  const { book, isLoading } = useFetchBook(bookId ?? "");
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    if (book && book.capa) {
+      const img = new Image();
+      img.src = book.capa;
+      img.onload = () => setImageLoaded(true);
+    }
+  }, [book]);
+
+  if (isLoading || !book || !imageLoaded) {
+    return <LivroPageSkeleton />;
+  }
+
   return (
     <div>
       <div className=" text-white flex-col md:flex-row flex mt-4 ">
@@ -39,7 +52,6 @@ function Livros() {
               </div>
             ))}
           </div>
-
           <p className="mt-2">{book.descricao}</p>
           <div className=" flex flex-col gap-2 mt-2 w-full justify-center items-center">
             <Link

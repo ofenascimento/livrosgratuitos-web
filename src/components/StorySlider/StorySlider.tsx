@@ -1,4 +1,6 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
+import StorySliderSkeleton from "../Skeleton/StorySliderSkeleton";
 
 export const categoriesMock = [
   {
@@ -44,15 +46,38 @@ export const categoriesMock = [
 ];
 
 const StorySlider = () => {
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  useEffect(() => {
+    const imagePromises = categoriesMock.map((category) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.src = category.cover;
+        img.onload = resolve;
+        img.onerror = resolve;
+      });
+    });
+
+    Promise.all(imagePromises).then(() => {
+      setImagesLoaded(true);
+    });
+  }, []);
+
+  if (!imagesLoaded) {
+    return <StorySliderSkeleton />;
+  }
+
   return (
     <div className="w-full overflow-x-auto py-4 scrollbar-hide lg:flex lg:justify-center lg:items-center">
       <div className="flex gap-4">
         {categoriesMock.map((item, index) => (
-          <div
-            key={index}
-            className="flex-shrink-0 w-24"
-          >
-            <a href={item.cover} className=" flex flex-col justify-center items-center" target="_blank" rel="noopener noreferrer">
+          <div key={index} className="flex-shrink-0 w-24">
+            <a
+              href={item.cover}
+              className=" flex flex-col justify-center items-center"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 src={item.cover}
                 alt={item.title}

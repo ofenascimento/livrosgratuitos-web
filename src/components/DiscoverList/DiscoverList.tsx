@@ -1,13 +1,44 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useFetchBooks from "@/hooks/useFetchBooks";
-import Loader from "@/components/Loader/Loader";
 import Link from "next/link";
+import CardBookSkeleton from "../Skeleton/CardBookSkeleton";
 
 export default function Discover() {
   const { books, isLoading } = useFetchBooks({ q: '9', sort: 'true' });
 
-  if (isLoading) return <Loader />;
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  useEffect(() => {
+    if (books.length > 0 && !isLoading) {
+      const imagePromises = books.map((book) => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.src = book.capa;
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      });
+
+      Promise.all(imagePromises).then(() => {
+        setImagesLoaded(true);
+      });
+    }
+  }, [books, isLoading]);
+
+  if (!imagesLoaded || isLoading) {
+    return (
+      <div className="w-full flex justify-center items-center">
+        <div className="overflow-x-auto w-full py-4 scrollbar-hide">
+          <div className="flex gap-4">
+            {[...Array(8)].map((_, index) => (
+              <CardBookSkeleton key={index} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex justify-center items-center">
@@ -30,13 +61,6 @@ export default function Discover() {
                       {item.autor}
                     </span>
                   </div>
-                  {/* <Link href={`/livro?bookId=${item._id}`}>
-                  <div className="hover:bg-main-900 text-white text-sm font-semibold cursor-pointer rounded-lg bg-main p-[0.12rem] mt-2">
-                    <span className="text-center block text-sm rounded-md bg-slate-900 px-6 py-3 font-medium text-white">
-                      Ler agora
-                    </span>
-                  </div>
-                </Link> */}
                 </div>
               </div>
             </Link>
