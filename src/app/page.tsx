@@ -12,6 +12,7 @@ import SearchInput from "@/components/SearchInput/SearchInput";
 import BookList from "@/components/BookList/BookList";
 import TitleWithEmoji from "@/components/TitleWithEmoji/TitleWithEmoji";
 import Discover from "@/components/DiscoverList/DiscoverList";
+import TabBar from "@/components/TabBar/TabBar";
 
 export default function Home() {
   return (
@@ -66,6 +67,7 @@ export default function Home() {
           />
         </div>
       </div>
+      <TabBar />
     </>
   );
 }
