@@ -1,8 +1,11 @@
+"use client";
 import type { Metadata } from "next";
 import { Poppins, Inter, Raleway } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
+import { ThemeProvider } from "@/context/ThemeContext";
+import { metadata } from "./metadata";
 
 const poppins = Poppins({
   weight: ["400", "500", "700"],
@@ -28,11 +31,6 @@ const raleway = Raleway({
   variable: "--font-raleway",
 });
 
-export const metadata: Metadata = {
-  title: "Livros Gratuitos",
-  description: "Leia livros 100% grátis",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -40,16 +38,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="description"
+          content={metadata.description ?? "Livros Gratuitos"}
+        />
+        <title>{String(metadata.title)}</title>{" "}
+      </head>
       <body
         className={`${poppins.variable} ${inter.variable} ${raleway.variable}  font-raleway `}
       >
-        <div className="min-h-screen flex items-center justify-center bg-black bg-blured">
-          <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 rounded-lg ">
-            <Navbar />
-            {children}
-            <Footer />
+        <ThemeProvider>
+          <div className="min-h-screen flex items-center justify-center bg-black bg-blured">
+            <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 rounded-lg ">
+              <Navbar />
+              {children}
+              <Footer />
+            </div>
           </div>
-        </div>
+        </ThemeProvider>
       </body>
     </html>
   );
