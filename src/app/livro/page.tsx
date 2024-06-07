@@ -1,7 +1,6 @@
 "use client";
 import BookList from "@/components/BookList/BookList";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
-import Title from "@/components/Title/Title";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -27,7 +26,7 @@ function Livros() {
 
   return (
     <div>
-      <div className=" text-white flex-col md:flex-row flex mt-8 ">
+      <div className=" text-white flex-col md:flex-row flex mt-8 mb-6 ">
         <div className="  w-full md:w-[30%] flex justify-center items-center">
           <img
             src={book.capa}
@@ -39,19 +38,19 @@ function Livros() {
           />
         </div>
         <div className="w-full md:w-[70%] lg:w-[80%] mt-4 md:mt-auto">
-          <h1 className="text-2xl font-bold">{book.titulo}</h1>
-          <h3 className="my-2">{book.autor}</h3>
+          <h1 className="text-2xl font-bold text-black dark:text-white">{book.titulo}</h1>
+          <h3 className="my-2 text-black dark:text-white">{book.autor}</h3>
           <div className="flex gap-2">
             {book.categoria.map((item, index) => (
               <div
                 key={index}
-                className=" bg-main-100 text-main-700 font-medium rounded-lg px-2 py-1 text-sm "
+                className=" bg-main-100 text-black font-medium rounded-lg px-2 py-1 text-sm "
               >
                 {item}
               </div>
             ))}
           </div>
-          <p className="mt-2">{book.descricao}</p>
+          <p className="mt-2 text-black dark:text-white">{book.descricao}</p>
           <div
             className="flex-col gap-2 mt-2 w-full justify-center items-center hidden md:flex"
             id="desktop-buttons"
@@ -87,7 +86,6 @@ function Livros() {
           </div>
         </Link>
       </div>
-      <Title customClassName="items-start mt-8" title="Veja também" />
       <BookList
         options={{ q: "9", sort: "true" }}
         label={
