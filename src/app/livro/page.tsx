@@ -1,5 +1,5 @@
 "use client";
-import Discover from "@/components/DiscoverList/DiscoverList";
+import BookList from "@/components/BookList/BookList";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import Title from "@/components/Title/Title";
 import { useFetchBook } from "@/hooks/useFetchBook";
@@ -52,7 +52,10 @@ function Livros() {
             ))}
           </div>
           <p className="mt-2">{book.descricao}</p>
-          <div className="flex-col gap-2 mt-2 w-full justify-center items-center hidden md:flex" id="desktop-buttons" >
+          <div
+            className="flex-col gap-2 mt-2 w-full justify-center items-center hidden md:flex"
+            id="desktop-buttons"
+          >
             <Link
               href={`/leitor?urlContent=${encodeURIComponent(book.txt)}`}
               className="w-full flex justify-center items-center"
@@ -71,7 +74,10 @@ function Livros() {
         </div>
       </div>
 
-      <div className=" fixed bottom-0 left-0 w-full p-4 dark:bg-black md:hidden" id="fixed-mobile-buttons">
+      <div
+        className=" fixed bottom-0 left-0 w-full p-4 dark:bg-black md:hidden"
+        id="fixed-mobile-buttons"
+      >
         <Link
           href={`/leitor?urlContent=${encodeURIComponent(book.txt)}`}
           className="w-full flex justify-center items-center"
@@ -82,7 +88,26 @@ function Livros() {
         </Link>
       </div>
       <Title customClassName="items-start mt-8" title="Veja também" />
-      <Discover />
+      <BookList
+        options={{ q: "9", sort: "true" }}
+        label={
+          <>
+            <span
+              style={{
+                background:
+                  "linear-gradient(90deg,#6e48ff 0,#cf40ff 48%,#ffa22c)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              Descubra
+            </span>{" "}
+            novas histórias
+          </>
+        }
+      />
     </div>
   );
 }
