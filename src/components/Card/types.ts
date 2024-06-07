@@ -1,6 +1,6 @@
-export interface ICardProps {
-    img: string;
-    titulo: string;
-    conteudo: string;
-  }
-  
+export interface ICard {
+  id: string;
+  capa: string;
+  titulo: string;
+  autor: string;
+}

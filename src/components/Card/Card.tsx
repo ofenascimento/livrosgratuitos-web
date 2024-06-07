@@ -1,17 +1,31 @@
-import Image from 'next/image'
-import React from 'react'
-import { ICardProps } from './types'
+import Image from "next/image";
+import React from "react";
+import { ICard } from "./types";
+import Link from "next/link";
 
-
-
-const Card = (props: ICardProps) => {
+const Card = (props: ICard) => {
   return (
-    <div className='flex justify-center items-center flex-col p-4 md:p-0'>
-        <Image src={props.img} alt='img' width={200} height={200} />
-        <h2 className='text-center font-medium'>{props.titulo}</h2>
-        <p className='text-base text-center w-52'>{props.conteudo}</p>
-    </div>
-  )
-}
+    <Link href={`/livro?bookId=${props.id}`}>
+      <div className="flex-shrink-0 w-40 bg-gray-800 shadow-lg flex flex-col justify-center items-center rounded">
+        <img
+          src={props.capa}
+          style={{ width: 160, height: "auto" }}
+          className="h-full object-cover    rounded-t"
+          alt=""
+        />
+        <div className="flex flex-col justify-between p-4 w-full">
+          <div className="flex flex-col justify-center items-center h-12">
+            <h1 className="text-sm text-center font-bold text-white leading-4">
+              {props.titulo}
+            </h1>
+            <span className="text-sm text-white mt-1 text-center">
+              {props.autor}
+            </span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+};
 
-export default Card
+export default Card;

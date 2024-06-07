@@ -1,16 +1,10 @@
-import Image from "next/image";
-import Navbar from "../components/Navbar/Navbar";
-import Hero from "../components/Hero/Hero";
-import CardInfo from "../components/CardInfo/CardInfo";
+
 import Accordion from "../components/Accordion/Accordion";
-import Footer from "../components/Footer/Footer";
 import { SEO } from "../components/SEO";
-import BookCatalog from "@/components/BookCatalog/BookCatalog";
 import Title from "@/components/Title/Title";
 import StorySlider from "@/components/StorySlider/StorySlider";
 import SearchInput from "@/components/SearchInput/SearchInput";
 import BookList from "@/components/BookList/BookList";
-import TitleWithEmoji from "@/components/TitleWithEmoji/TitleWithEmoji";
 import Discover from "@/components/DiscoverList/DiscoverList";
 import TabBar from "@/components/TabBar/TabBar";
 
@@ -18,9 +12,10 @@ export default function Home() {
   return (
     <>
       <SEO shouldExcludeTitleSuffix title="Livros Gratuitos" />
+      <div className="mt-4 block md:hidden">
+        <SearchInput />
+      </div>
       <StorySlider />
-      {/* <TitleWithEmoji />
-      <SearchInput /> */}
       <Title customClassName="items-start" title="Favoritos do site" />
       <BookList />
 

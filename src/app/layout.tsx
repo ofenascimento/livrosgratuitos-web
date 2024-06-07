@@ -46,10 +46,10 @@ export default function RootLayout({
         <title>{String(metadata.title)}</title>{" "}
       </head>
       <body
-        className={`${poppins.variable} ${inter.variable} ${raleway.variable}  font-raleway `}
+        className={`${poppins.variable} ${inter.variable} ${raleway.variable}  font-raleway dark:bg-black bg-white bg-blured `}
       >
         <ThemeProvider>
-          <div className="min-h-screen flex items-center justify-center dark:bg-black bg-blured">
+          <div className="min-h-screen flex items-center justify-center lg:bg-blured">
             <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 rounded-lg ">
               <Navbar />
               {children}

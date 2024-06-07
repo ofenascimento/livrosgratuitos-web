@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
-
 function Livros() {
   const searchParams = useSearchParams();
   const bookId = searchParams.get("bookId");
@@ -28,7 +27,7 @@ function Livros() {
 
   return (
     <div>
-      <div className=" text-white flex-col md:flex-row flex mt-4 ">
+      <div className=" text-white flex-col md:flex-row flex mt-8 ">
         <div className="  w-full md:w-[30%] flex justify-center items-center">
           <img
             src={book.capa}
@@ -46,14 +45,14 @@ function Livros() {
             {book.categoria.map((item, index) => (
               <div
                 key={index}
-                className=" bg-gray-500 rounded-lg px-2 py-1 text-sm "
+                className=" bg-main-100 text-main-700 font-medium rounded-lg px-2 py-1 text-sm "
               >
                 {item}
               </div>
             ))}
           </div>
           <p className="mt-2">{book.descricao}</p>
-          <div className=" flex flex-col gap-2 mt-2 w-full justify-center items-center">
+          <div className="flex-col gap-2 mt-2 w-full justify-center items-center hidden md:flex" id="desktop-buttons" >
             <Link
               href={`/leitor?urlContent=${encodeURIComponent(book.txt)}`}
               className="w-full flex justify-center items-center"
@@ -62,6 +61,7 @@ function Livros() {
                 Ler online
               </div>
             </Link>
+
             {book.pdf && (
               <button className="bg-main px-4 py-2 rounded-full w-full md:w-2/4">
                 Baixar PDF
@@ -69,6 +69,17 @@ function Livros() {
             )}
           </div>
         </div>
+      </div>
+
+      <div className=" fixed bottom-0 left-0 w-full p-4 dark:bg-black md:hidden" id="fixed-mobile-buttons">
+        <Link
+          href={`/leitor?urlContent=${encodeURIComponent(book.txt)}`}
+          className="w-full flex justify-center items-center"
+        >
+          <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center dark:text-white">
+            Ler online
+          </div>
+        </Link>
       </div>
       <Title customClassName="items-start mt-8" title="Veja também" />
       <Discover />
