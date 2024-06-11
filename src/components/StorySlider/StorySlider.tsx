@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import StorySliderSkeleton from "../Skeleton/StorySliderSkeleton";
+import Link from "next/link";
 
 export const categoriesMock = [
   {
@@ -72,11 +73,9 @@ const StorySlider = () => {
       <div className="flex gap-4">
         {categoriesMock.map((item, index) => (
           <div key={index} className="flex-shrink-0 w-24">
-            <a
-              href={item.cover}
+            <Link
+              href={`/categoria?s=${item.title}`}
               className=" flex flex-col justify-center items-center"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               <img
                 src={item.cover}
@@ -86,7 +85,7 @@ const StorySlider = () => {
               <span className="block text-center font-medium dark:text-white text-black py-2">
                 {item.title}
               </span>
-            </a>
+            </Link>
           </div>
         ))}
       </div>
