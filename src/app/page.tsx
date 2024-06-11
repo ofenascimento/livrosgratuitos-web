@@ -4,6 +4,7 @@ import SearchInput from "@/components/SearchInput/SearchInput";
 import BookList from "@/components/BookList/BookList";
 import TabBar from "@/components/TabBar/TabBar";
 import FAQ from "@/components/FAQ/FAQ";
+import BookCatalog from "@/components/BookCatalog/BookCatalog";
 
 export default function Home() {
   return (

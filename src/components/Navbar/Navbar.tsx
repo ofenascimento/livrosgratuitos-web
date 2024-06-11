@@ -7,17 +7,19 @@ import { FaMoon, FaSun } from "react-icons/fa";
 
 import SearchInput from "../SearchInput/SearchInput";
 import { useTheme } from "@/hooks/useTheme";
+import useAuth from "@/hooks/useAuth";
 
 export default function Navbar() {
   const [navbar, setNavbar] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const isAuth = useAuth();
 
   useEffect(() => {
     console.log(theme);
   }, [theme]);
 
   return (
-    <nav className="w-full">
+    <div className="w-full">
       <div className="container justify-between mx-auto md:items-center md:flex">
         <div>
           <div className="flex items-center justify-between md:block">
@@ -85,21 +87,34 @@ export default function Navbar() {
                   <MdFavoriteBorder size={20} />
                 </button>
               </li>
-              <li className=" font-semibold ">
-                <Link href="mailto:contato@qr-code-pix.com.br">
-                  <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-black dark:text-white">
-                    Entrar
-                  </h1>
-                </Link>
-              </li>
-              <li className="">
-                <Link href="mailto:contato@qr-code-pix.com.br">
+              {isAuth ? (
+                <><li className="">
+                <Link href="/criar-conta">
                   <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                    Criar conta
+                    Minha conta
                     <MdPerson size={20} />
                   </div>
                 </Link>
-              </li>
+              </li></>
+              ) : (
+                <>
+                  <li className=" font-semibold ">
+                    <Link href="/login">
+                      <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-black dark:text-white">
+                        Entrar
+                      </h1>
+                    </Link>
+                  </li>
+                  <li className="">
+                    <Link href="/criar-conta">
+                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                        Criar conta
+                        <MdPerson size={20} />
+                      </div>
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
           {/* Navbar Mobile */}
@@ -123,6 +138,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    </nav>
+    </div>
   );
 }
