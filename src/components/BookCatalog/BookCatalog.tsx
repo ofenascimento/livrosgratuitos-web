@@ -5,45 +5,35 @@ import Image from "next/image";
 import Link from "next/link";
 import Title from "../Title/Title";
 import Card from "../Card/Card";
+import { IBookCatalog } from "./types";
 
-function BookCatalog() {
-  const { books } = useFetchBooks({ q: "9", sort: "true" });
+function BookCatalog({ titulo }: IBookCatalog) {
+  const { books } = useFetchBooks({ titulo: titulo ?? "" });
 
   return (
-    <div className="w-full flex flex-col justify-center items-center mt-10">
-      <div className="container px-4 md:px-0">
+    <div className="w-full flex flex-col justify-center items-center mt-6">
+      <div className="container md:px-0">
         <Title
-          center
+          customClassName="items-start"
           title={
             <>
-              Dá uma 👀{"  "}
-              <span
-                style={{
-                  background:
-                    "linear-gradient(90deg,#6e48ff 0,#cf40ff 48%,#ffa22c)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  color: "transparent",
-                }}
-              >
-                olhadinha
-              </span>{" "}
-              nos <br className="hidden lg:block" />
-              <span
-                style={{
-                  textDecorationColor: "#7B66FF",
-                  textDecorationThickness: "5px",
-                  textDecorationLine: "underline",
-                }}
-              >
-                destaques
-              </span>
-              {"  "} da semana
+              <div className=" text-main-400">
+                Buscando por:{" "}
+                <span
+                  className=" dark:text-white text-black"
+                  style={{
+                    textDecorationColor: "#7B66FF",
+                    textDecorationThickness: "5px",
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  {titulo}
+                </span>
+              </div>
             </>
           }
         />
-        <div className="w-full  flex flex-wrap  gap-8 justify-center items-center mt-2">
+        <div className="w-full  flex flex-wrap  gap-8 items-center mt-2">
           {books.map((item, index) => (
             <Card
               key={index}

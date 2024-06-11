@@ -6,7 +6,7 @@ import Link from "next/link";
 const Card = (props: ICard) => {
   return (
     <Link href={`/livro?bookId=${props.id}`}>
-      <div className="flex-shrink-0 w-40 bg-gray-800 shadow-lg flex flex-col justify-center items-center rounded">
+      <div className="flex-shrink-0 bg-gray-700 w-40 shadow-lg flex flex-col justify-center items-center">
         <img
           src={props.capa}
           style={{ width: 160, height: "auto" }}
