@@ -1,46 +1,172 @@
 // pages/ler-livro.js
-'use client'
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation'
-import Loader from '@/components/Loader/Loader';
-import FullScreenLoader from '@/components/FullScreenLoader/FullScreenLoader';
+"use client";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
+import { HiChevronLeft, HiDotsVertical } from "react-icons/hi";
+import Link from "next/link";
 
 export default function Leitor() {
-  const [content, setContent] = useState('');
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const searchParams = useSearchParams()
-  const urlContent = searchParams.get('urlContent')
+  const [content, setContent] = useState("");
+  const [paragraphCount, setParagraphCount] = useState(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [paragraphNumber, setParagraphNumber] = useState<number>(1);
+  const [currentParagraph, setCurrentParagraph] = useState<number>(1);
+  const searchParams = useSearchParams();
+  const urlContent = searchParams.get("urlContent");
+  const toParagraph = searchParams.get("p");
+  const paragraphRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && urlContent && typeof urlContent === 'string') {
+    if (
+      typeof window !== "undefined" &&
+      urlContent &&
+      typeof urlContent === "string"
+    ) {
       const fetchBookContent = async (urlContent: string) => {
         try {
           const response = await fetch(urlContent);
           const textContent = await response.text();
           setContent(textContent);
+          const paragraphs = textContent
+            .split(/\n\n+/)
+            .filter((p) => p.trim() !== "");
+          setParagraphCount(paragraphs.length);
+
+          if (toParagraph) {
+            const paragraphNum = Number(toParagraph);
+            setParagraphNumber(paragraphNum);
+
+            // Aguarde o próximo ciclo de renderização para garantir que o conteúdo esteja renderizado
+            setTimeout(() => {
+              handleScrollToParagraph(paragraphNum);
+            }, 100);
+          }
         } catch (error) {
           console.error("Failed to fetch book content:", error);
+        } finally {
+          setIsLoading(false);
         }
       };
 
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 600)
-
-
-
       fetchBookContent(urlContent);
     }
-  }, [urlContent]);
+  }, [urlContent, toParagraph]);
 
-  if (!urlContent || isLoading) return <FullScreenLoader label='Carregando conteúdo' />;
+  const handleScrollToParagraph = (paragraphNum: number) => {
+    const paragraphIndex = paragraphNum - 1;
+    if (paragraphRefs.current[paragraphIndex]) {
+      paragraphRefs.current[paragraphIndex]?.scrollIntoView({
+        behavior: "smooth",
+      });
+    } else {
+      console.warn(`Paragraph ${paragraphNum} not found.`);
+    }
+  };
+
+  const handleScroll = useCallback(() => {
+    let closestParagraphIndex = 0;
+    let closestDistance = Infinity;
+
+    paragraphRefs.current.forEach((paragraph, index) => {
+      if (paragraph) {
+        const rect = paragraph.getBoundingClientRect();
+        const distance = Math.abs(rect.top);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestParagraphIndex = index;
+        }
+      }
+    });
+
+    setCurrentParagraph(closestParagraphIndex + 1);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
+
+  if (!urlContent || isLoading)
+    return <FullScreenLoader label="Carregando conteúdo" />;
+
+  const paragraphs = content.split(/\n\n+/).filter((p) => p.trim() !== "");
+
+  const readingPercentage = 
+    (currentParagraph / paragraphCount) * 100
+  ;
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
-      <h1>Conteúdo do Livro</h1>
-      <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', color: '#ffffff' }}>
-        {content}
-      </pre>
+    <div
+      style={{
+        padding: "20px",
+        maxWidth: "800px",
+        margin: "0 auto",
+        lineHeight: "1.6",
+        color: "#fff",
+      }}
+    >
+      <div>
+        <div className="fixed bottom-0 right-0 bg-orange-400 p-8">
+          <p>Número de parágrafos: {paragraphCount}</p>
+          <p>Parágrafo atual: {currentParagraph}</p>
+          <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
+        </div>
+        <div
+          className="lg:w-2/4 mt-0 lg:mt-4 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50 rounded-lg"
+          
+        >
+          <div className="flex justify-between items-center flex-col gap-3">
+            <div id="buttons" className="flex w-full justify-between items-center">
+              <Link href='/' className="bg-blue-500 text-white px-4 py-2 rounded flex gap-2 justify-center items-center">
+                <HiChevronLeft />
+                <p className=" hidden lg:block"> Voltar</p>
+              </Link>
+              <h1>Memórias Postumas de Brás Cubas</h1>
+              <button className="bg-blue-500 text-white px-4 py-2 rounded flex gap-2 justify-center items-center">
+              <p className=" hidden lg:block"> Configuracoes</p>
+               <HiDotsVertical />
+              </button>
+            </div>
+            <div
+              className="progress-bar-container w-full"
+              style={{
+                backgroundColor: "#ddd",
+                borderRadius: "4px",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                className="progress-bar bg-main-400"
+                style={{
+                  width: `${readingPercentage}%`,
+                  height: "10px",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className=" h-28"></div>
+        {paragraphs.map((paragraph, index) => (
+          <div
+            key={index}
+            id={`paragraph-${index + 1}`}
+            ref={(el) => {
+              paragraphRefs.current[index] = el;
+            }}
+            style={{
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+              marginBottom: "1em",
+            }}
+          >
+            {paragraph}
+          </div>
+        ))}
+        <div className=" h-80"></div>
+      </div>
     </div>
   );
 }
