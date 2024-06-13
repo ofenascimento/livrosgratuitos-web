@@ -1,7 +1,10 @@
-import { BookContext } from "@/context/BookContext";
 import { useContext } from "react";
+import { BookContext } from "@/context/BookContext";
 
 export function useBook() {
-  const ctx = useContext(BookContext);
-  return ctx;
+  const context = useContext(BookContext);
+  if (!context) {
+    throw new Error("useBook must be used within a BookProvider");
+  }
+  return context;
 }

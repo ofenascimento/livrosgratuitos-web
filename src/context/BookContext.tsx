@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useContext } from "react";
 
 interface BookContextType {
   urlBook: string;
@@ -16,8 +16,8 @@ interface IBookProvider {
 export const BookContext = createContext<BookContextType | undefined>(undefined);
 
 export const BookProvider = ({ children }: IBookProvider) => {
-  const [urlBook, setUrlBook] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
+  const [urlBook, setUrlBook] = useState<string>("nobook");
+  const [title, setTitle] = useState<string>("notitle");
   const [toParagraph, setToParagraph] = useState<number>(1);
 
   return (

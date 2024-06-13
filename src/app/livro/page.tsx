@@ -1,6 +1,7 @@
 "use client";
 import BookList from "@/components/BookList/BookList";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
+import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -11,9 +12,12 @@ function Livros() {
   const bookId = searchParams.get("bookId");
   const { book, isLoading } = useFetchBook(bookId ?? "");
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { setTitle, setUrlBook } = useBook();
 
   useEffect(() => {
     if (book && book.capa) {
+      setTitle(book.titulo);
+      setUrlBook(book.txt);
       const img = new Image();
       img.src = book.capa;
       img.onload = () => setImageLoaded(true);
@@ -38,7 +42,9 @@ function Livros() {
           />
         </div>
         <div className="w-full md:w-[70%] lg:w-[80%] mt-4 md:mt-auto">
-          <h1 className="text-2xl font-bold text-black dark:text-white">{book.titulo}</h1>
+          <h1 className="text-2xl font-bold text-black dark:text-white">
+            {book.titulo}
+          </h1>
           <h3 className="my-2 text-black dark:text-white">{book.autor}</h3>
           <div className="flex gap-2">
             {book.categoria.map((item, index) => (

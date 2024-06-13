@@ -1,10 +1,11 @@
 // pages/ler-livro.js
 "use client";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import { HiChevronLeft, HiDotsVertical } from "react-icons/hi";
 import Link from "next/link";
+import { useBook } from "@/hooks/useBook";
 
 export default function Leitor() {
   const [content, setContent] = useState("");
@@ -13,15 +14,19 @@ export default function Leitor() {
   const [paragraphNumber, setParagraphNumber] = useState<number>(1);
   const [currentParagraph, setCurrentParagraph] = useState<number>(1);
   const searchParams = useSearchParams();
-  const urlContent = searchParams.get("urlContent");
   const toParagraph = searchParams.get("p");
   const paragraphRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { title, urlBook } = useBook();
+  const router = useRouter();
 
   useEffect(() => {
+    if (urlBook === "nobook") {
+      router.push("/");
+    }
     if (
       typeof window !== "undefined" &&
-      urlContent &&
-      typeof urlContent === "string"
+      urlBook &&
+      typeof urlBook === "string"
     ) {
       const fetchBookContent = async (urlContent: string) => {
         try {
@@ -49,9 +54,9 @@ export default function Leitor() {
         }
       };
 
-      fetchBookContent(urlContent);
+      fetchBookContent(urlBook);
     }
-  }, [urlContent, toParagraph]);
+  }, [urlBook, toParagraph]);
 
   const handleScrollToParagraph = (paragraphNum: number) => {
     const paragraphIndex = paragraphNum - 1;
@@ -89,15 +94,14 @@ export default function Leitor() {
     };
   }, [handleScroll]);
 
-  if (!urlContent || isLoading)
+  if (!urlBook || isLoading)
     return <FullScreenLoader label="Carregando conteúdo" />;
 
   const paragraphs = content.split(/\n\n+/).filter((p) => p.trim() !== "");
 
-  const readingPercentage = 
-    (currentParagraph / paragraphCount) * 100
-  ;
+  const readingPercentage = (currentParagraph / paragraphCount) * 100;
 
+  if (urlBook === "nobook") return null;
   return (
     <div
       style={{
@@ -114,20 +118,23 @@ export default function Leitor() {
           <p>Parágrafo atual: {currentParagraph}</p>
           <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
         </div>
-        <div
-          className="lg:w-2/4 mt-0 lg:mt-4 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50 rounded-lg"
-          
-        >
+        <div className="lg:w-2/4 mt-0 lg:mt-4 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50 rounded-lg">
           <div className="flex justify-between items-center flex-col gap-3">
-            <div id="buttons" className="flex w-full justify-between items-center">
-              <Link href='/' className="bg-blue-500 text-white px-4 py-2 rounded flex gap-2 justify-center items-center">
+            <div
+              id="buttons"
+              className="flex w-full justify-between items-center"
+            >
+              <Link
+                href="/"
+                className="bg-blue-500 text-white px-4 py-2 rounded flex gap-2 justify-center items-center"
+              >
                 <HiChevronLeft />
                 <p className=" hidden lg:block"> Voltar</p>
               </Link>
-              <h1>Memórias Postumas de Brás Cubas</h1>
+              <h1>{title}</h1>
               <button className="bg-blue-500 text-white px-4 py-2 rounded flex gap-2 justify-center items-center">
-              <p className=" hidden lg:block"> Configuracoes</p>
-               <HiDotsVertical />
+                <p className=" hidden lg:block"> Configuracoes</p>
+                <HiDotsVertical />
               </button>
             </div>
             <div
