@@ -2,21 +2,23 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { MdPerson, MdFavoriteBorder, MdClose, MdMenu } from "react-icons/md";
+import {
+  MdPerson,
+  MdFavoriteBorder,
+  MdClose,
+  MdMenu,
+  MdBookmarkAdded,
+  MdBookmarks,
+  MdMenuBook,
+} from "react-icons/md";
 import { FaMoon, FaSun } from "react-icons/fa";
 
 import SearchInput from "../SearchInput/SearchInput";
-import { useTheme } from "@/hooks/useTheme";
 import useAuth from "@/hooks/useAuth";
 
 export default function Navbar() {
   const [navbar, setNavbar] = useState(false);
-  const { theme, toggleTheme } = useTheme();
   const isAuth = useAuth();
-
-  useEffect(() => {
-    console.log(theme);
-  }, [theme]);
 
   return (
     <div className="w-full">
@@ -31,15 +33,8 @@ export default function Navbar() {
               />
             </a>
             <div className="md:hidden flex gap-2 justify-center items-center">
-              <button
-                onClick={toggleTheme}
-                className="bg-gray-200 px-3 py-3 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full"
-              >
-                {theme === "dark" ? (
-                  <FaSun color="#A0AFBF" size={20} />
-                ) : (
-                  <FaMoon size={20} />
-                )}
+              <button className=" px-3 py-3 bg-gray-800 text-gray-200 rounded-full">
+                <MdMenuBook size={20} />
               </button>
               <div className="">
                 <Link href="mailto:contato@qr-code-pix.com.br">
@@ -50,7 +45,7 @@ export default function Navbar() {
                 </Link>
               </div>
               <button
-                className="p-2 dark:text-white rounded-md outline-none focus:border-gray-400 focus:border"
+                className="p-2 text-white rounded-md outline-none focus:border-gray-400 focus:border"
                 onClick={() => setNavbar(!navbar)}
               >
                 {navbar ? <MdClose size={28} /> : <MdMenu size={28} />}
@@ -68,15 +63,8 @@ export default function Navbar() {
           >
             <ul className="flex gap-2 text-white">
               <li>
-                <button
-                  onClick={toggleTheme}
-                  className="bg-gray-200 px-3 py-3 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full"
-                >
-                  {theme === "dark" ? (
-                    <FaSun color="#A0AFBF" size={20} />
-                  ) : (
-                    <FaMoon size={20} />
-                  )}
+                <button className=" px-3 py-3 bg-gray-800 text-gray-200 rounded-full flex justify-center items-center">
+                  <MdMenuBook size={20} />
                 </button>
               </li>
               <li>
@@ -88,19 +76,21 @@ export default function Navbar() {
                 </button>
               </li>
               {isAuth ? (
-                <><li className="">
-                <Link href="/criar-conta">
-                  <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                    Minha conta
-                    <MdPerson size={20} />
-                  </div>
-                </Link>
-              </li></>
+                <>
+                  <li className="">
+                    <Link href="/criar-conta">
+                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                        Minha conta
+                        <MdPerson size={20} />
+                      </div>
+                    </Link>
+                  </li>
+                </>
               ) : (
                 <>
                   <li className=" font-semibold ">
                     <Link href="/login">
-                      <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-black dark:text-white">
+                      <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-white">
                         Entrar
                       </h1>
                     </Link>

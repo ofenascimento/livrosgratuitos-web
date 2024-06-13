@@ -37,11 +37,9 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
     return (
       <div className="w-full flex justify-center items-center">
         <div className="w-full flex flex-wrap  gap-8 items-center mt-6">
-         
-            {[...Array(12)].map((_, index) => (
-              <CardBookSkeleton key={index} />
-            ))}
-          
+          {[...Array(12)].map((_, index) => (
+            <CardBookSkeleton key={index} />
+          ))}
         </div>
       </div>
     );
@@ -54,10 +52,10 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
           customClassName="items-start"
           title={
             <>
-              <div className=" text-main-400">
+              <div className=" text-white">
                 Buscando por:{" "}
                 <span
-                  className=" dark:text-white text-black"
+                  className="text-white"
                   style={{
                     textDecorationColor: "#7B66FF",
                     textDecorationThickness: "5px",

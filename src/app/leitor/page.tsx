@@ -113,12 +113,12 @@ export default function Leitor() {
       }}
     >
       <div>
-        <div className="fixed bottom-0 right-0 bg-orange-400 p-8">
+        {/* <div className="fixed bottom-0 right-0 bg-orange-400 p-8">
           <p>Número de parágrafos: {paragraphCount}</p>
           <p>Parágrafo atual: {currentParagraph}</p>
           <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
-        </div>
-        <div className="lg:w-2/4 mt-0 lg:mt-4 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50 rounded-lg">
+        </div> */}
+        <div className="lg:w-2/4 mt-0 lg:mt-1 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50 rounded-lg">
           <div className="flex justify-between items-center flex-col gap-3">
             <div
               id="buttons"
@@ -126,13 +126,13 @@ export default function Leitor() {
             >
               <Link
                 href="/"
-                className="bg-blue-500 text-white px-4 py-2 rounded flex gap-2 justify-center items-center"
+                className="bg-gray-700 rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
               >
                 <HiChevronLeft />
                 <p className=" hidden lg:block"> Voltar</p>
               </Link>
               <h1>{title}</h1>
-              <button className="bg-blue-500 text-white px-4 py-2 rounded flex gap-2 justify-center items-center">
+              <button className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center">
                 <p className=" hidden lg:block"> Configuracoes</p>
                 <HiDotsVertical />
               </button>

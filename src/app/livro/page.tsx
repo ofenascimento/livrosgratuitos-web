@@ -1,5 +1,6 @@
 "use client";
 import BookList from "@/components/BookList/BookList";
+import Navbar from "@/components/Navbar/Navbar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
@@ -29,7 +30,8 @@ function Livros() {
   }
 
   return (
-    <div>
+    <>
+      <Navbar />
       <div className=" text-white flex-col md:flex-row flex mt-8 mb-6 ">
         <div className="  w-full md:w-[30%] flex justify-center items-center">
           <img
@@ -42,27 +44,27 @@ function Livros() {
           />
         </div>
         <div className="w-full md:w-[70%] lg:w-[80%] mt-4 md:mt-auto">
-          <h1 className="text-2xl font-bold text-black dark:text-white">
+          <h1 className="text-2xl font-bold text-white">
             {book.titulo}
           </h1>
-          <h3 className="my-2 text-black dark:text-white">{book.autor}</h3>
+          <h3 className="my-2 text-white">{book.autor}</h3>
           <div className="flex gap-2">
             {book.categoria.map((item, index) => (
               <div
                 key={index}
-                className=" bg-main-100 text-black font-medium rounded-lg px-2 py-1 text-sm "
+                className=" bg-gray-700 text-white font-medium rounded-lg px-2 py-1 text-sm "
               >
                 {item}
               </div>
             ))}
           </div>
-          <p className="mt-2 text-black dark:text-white">{book.descricao}</p>
+          <p className="mt-2 text-white">{book.descricao}</p>
           <div
             className="flex-col gap-2 mt-2 w-full justify-center items-center hidden md:flex"
             id="desktop-buttons"
           >
             <Link
-              href={`/leitor?urlContent=${encodeURIComponent(book.txt)}`}
+              href={`/leitor`}
               className="w-full flex justify-center items-center"
             >
               <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center">
@@ -80,14 +82,14 @@ function Livros() {
       </div>
 
       <div
-        className=" fixed bottom-0 left-0 w-full p-4 dark:bg-black md:hidden"
+        className=" fixed bottom-0 left-0 w-full p-4 bg-black md:hidden"
         id="fixed-mobile-buttons"
       >
         <Link
           href={`/leitor?urlContent=${encodeURIComponent(book.txt)}`}
           className="w-full flex justify-center items-center"
         >
-          <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center dark:text-white">
+          <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center text-white">
             Ler online
           </div>
         </Link>
@@ -112,7 +114,7 @@ function Livros() {
           </>
         }
       />
-    </div>
+    </>
   );
 }
 

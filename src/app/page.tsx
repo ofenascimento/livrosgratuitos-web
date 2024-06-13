@@ -5,11 +5,14 @@ import BookList from "@/components/BookList/BookList";
 import TabBar from "@/components/TabBar/TabBar";
 import FAQ from "@/components/FAQ/FAQ";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
+import Navbar from "@/components/Navbar/Navbar";
+import Footer from "@/components/Footer/Footer";
 
 export default function Home() {
   return (
     <>
       <SEO shouldExcludeTitleSuffix title="Livros Gratuitos" />
+      <Navbar />
       <div className="mt-4 block md:hidden">
         <SearchInput />
       </div>
@@ -67,6 +70,7 @@ export default function Home() {
       />
       <FAQ />
       <TabBar />
+      <Footer />
     </>
   );
 }

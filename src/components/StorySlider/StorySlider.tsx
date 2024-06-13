@@ -82,7 +82,7 @@ const StorySlider = () => {
                 alt={item.title}
                 className="h-24 w-24 object-cover rounded-full"
               />
-              <span className="block text-center font-medium dark:text-white text-black py-2">
+              <span className="block text-center font-medium text-white py-2">
                 {item.title}
               </span>
             </Link>

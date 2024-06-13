@@ -1,5 +1,6 @@
 "use client";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
+import Navbar from "@/components/Navbar/Navbar";
 import Title from "@/components/Title/Title";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
@@ -11,12 +12,13 @@ function BuscarPage() {
 
   useEffect(() => {
     if (search === "undefined") {
-      router.push('/')
+      router.push("/");
     }
   }, [search]);
 
   return (
     <>
+      <Navbar />
       <BookCatalog titulo={search} />
     </>
   );

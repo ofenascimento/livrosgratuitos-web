@@ -47,17 +47,15 @@ export default function RootLayout({
         <title>{String(metadata.title)}</title>{" "}
       </head>
       <body
-        className={`${poppins.variable} ${inter.variable} ${raleway.variable}  font-raleway dark:bg-black bg-white bg-blured `}
+        className={`${poppins.variable} ${inter.variable} ${raleway.variable}  font-raleway bg-black bg-blured `}
       >
-        <ThemeProvider>
-          <BookProvider>
-            <div className="min-h-screen flex items-center justify-center lg:bg-blured">
-              <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 rounded-lg ">
-                {children}
-              </div>
+        <BookProvider>
+          <div className="min-h-screen flex items-center justify-center lg:bg-blured">
+            <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 rounded-lg ">
+              {children}
             </div>
-          </BookProvider>
-        </ThemeProvider>
+          </div>
+        </BookProvider>
       </body>
     </html>
   );

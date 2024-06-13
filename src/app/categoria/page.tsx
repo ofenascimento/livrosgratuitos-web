@@ -1,5 +1,6 @@
 "use client";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
+import Navbar from "@/components/Navbar/Navbar";
 import useAuth from "@/hooks/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
@@ -18,6 +19,7 @@ function CategoriaPage() {
 
   return (
     <>
+      <Navbar />
       <BookCatalog categoria={search} />
     </>
   );
