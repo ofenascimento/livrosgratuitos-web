@@ -82,7 +82,7 @@ function Livros() {
       </div>
 
       <div
-        className=" fixed bottom-0 left-0 w-full p-4 bg-black md:hidden"
+        className=" fixed bottom-0  z-50 left-0 w-full p-4 bg-black md:hidden"
         id="fixed-mobile-buttons"
       >
         <Link
@@ -114,6 +114,9 @@ function Livros() {
           </>
         }
       />
+      <div className="lg:hidden h-24">
+
+      </div>
     </>
   );
 }

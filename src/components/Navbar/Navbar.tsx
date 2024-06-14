@@ -68,12 +68,13 @@ export default function Navbar() {
                 </button>
               </li>
               <li>
-                <button
+                <Link
+                  href="/favoritos"
                   className="px-3 py-3 rounded-full text-white flex flex-row justify-center items-center gap-2"
                   style={{ backgroundColor: "#FF407D" }}
                 >
                   <MdFavoriteBorder size={20} />
-                </button>
+                </Link>
               </li>
               {isAuth ? (
                 <>

@@ -36,7 +36,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
   if (!imagesLoaded || isLoading) {
     return (
       <div className="w-full flex justify-center items-center">
-        <div className="w-full flex flex-wrap  gap-8 items-center mt-6">
+        <div className="w-full flex flex-wrap justify-center  gap-8 items-center mt-6">
           {[...Array(12)].map((_, index) => (
             <CardBookSkeleton key={index} />
           ))}
@@ -68,7 +68,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
             </>
           }
         />
-        <div className="w-full  flex flex-wrap  gap-8 items-center mt-2">
+        <div className="w-full  flex flex-wrap  gap-8 items-center ml-3 justify-start mt-2">
           {books.map((item, index) => (
             <Card
               key={index}
