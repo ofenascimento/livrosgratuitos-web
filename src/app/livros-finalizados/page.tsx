@@ -97,8 +97,8 @@ function FavoritosPage() {
     );
   }
 
-  if (isLoading || !finishedBooks || !imagesLoaded) {
-    return <FullScreenLoader label="Carregando seus livros favoritos" />;
+  if (isLoading || !imagesLoaded) {
+    return <FullScreenLoader label="Carregando seus livros finalizados" />;
   }
   return (
     <div>

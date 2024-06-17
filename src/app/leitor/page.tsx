@@ -117,7 +117,7 @@ export default function Leitor() {
           <p>Parágrafo atual: {currentParagraph}</p>
           <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
         </div> */}
-        <div className="lg:w-2/4 mt-0 lg:mt-1 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50 rounded-lg">
+        <div className=" mt-0  fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50">
           <div className="flex justify-between items-center flex-col gap-3">
             <div
               id="buttons"
@@ -171,7 +171,7 @@ export default function Leitor() {
             {paragraph}
           </div>
         ))}
-        <div className=" h-80"></div>
+        <div className="h-80"></div>
       </div>
     </div>
   );

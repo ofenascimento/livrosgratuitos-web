@@ -4,6 +4,7 @@ import Footer from "@/components/Footer/Footer";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import Navbar from "@/components/Navbar/Navbar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
+import TabBar from "@/components/TabBar/TabBar";
 import Title from "@/components/Title/Title";
 import useAuth from "@/hooks/useAuth";
 import useFetchFavoriteBooks from "@/hooks/useFetchFavoriteBooks";
@@ -134,6 +135,7 @@ function FavoritosPage() {
         ))}
       </div>
       <Footer />
+      <TabBar />
     </div>
   );
 }

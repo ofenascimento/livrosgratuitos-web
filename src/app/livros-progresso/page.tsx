@@ -40,10 +40,10 @@ function FavoritosPage() {
         <div className="flex items-center mt-2 justify-center">
           <div className="max-w-md w-full p-4 rounded-lg flex justify-center items-center flex-col gap-2">
             <h2 className="text-4xl font-bold text-center m-0 text-white">
-              Veja seus livros finalizados
+              Veja seus livros em progresso
             </h2>
             <p className=" text-white text-center">
-              Faça login ou crie uma conta para ver seus livros finalizados
+              Faça login ou crie uma conta para ver seus livros em progresso
             </p>
             <Image
               src="/favorites-ilustration.webp"
@@ -94,7 +94,7 @@ function FavoritosPage() {
   }
 
   if (isLoading || !readingList || !imagesLoaded) {
-    return <FullScreenLoader label="Carregando seus livros favoritos" />;
+    return <FullScreenLoader label="Carregando seus livros em progresso" />;
   }
   return (
     <div>
@@ -114,7 +114,7 @@ function FavoritosPage() {
                 color: "transparent",
               }}
             >
-              finalizados
+              progresso
             </span>{" "}
           </>
         }
