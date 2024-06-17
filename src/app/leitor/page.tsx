@@ -42,7 +42,6 @@ export default function Leitor() {
             const paragraphNum = Number(toParagraph);
             setParagraphNumber(paragraphNum);
 
-            // Aguarde o próximo ciclo de renderização para garantir que o conteúdo esteja renderizado
             setTimeout(() => {
               handleScrollToParagraph(paragraphNum);
             }, 100);
@@ -124,13 +123,13 @@ export default function Leitor() {
               id="buttons"
               className="flex w-full justify-between items-center"
             >
-              <Link
-                href="/"
-                className="bg-gray-700 rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
+              <button
+                onClick={() => router.back()}
+                className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
               >
                 <HiChevronLeft />
                 <p className=" hidden lg:block"> Voltar</p>
-              </Link>
+              </button>
               <h1>{title}</h1>
               <button className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center">
                 <p className=" hidden lg:block"> Configuracoes</p>

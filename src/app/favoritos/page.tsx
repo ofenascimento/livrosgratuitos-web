@@ -1,6 +1,7 @@
 "use client";
 import Card from "@/components/Card/Card";
 import Footer from "@/components/Footer/Footer";
+import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import Navbar from "@/components/Navbar/Navbar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import Title from "@/components/Title/Title";
@@ -12,7 +13,6 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 function FavoritosPage() {
-  
   const isAuth = useAuth();
   const router = useRouter();
 
@@ -35,10 +35,6 @@ function FavoritosPage() {
       });
     }
   }, [favoriteBooks, isLoading]);
-
-  if (isLoading || !favoriteBooks || !imagesLoaded) {
-    return <LivroPageSkeleton />;
-  }
 
   if (!isAuth)
     return (
@@ -70,6 +66,10 @@ function FavoritosPage() {
         <Footer />
       </>
     );
+
+  if (isLoading || !favoriteBooks || !imagesLoaded) {
+    return <FullScreenLoader label="Carregando seus livros favoritos" />;
+  }
   return (
     <div>
       <Navbar />
