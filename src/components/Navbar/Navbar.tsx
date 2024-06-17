@@ -79,7 +79,7 @@ export default function Navbar() {
               <li>
                 <Tooltip text="Livros em progresso">
                   <Link
-                    href="/livros-finalizados"
+                    href="/livros-progresso"
                     style={{ backgroundColor: "#C24914" }}
                     className=" px-3 py-3  text-gray-200 rounded-full flex justify-center items-center"
                   >

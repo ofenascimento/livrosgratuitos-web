@@ -17,9 +17,17 @@ const Card = (props: ICard) => {
             <h1 className="text-sm text-center font-bold text-white leading-4">
               {props.titulo}
             </h1>
-            <span className="text-sm text-white mt-1 text-center">
-              {props.autor}
-            </span>
+            {props.autor && (
+              <span className="text-sm text-white mt-1 text-center">
+                {props.autor}
+              </span>
+            )}
+
+            {props.progress && (
+              <span className="text-sm text-white text-center mt-1">
+                {`Progresso: ${props.progress}%`}
+              </span>
+            )}
           </div>
         </div>
       </div>
