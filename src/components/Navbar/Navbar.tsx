@@ -78,19 +78,20 @@ export default function Navbar() {
               </li>
               <li>
                 <Tooltip text="Livros em progresso">
-                  <button
+                  <Link
+                    href="/livros-finalizados"
                     style={{ backgroundColor: "#C24914" }}
                     className=" px-3 py-3  text-gray-200 rounded-full flex justify-center items-center"
                   >
                     <MdMenuBook size={20} />
-                  </button>
+                  </Link>
                 </Tooltip>
               </li>
 
               <li>
                 <Tooltip text="Livros finalizados">
                   <Link
-                    href="/favoritos"
+                    href="/livros-finalizados"
                     style={{ backgroundColor: "#468966" }}
                     className="px-3 py-3 bg-gray-800 rounded-full text-white flex flex-row justify-center items-center gap-2"
                   >

@@ -7,6 +7,7 @@ import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import Title from "@/components/Title/Title";
 import useAuth from "@/hooks/useAuth";
 import useFetchFavoriteBooks from "@/hooks/useFetchFavoriteBooks";
+import useFetchFinishedBooks from "@/hooks/useFetchFinishedBooks";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,12 +17,12 @@ function FavoritosPage() {
   const isAuth = useAuth();
   const router = useRouter();
 
-  const { favoriteBooks, isLoading } = useFetchFavoriteBooks();
+  const { finishedBooks, isLoading } = useFetchFinishedBooks();
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
-    if (favoriteBooks.length > 0 && !isLoading) {
-      const imagePromises = favoriteBooks.map((book) => {
+    if (finishedBooks.length > 0 && !isLoading) {
+      const imagePromises = finishedBooks.map((book) => {
         return new Promise((resolve) => {
           const img = new window.Image();
           img.src = book.capa;
@@ -34,7 +35,7 @@ function FavoritosPage() {
         setImagesLoaded(true);
       });
     }
-  }, [favoriteBooks, isLoading]);
+  }, [finishedBooks, isLoading]);
 
   if (!isAuth)
     return (
@@ -43,10 +44,10 @@ function FavoritosPage() {
         <div className="flex items-center mt-2 justify-center">
           <div className="max-w-md w-full p-4 rounded-lg flex justify-center items-center flex-col gap-2">
             <h2 className="text-4xl font-bold text-center m-0 text-white">
-              Favorite seus livros
+              Veja seus livros finalizados
             </h2>
             <p className=" text-white text-center">
-              Faça login ou crie uma conta para favoritar seus livros
+              Faça login ou crie uma conta para ver seus livros finalizados
             </p>
             <Image
               src="/favorites-ilustration.webp"
@@ -73,17 +74,17 @@ function FavoritosPage() {
       </>
     );
 
-  if (favoriteBooks === null || favoriteBooks.length === 0) {
+  if (finishedBooks === null || finishedBooks.length === 0) {
     return (
       <div>
         <Navbar />
         <div className=" flex justify-center items-center w-full flex-col">
           <Title
             customClassName="items-start mt-4"
-            title={<>Nenhum livro favoritado por enquanto</>}
+            title={<>Nenhum livro finalizado por enquanto</>}
           />
           <Image
-            src="/no-books.webp"
+            src="/no-book.webp"
             className=" rounded-3xl mb-2"
             width={300}
             height={50}
@@ -96,7 +97,7 @@ function FavoritosPage() {
     );
   }
 
-  if (isLoading || !favoriteBooks || !imagesLoaded) {
+  if (isLoading || !finishedBooks || !imagesLoaded) {
     return <FullScreenLoader label="Carregando seus livros favoritos" />;
   }
   return (
@@ -117,13 +118,13 @@ function FavoritosPage() {
                 color: "transparent",
               }}
             >
-              favoritos
+              finalizados
             </span>{" "}
           </>
         }
       />
       <div className="w-full  flex flex-wrap  gap-8 items-center ml-3 justify-start mt-2">
-        {favoriteBooks.map((item, index) => (
+        {finishedBooks.map((item, index) => (
           <Card
             key={index}
             id={item._id}
