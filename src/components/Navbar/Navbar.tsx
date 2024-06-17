@@ -10,11 +10,14 @@ import {
   MdBookmarkAdded,
   MdBookmarks,
   MdMenuBook,
+  MdBook,
 } from "react-icons/md";
-import { FaMoon, FaSun } from "react-icons/fa";
+import { FaCheckDouble, FaMoon, FaSun } from "react-icons/fa";
+import { FaBookOpenReader } from "react-icons/fa6";
 
 import SearchInput from "../SearchInput/SearchInput";
 import useAuth from "@/hooks/useAuth";
+import Tooltip from "../Tooltip/Tooltip";
 
 export default function Navbar() {
   const [navbar, setNavbar] = useState(false);
@@ -63,18 +66,37 @@ export default function Navbar() {
           >
             <ul className="flex gap-2 text-white">
               <li>
-                <button className=" px-3 py-3 bg-gray-800 text-gray-200 rounded-full flex justify-center items-center">
-                  <MdMenuBook size={20} />
-                </button>
+                <Tooltip text="Favoritos">
+                  <Link
+                    href="/favoritos"
+                    className="px-3 py-3 rounded-full text-white flex flex-row justify-center items-center gap-2"
+                    style={{ backgroundColor: "#FF407D" }}
+                  >
+                    <MdBook size={20} />
+                  </Link>
+                </Tooltip>
               </li>
               <li>
-                <Link
-                  href="/favoritos"
-                  className="px-3 py-3 rounded-full text-white flex flex-row justify-center items-center gap-2"
-                  style={{ backgroundColor: "#FF407D" }}
-                >
-                  <MdFavoriteBorder size={20} />
-                </Link>
+                <Tooltip text="Livros em progresso">
+                  <button
+                    style={{ backgroundColor: "#C24914" }}
+                    className=" px-3 py-3  text-gray-200 rounded-full flex justify-center items-center"
+                  >
+                    <MdMenuBook size={20} />
+                  </button>
+                </Tooltip>
+              </li>
+
+              <li>
+                <Tooltip text="Livros finalizados">
+                  <Link
+                    href="/favoritos"
+                    style={{ backgroundColor: "#468966" }}
+                    className="px-3 py-3 bg-gray-800 rounded-full text-white flex flex-row justify-center items-center gap-2"
+                  >
+                    <FaCheckDouble />
+                  </Link>
+                </Tooltip>
               </li>
               {isAuth ? (
                 <>

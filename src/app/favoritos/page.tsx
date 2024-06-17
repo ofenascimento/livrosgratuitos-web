@@ -42,13 +42,13 @@ function FavoritosPage() {
         <Navbar />
         <div className="flex items-center mt-2 justify-center">
           <div className="max-w-md w-full p-4 rounded-lg flex justify-center items-center flex-col gap-2">
-            <h2 className="text-4xl font-bold text-center mb-2 text-white">
+            <h2 className="text-4xl font-bold text-center m-0 text-white">
               Favorite seus livros
             </h2>
             <p className=" text-white text-center">
               Faça login ou crie uma conta para favoritar seus livros
             </p>
-            <Image src="/boss-ilustration.svg" width={300} height={50} alt="" />
+            <Image src="/favorites-ilustration.webp" className=" rounded-3xl mb-2" width={300} height={50} alt="" />
             <Link
               href="login"
               className="w-full bg-main-400 text-center text-white py-2 px-4 rounded-full font-medium"
