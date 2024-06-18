@@ -24,6 +24,7 @@ const config: Config = {
           600: "#6436ea",
           700: "#522ce1",
         },
+        sepia: "#faf2e7",
       },
       colors: {
         main: {
@@ -38,11 +39,14 @@ const config: Config = {
         dark: {
           background: "#1B2123",
         },
+        sepia: "#faf2e7",
       },
       fontFamily: {
         poppins: ["var(--font-poppins)"],
         inter: ["var(--font-inter)"],
         raleway: ["var(--font-raleway)"],
+        lora: ["var(--font-lora)"],
+        merriweather: ["var(--font-merriweather)", "serif"],
       },
       width: {
         "9/10": "90%",
