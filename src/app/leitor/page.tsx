@@ -108,7 +108,7 @@ export default function Leitor() {
   return (
     <div className={`relative min-h-screen font-${fontFamily}`}>
       <div
-        className="fixed inset-0"
+        className="fixed inset-0 min-h-screen"
         style={{
           zIndex: -1,
           backgroundColor:
@@ -120,6 +120,7 @@ export default function Leitor() {
         }}
       ></div>
       <div
+      className="relative min-h-screen"
         style={{
           padding: "20px",
           maxWidth: "800px",
@@ -211,7 +212,7 @@ export default function Leitor() {
               {paragraph}
             </div>
           ))}
-          <div className="h-80"></div>
+          <div className=" h-[700px]"></div>
         </div>
         <ModalReaderConfig
           isOpen={modalConfigIsOpen}
