@@ -53,7 +53,9 @@ export default function Leitor() {
         } catch (error) {
           console.error("Failed to fetch book content:", error);
         } finally {
-          setIsLoading(false);
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 600);
         }
       };
 
@@ -120,7 +122,7 @@ export default function Leitor() {
         }}
       ></div>
       <div
-      className="relative min-h-screen"
+        className="relative min-h-screen"
         style={{
           padding: "20px",
           maxWidth: "800px",
