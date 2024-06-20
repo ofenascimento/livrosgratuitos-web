@@ -1,9 +1,12 @@
 "use client";
 import BookList from "@/components/BookList/BookList";
+import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
+import useAuth from "@/hooks/useAuth";
 import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
+import useFetchBookAuth from "@/hooks/useFetchBookAuth";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -44,9 +47,7 @@ function Livros() {
           />
         </div>
         <div className="w-full md:w-[70%] lg:w-[80%] mt-4 md:mt-auto">
-          <h1 className="text-2xl font-bold text-white">
-            {book.titulo}
-          </h1>
+          <h1 className="text-2xl font-bold text-white">{book.titulo}</h1>
           <h3 className="my-2 text-white">{book.autor}</h3>
           <div className="flex gap-2">
             {book.categoria.map((item, index) => (
@@ -110,13 +111,11 @@ function Livros() {
             >
               Descubra
             </span>{" "}
-            novas histórias
+            novas histórias 🚀
           </>
         }
       />
-      <div className="lg:hidden h-24">
-
-      </div>
+      <Footer />
     </>
   );
 }

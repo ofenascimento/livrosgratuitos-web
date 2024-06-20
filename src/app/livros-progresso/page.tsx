@@ -40,10 +40,10 @@ function FavoritosPage() {
         <div className="flex items-center mt-2 justify-center">
           <div className="max-w-md w-full p-4 rounded-lg flex justify-center items-center flex-col gap-2">
             <h2 className="text-4xl font-bold text-center m-0 text-white">
-              Veja seus livros em progresso
+              Salve seu progresso
             </h2>
             <p className=" text-white text-center">
-              Faça login ou crie uma conta para ver seus livros em progresso
+              Faça login ou crie uma conta para salvar seu progresso de leitura
             </p>
             <Image
               src="/favorites-ilustration.webp"

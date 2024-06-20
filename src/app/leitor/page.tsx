@@ -144,7 +144,7 @@ export default function Leitor() {
             <div className="flex justify-between items-center flex-col gap-3">
               <div
                 id="buttons"
-                className="flex w-full justify-between items-center"
+                className="flex w-full justify-between items-center font-poppins"
               >
                 <button
                   onClick={() => router.back()}
@@ -164,7 +164,7 @@ export default function Leitor() {
                   onClick={() => setModalConfigIsOpen(true)}
                   className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
                 >
-                  <p className=" hidden lg:block"> Configuracoes</p>
+                  <p className=" hidden lg:block"> Configurações</p>
                   <HiDotsVertical />
                 </button>
               </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import LegalDetails from "../LegalDetails/LegalDetails";
 
 export default function Footer() {
   return (
@@ -24,7 +25,7 @@ export default function Footer() {
             </div>
             <div className="px-5 py-2">
               <a href="#" className="text-base leading-6 text-white ">
-                Termos e condicoes
+                Termos e Condições
               </a>
             </div>
           </nav>
@@ -75,6 +76,7 @@ export default function Footer() {
             © 2024 livrosgratuitos.com. Todos os direitos reservados.
           </p>
         </div>
+        <LegalDetails />
       </section>
     </>
   );

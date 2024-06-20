@@ -2,47 +2,56 @@
 import React, { useEffect, useState } from "react";
 import StorySliderSkeleton from "../Skeleton/StorySliderSkeleton";
 import Link from "next/link";
+import { url } from "inspector";
 
 export const categoriesMock = [
   {
     id: "1",
     title: "Fantasia",
     cover: "./images/categories/fantasia.png",
+    url: "Fantasia"
   },
   {
     id: "2",
     title: "Poesia",
     cover: "./images/categories/poesia.png",
+    url: "Poesia"
   },
   {
     id: "3",
     title: "Terror",
     cover: "./images/categories/terror.png",
+    url: "Terror"
   },
   {
     id: "4",
     title: "Filosofia",
     cover: "./images/categories/filosofia.webp",
+    url: "Filosofia"
   },
   {
     id: "5",
-    title: "Ficcao",
+    title: "Ficção",
     cover: "./images/categories/ficcao.png",
+    url: "Ficcao"
   },
   {
     id: "6",
     title: "Romance",
     cover: "./images/categories/romance.png",
+    url: "Romance"
   },
   {
     id: "7",
     title: "Política",
     cover: "./images/categories/politica.png",
+    url: "Politica"
   },
   {
     id: "8",
     title: "História",
     cover: "./images/categories/historia.png",
+    url: "Historia"
   },
 ];
 
@@ -74,7 +83,7 @@ const StorySlider = () => {
         {categoriesMock.map((item, index) => (
           <div key={index} className="flex-shrink-0 w-24">
             <Link
-              href={`/categoria?s=${item.title}`}
+              href={`/categoria?s=${item.url}`}
               className=" flex flex-col justify-center items-center"
             >
               <img

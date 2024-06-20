@@ -70,7 +70,6 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${inter.variable} ${raleway.variable} ${lora.variable} ${merriweather.variable}  font-raleway bg-black bg-blured `}
       >
-        <p>{pathname}</p>
         <ReaderConfigProvider>
           <BookProvider>
             <div className="min-h-screen flex items-center justify-center lg:bg-blured">

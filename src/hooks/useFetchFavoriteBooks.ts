@@ -24,7 +24,7 @@ const useFetchFavoriteBooks = (refreshKey = 0) => {
       const token = await localStorage.getItem("userToken");
       const userId = await getUserIdFromToken();
       const url = `${urlApi}/users/${userId}/favorite-books`;
-      console.log(url);
+      console.log(urlApi)
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -34,7 +34,6 @@ const useFetchFavoriteBooks = (refreshKey = 0) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data)
       setFavoriteBooks(data);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("An error occurred"));
@@ -45,7 +44,7 @@ const useFetchFavoriteBooks = (refreshKey = 0) => {
 
   useEffect(() => {
     fetchFavoriteBooks();
-  }, [refreshKey]);
+  }, []);
 
   return { favoriteBooks, isLoading, error };
 };

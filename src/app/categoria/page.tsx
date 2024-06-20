@@ -1,5 +1,7 @@
 "use client";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
+import BookList from "@/components/BookList/BookList";
+import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import useAuth from "@/hooks/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -21,6 +23,26 @@ function CategoriaPage() {
     <>
       <Navbar />
       <BookCatalog categoria={search} />
+      <br />
+      <BookList
+        options={{ q: "9", sort: "true" }}
+        label={
+          <>
+            <span
+              className="text-white"
+              style={{
+                textDecorationColor: "#7B66FF",
+                textDecorationThickness: "5px",
+                textDecorationLine: "underline",
+              }}
+            >
+              Recomendados
+            </span>{" "}
+            para você ❤️
+          </>
+        }
+      />
+      <Footer />
     </>
   );
 }

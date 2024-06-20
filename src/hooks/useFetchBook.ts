@@ -19,19 +19,17 @@ export const useFetchBook = (id: string) => {
   const [error, setError] = useState<Error | null>(null);
 
   const fetchBook = async () => {
+    console.log('sem auth')
     setIsLoading(true);
     try {
-      console.log(urlApi);
       const url =
         `${urlApi}/livros/public/${id}`;
-        console.log(url)
       const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`Http error: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
       setBook(data);
     } catch (error) {
       setError(

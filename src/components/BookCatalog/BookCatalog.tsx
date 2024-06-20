@@ -7,6 +7,8 @@ import Title from "../Title/Title";
 import Card from "../Card/Card";
 import { IBookCatalog } from "./types";
 import CardBookSkeleton from "../Skeleton/CardBookSkeleton";
+import Navbar from "../Navbar/Navbar";
+import Footer from "../Footer/Footer";
 
 function BookCatalog({ titulo, categoria }: IBookCatalog) {
   const { books, isLoading } = useFetchBooks({
@@ -32,6 +34,40 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
       });
     }
   }, [books, isLoading]);
+
+  if (books === null || books.length === 0) {
+    return (
+      <div>
+        <div className=" flex justify-center items-center w-full flex-col">
+          <Title
+            customClassName="items-start mt-4"
+            title={
+              <div className=" text-white">
+                Nenhum livro foi encontrado para:{" "}
+                <span
+                  className="text-white"
+                  style={{
+                    textDecorationColor: "#7B66FF",
+                    textDecorationThickness: "5px",
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  {titulo || categoria}
+                </span>
+              </div>
+            }
+          />
+          <Image
+            src="/no-book.webp"
+            className=" rounded-3xl mb-2"
+            width={300}
+            height={50}
+            alt=""
+          />
+        </div>
+      </div>
+    );
+  }
 
   if (!imagesLoaded || isLoading) {
     return (
@@ -68,7 +104,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
             </>
           }
         />
-        <div className="w-full  flex flex-wrap  gap-8 items-center ml-3 justify-start mt-2">
+        <div className="w-full  flex flex-wrap  gap-8 items-center ml-3 md:ml-0 justify-start mt-2">
           {books.map((item, index) => (
             <Card
               key={index}

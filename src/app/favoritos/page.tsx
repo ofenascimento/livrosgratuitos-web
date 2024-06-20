@@ -37,6 +37,10 @@ function FavoritosPage() {
     }
   }, [favoriteBooks, isLoading]);
 
+  if (isLoading) {
+    return <FullScreenLoader label="Carregando seus livros favoritos" />;
+  }
+
   if (!isAuth)
     return (
       <>
@@ -91,15 +95,11 @@ function FavoritosPage() {
             alt=""
           />
         </div>
-
         <Footer />
       </div>
     );
   }
 
-  if (isLoading || !favoriteBooks || !imagesLoaded) {
-    return <FullScreenLoader label="Carregando seus livros favoritos" />;
-  }
   return (
     <div>
       <Navbar />

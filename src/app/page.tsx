@@ -64,11 +64,10 @@ export default function Home() {
             >
               Descubra
             </span>{" "}
-            novas histórias
+            novas histórias 😍
           </>
         }
       />
-      <FAQ />
       <TabBar />
       <Footer />
     </>

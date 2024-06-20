@@ -25,7 +25,6 @@ const useFetchReadingList = () => {
       const token = await localStorage.getItem("userToken");
       const userId = await getUserIdFromToken();
       const url = `${urlApi}/users/${userId}/reading-list`;
-      console.log(url);
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -35,7 +34,6 @@ const useFetchReadingList = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
       setReadingList(data);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("An error occurred"));
