@@ -135,7 +135,6 @@ function FavoritosPage() {
         ))}
       </div>
       <Footer />
-      <TabBar />
     </div>
   );
 }

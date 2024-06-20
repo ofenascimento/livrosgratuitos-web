@@ -36,9 +36,6 @@ export default function Navbar() {
               />
             </a>
             <div className="md:hidden flex gap-2 justify-center items-center">
-              <button className=" px-3 py-3 bg-gray-800 text-gray-200 rounded-full">
-                <MdMenuBook size={20} />
-              </button>
               <div className="">
                 <Link href="mailto:contato@qr-code-pix.com.br">
                   <div className="flex gap-2 bg-main-400 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
@@ -102,7 +99,7 @@ export default function Navbar() {
               {isAuth ? (
                 <>
                   <li className="">
-                    <Link href="/criar-conta">
+                    <Link href="/">
                       <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
                         Minha conta
                         <MdPerson size={20} />
@@ -133,18 +130,18 @@ export default function Navbar() {
           </div>
           {/* Navbar Mobile */}
           <div
-            className={`flex-1 justify-self-center pb-3 mt-8 md:hidden md:pb-0 md:mt-0 ${
+            className={`flex-1 justify-self-center pb-3 mt-8 md:hidden md:pb-0 md:mt-0 h-screen ${
               navbar ? "block" : "hidden"
             }`}
           >
             <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white">
               <li className="">
-                <Link href="mailto:contato@qr-code-pix.com.br">Login</Link>
+                <Link href="/login">Login</Link>
               </li>
               <li className="">
-                <Link href="mailto:contato@qr-code-pix.com.br">
-                  <div className="flex gap-2 bg-main text-white font-medium rounded-full px-6 py-2 justify-center items-center">
-                    Minha conta
+                <Link href="/criar-conta">
+                  <div className=" bg-main text-white font-medium rounded-full">
+                    Criar conta
                   </div>
                 </Link>
               </li>

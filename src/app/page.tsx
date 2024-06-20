@@ -68,7 +68,6 @@ export default function Home() {
           </>
         }
       />
-      <TabBar />
       <Footer />
     </>
   );
