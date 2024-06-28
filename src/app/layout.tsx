@@ -59,6 +59,7 @@ export default function RootLayout({
           name="description"
           content={metadata.description ?? "Livros Gratuitos"}
         />
+        <meta name="google-site-verification" content="KOaKjo4TUKs2O2SdRxRs61dwmfSAe-f-4RvutfYlBnY" />
         <title>{String(metadata.title)}</title>
       </head>
 
