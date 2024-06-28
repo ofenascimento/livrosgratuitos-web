@@ -20,30 +20,12 @@ function CategoriaPage() {
   }, [search]);
 
   return (
-    <>
+    <div className="min-h-screen">
       <Navbar />
       <BookCatalog categoria={search} />
       <br />
-      <BookList
-        options={{ q: "9", sort: "true" }}
-        label={
-          <>
-            <span
-              className="text-white"
-              style={{
-                textDecorationColor: "#7B66FF",
-                textDecorationThickness: "5px",
-                textDecorationLine: "underline",
-              }}
-            >
-              Recomendados
-            </span>{" "}
-            para você ❤️
-          </>
-        }
-      />
       <Footer />
-    </>
+    </div>
   );
 }
 
