@@ -37,7 +37,7 @@ const config: Config = {
           700: "#522ce1",
         },
         dark: {
-          background: "#1B2123",
+          background: "#1C2939",
         },
         sepia: "#faf2e7",
       },

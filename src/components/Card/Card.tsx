@@ -2,7 +2,7 @@ import React from "react";
 import { ICard } from "./types";
 import Link from "next/link";
 
-const Card = (props: ICard) => {
+const Card = (props: ICard): React.ReactElement => {
   return (
     <Link href={`/livro?bookId=${props.id}`}>
       <div className="flex-shrink-0 bg-gray-700 w-40 shadow-lg flex flex-col justify-center items-center">

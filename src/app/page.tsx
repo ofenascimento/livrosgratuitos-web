@@ -7,6 +7,7 @@ import FAQ from "@/components/FAQ/FAQ";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
+import ImageSlider from "@/components/ImageSlider/ImageSlider";
 
 export default function Home() {
   return (
@@ -48,6 +49,7 @@ export default function Home() {
           </>
         }
       />
+      <ImageSlider auto />
       <BookList
         options={{ q: "9", sort: "true" }}
         label={

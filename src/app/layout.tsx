@@ -2,14 +2,10 @@
 import type { Metadata } from "next";
 import { Poppins, Inter, Raleway, Merriweather, Lora } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar/Navbar";
-import Footer from "@/components/Footer/Footer";
-import { ThemeProvider } from "@/context/ThemeContext";
 import { metadata } from "./metadata";
 import { BookProvider } from "@/context/BookContext";
 import { ReaderConfigProvider } from "@/context/ReaderConfiContext";
-import { usePathname } from "next/navigation";
-import { useReaderConfig } from "@/hooks/useReaderConfig";
+
 
 const poppins = Poppins({
   weight: ["400", "500", "700"],
@@ -56,7 +52,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
   return (
     <html lang="en">
       <head>
@@ -64,7 +59,7 @@ export default function RootLayout({
           name="description"
           content={metadata.description ?? "Livros Gratuitos"}
         />
-        <title>{String(metadata.title)}</title>{" "}
+        <title>{String(metadata.title)}</title>
       </head>
 
       <body

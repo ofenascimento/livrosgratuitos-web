@@ -1,0 +1,3 @@
+interface IImageSlider {
+    auto?: boolean;
+}
