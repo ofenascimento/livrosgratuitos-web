@@ -8,6 +8,7 @@ import BookCatalog from "@/components/BookCatalog/BookCatalog";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import ImageSlider from "@/components/ImageSlider/ImageSlider";
+import FeaturedBooks from "@/components/FeaturedBooks/FeaturedBooks";
 
 export default function Home() {
   return (
@@ -70,6 +71,7 @@ export default function Home() {
           </>
         }
       />
+      <FeaturedBooks />
       <Footer />
     </>
   );
