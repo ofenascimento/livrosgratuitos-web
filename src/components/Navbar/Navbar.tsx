@@ -37,7 +37,7 @@ export default function Navbar() {
             </a>
             <div className="md:hidden flex gap-2 justify-center items-center">
               <div className="">
-                <Link href="mailto:contato@qr-code-pix.com.br">
+                <Link href="/login">
                   <div className="flex gap-2 bg-main-400 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
                     Minha conta
                     <MdPerson size={20} />
