@@ -2,18 +2,6 @@ import { useState, useEffect } from "react";
 import { getUserIdFromToken } from "./getUserIdFromToken";
 import { urlApi } from "@/utils/url";
 
-interface IBook {
-  capa: string;
-  titulo: string;
-  autor: string;
-  txt: string;
-  pdf?: string;
-  epub?: string;
-  _id: string;
-  categoria: string[];
-  descricao: string;
-}
-
 const useFetchBookAuth = (bookId: string) => {
   const [book, setBook] = useState<IBook | null>(null);
   const [isLoading, setIsLoading] = useState(true);

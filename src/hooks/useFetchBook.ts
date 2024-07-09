@@ -1,18 +1,6 @@
 import { urlApi } from "@/utils/url";
 import { useEffect, useState } from "react";
 
-interface IBook {
-  capa: string;
-  titulo: string;
-  autor: string;
-  txt: string;
-  pdf?: string;
-  epub?: string;
-  _id: string;
-  categoria: string[]
-  descricao: string;
-}
-
 export const useFetchBook = (id: string) => {
   const [book, setBook] = useState<IBook | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);

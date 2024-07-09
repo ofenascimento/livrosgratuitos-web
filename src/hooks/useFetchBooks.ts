@@ -5,16 +5,6 @@ interface Params {
   [key: string]: string;
 }
 
-interface IBooks {
-    capa: string;
-    titulo: string;
-    autor: string;
-    txt: string;
-    pdf?: string;
-    epub?: string;
-    _id: string;
-}
-
 
 const useFetchBooks = (params: Params) => {
   const [books, setBooks] = useState<IBooks[]>([]);
