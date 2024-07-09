@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import useFetchBooks from "@/hooks/useFetchBooks";
 import Image from "next/image";
-import Link from "next/link";
 import Title from "../Title/Title";
 import Card from "../Card/Card";
 import { IBookCatalog } from "./types";
@@ -17,9 +16,14 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
   });
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [booksChecked, setBooksChecked] = useState(false);
 
   useEffect(() => {
-    if (books.length > 0 && !isLoading) {
+    if (!isLoading) {
+      setBooksChecked(true);
+    }
+
+    if (books && books.length > 0 && !isLoading) {
       const imagePromises = books.map((book) => {
         return new Promise((resolve) => {
           const img = new window.Image();
@@ -35,14 +39,26 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
     }
   }, [books, isLoading]);
 
-  if (books === null || books.length === 0) {
+  if (isLoading || !booksChecked || (books.length > 0 && !imagesLoaded)) {
+    return (
+      <div className="w-full flex justify-center items-center">
+        <div className="w-full flex flex-wrap justify-center gap-8 items-center mt-6">
+          {[...Array(12)].map((_, index) => (
+            <CardBookSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!books || books.length === 0) {
     return (
       <div>
-        <div className=" flex justify-center items-center w-full flex-col">
+        <div className="flex justify-center items-center w-full flex-col">
           <Title
             customClassName="items-start mt-4"
             title={
-              <div className=" text-white">
+              <div className="text-white">
                 Nenhum livro foi encontrado para:{" "}
                 <span
                   className="text-white"
@@ -59,23 +75,11 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
           />
           <Image
             src="/no-book.webp"
-            className=" rounded-3xl mb-2"
+            className="rounded-3xl mb-2"
             width={300}
             height={50}
             alt=""
           />
-        </div>
-      </div>
-    );
-  }
-
-  if (!imagesLoaded || isLoading) {
-    return (
-      <div className="w-full flex justify-center items-center">
-        <div className="w-full flex flex-wrap justify-center  gap-8 items-center mt-6">
-          {[...Array(12)].map((_, index) => (
-            <CardBookSkeleton key={index} />
-          ))}
         </div>
       </div>
     );
@@ -88,7 +92,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
           customClassName="items-start"
           title={
             <>
-              <div className=" text-white">
+              <div className="text-white">
                 Buscando por:{" "}
                 <span
                   className="text-white"
@@ -104,7 +108,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
             </>
           }
         />
-        <div className="w-full  flex flex-wrap  gap-8 items-center ml-3 md:ml-0 justify-start mt-2">
+        <div className="w-full flex flex-wrap gap-8 items-center ml-3 md:ml-0 justify-start mt-2">
           {books.map((item, index) => (
             <Card
               key={index}

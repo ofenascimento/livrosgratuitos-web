@@ -11,13 +11,20 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 function FavoritosPage() {
+  const [authLoading, setAuthLoading] = useState(true);
   const isAuth = useAuth();
 
   const { readingList, isLoading } = useFetchReadingList();
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
-    if (readingList.length > 0 && !isLoading) {
+    if (isAuth !== undefined) {
+      setAuthLoading(false);
+    }
+  }, [isAuth]);
+
+  useEffect(() => {
+    if (readingList && readingList.length > 0 && !isLoading) {
       const imagePromises = readingList.map((book) => {
         return new Promise((resolve) => {
           const img = new window.Image();
@@ -33,7 +40,11 @@ function FavoritosPage() {
     }
   }, [readingList, isLoading]);
 
-  if (!isAuth)
+  if (authLoading || isLoading || !imagesLoaded) {
+    return <FullScreenLoader label="Carregando seus livros em progresso" />;
+  }
+
+  if (!isAuth) {
     return (
       <>
         <Navbar />
@@ -42,12 +53,12 @@ function FavoritosPage() {
             <h2 className="text-4xl font-bold text-center m-0 text-white">
               Salve seu progresso
             </h2>
-            <p className=" text-white text-center">
+            <p className="text-white text-center">
               Faça login ou crie uma conta para salvar seu progresso de leitura
             </p>
             <Image
               src="/favorites-ilustration.webp"
-              className=" rounded-3xl mb-2"
+              className="rounded-3xl mb-2"
               width={300}
               height={50}
               alt=""
@@ -69,33 +80,30 @@ function FavoritosPage() {
         <Footer />
       </>
     );
+  }
 
-  if (readingList === null || readingList.length === 0) {
+  if (!readingList || readingList.length === 0) {
     return (
       <div>
         <Navbar />
-        <div className=" flex justify-center items-center w-full flex-col">
+        <div className="flex justify-center items-center w-full flex-col">
           <Title
             customClassName="items-start mt-4"
             title={<>Nenhum livro finalizado por enquanto</>}
           />
           <Image
             src="/no-book.webp"
-            className=" rounded-3xl mb-2"
+            className="rounded-3xl mb-2"
             width={300}
             height={50}
             alt=""
           />
         </div>
-
         <Footer />
       </div>
     );
   }
 
-  if (isLoading || !readingList || !imagesLoaded) {
-    return <FullScreenLoader label="Carregando seus livros em progresso" />;
-  }
   return (
     <div>
       <Navbar />
@@ -119,7 +127,7 @@ function FavoritosPage() {
           </>
         }
       />
-      <div className="w-full  flex flex-wrap  gap-8 items-center ml-3 justify-start mt-2">
+      <div className="w-full flex flex-wrap gap-8 items-center ml-3 justify-start mt-2">
         {readingList.map((item, index) => (
           <Card
             key={index}
