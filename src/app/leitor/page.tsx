@@ -55,7 +55,7 @@ export default function Leitor() {
         } finally {
           setTimeout(() => {
             setIsLoading(false);
-          }, 600);
+          }, 1200);
         }
       };
 
