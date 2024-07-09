@@ -60,6 +60,7 @@ export default function RootLayout({
           content={metadata.description ?? "Livros Gratuitos"}
         />
         <meta name="google-site-verification" content="KOaKjo4TUKs2O2SdRxRs61dwmfSAe-f-4RvutfYlBnY" />
+        <meta name="google-adsense-account" content="ca-pub-2529229033686497"></meta>
         <title>{String(metadata.title)}</title>
       </head>
 
