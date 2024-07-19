@@ -18,9 +18,11 @@ import { FaBookOpenReader } from "react-icons/fa6";
 import SearchInput from "../SearchInput/SearchInput";
 import useAuth from "@/hooks/useAuth";
 import Tooltip from "../Tooltip/Tooltip";
+import ModalLogin from "../Modals/ModalLogin/ModalLogin";
 
 export default function Navbar() {
   const [navbar, setNavbar] = useState(false);
+  const [isModalLoginOpen, setIsModalLoginOpen] = useState<boolean>(false);
   const isAuth = useAuth();
 
   return (
@@ -34,7 +36,9 @@ export default function Navbar() {
                 style={{ width: "auto", height: "50px" }}
                 alt=""
               />
+             
             </a>
+            <ModalLogin isOpen={isModalLoginOpen} onClose={() => setIsModalLoginOpen(false)} />
             <div className="md:hidden flex gap-2 justify-center items-center">
               <div className="">
                 <Link href="/login">
@@ -110,11 +114,11 @@ export default function Navbar() {
               ) : (
                 <>
                   <li className=" font-semibold ">
-                    <Link href="/login">
+                    <button onClick={() => setIsModalLoginOpen(true)}>
                       <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-white">
                         Entrar
                       </h1>
-                    </Link>
+                    </button>
                   </li>
                   <li className="">
                     <Link href="/criar-conta">

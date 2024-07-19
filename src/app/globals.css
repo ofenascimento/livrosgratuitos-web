@@ -47,3 +47,18 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+@layer components {
+  .slide-up-enter {
+    @apply transform translate-y-full;
+  }
+  .slide-up-enter-active {
+    @apply transform translate-y-0 transition duration-300;
+  }
+  .slide-up-leave {
+    @apply transform translate-y-0;
+  }
+  .slide-up-leave-active {
+    @apply transform translate-y-full transition duration-300;
+  }
+}

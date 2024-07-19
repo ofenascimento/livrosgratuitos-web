@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 
-const images = [{ src: './banner/banner-poesias.png?v=1', href: '/categoria?s=Poesia' },
-{ src: './banner/banner-doacao.png?v=1', href: '' },
-{ src: 'https://www.pix-qr-code.com/_next/image?url=%2Fbanner.png%3Fv%3D3&w=1920&q=75', href: 'https://pix-qr-code.com'}
+const images = [{ src: './banner/banner-criar-conta.png?v=1', href: '/categoria?s=Poesia' },
+{ src: './banner/banner-sherlock-2.png?v=1', href: '' },
+{ src: './banner/banner-historia.png', href: 'https://pix-qr-code.com'}
 ];
 
 
@@ -42,7 +42,7 @@ export default function ImageSlider({ auto = false }: IImageSlider) {
             <div className="flex transition-transform duration-500" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
                 {images.map((image, index) => (
                     <Link href={image.href} key={index} className="w-full flex-shrink-0 cursor-pointer">
-                        <img src={image.src} className="w-full object-cover rounded-sm" alt={`Slide ${index}`} />
+                        <img src={image.src} className="w-full object-cover rounded-lg" alt={`Slide ${index}`} />
                     </Link>
                 ))}
             </div>
@@ -56,7 +56,7 @@ export default function ImageSlider({ auto = false }: IImageSlider) {
                 {images.map((_, index) => (
                     <button
                         key={index}
-                        className={`w-3 h-3 rounded-full ${index === currentIndex ? 'bg-white' : 'bg-gray-400'}`}
+                        className={`w-3 h-3 rounded-full ${index === currentIndex ? 'bg-main-400 w-8' : 'bg-gray-600'}`}
                         onClick={() => goToSlide(index)}
                     ></button>
                 ))}

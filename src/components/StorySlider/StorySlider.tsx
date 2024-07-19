@@ -53,6 +53,12 @@ export const categoriesMock = [
     cover: "./images/categories/historia.png",
     url: "Historia"
   },
+  {
+    id: "9",
+    title: "Aventura",
+    cover: "./images/categories/aventura.webp",
+    url: "Aventura"
+  },
 ];
 
 const StorySlider = () => {
@@ -89,7 +95,7 @@ const StorySlider = () => {
               <img
                 src={item.cover}
                 alt={item.title}
-                className="h-24 w-24 object-cover rounded-full"
+                className="h-24 w-24 object-cover rounded-3xl"
               />
               <span className="block text-center font-medium text-white py-2">
                 {item.title}
