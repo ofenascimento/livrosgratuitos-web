@@ -16,12 +16,13 @@ function Livros() {
   const bookId = searchParams.get("bookId");
   const { book, isLoading } = useFetchBook(bookId ?? "");
   const [imageLoaded, setImageLoaded] = useState(false);
-  const { setTitle, setUrlBook } = useBook();
+  const { setTitle, setUrlBook, setBookId } = useBook();
 
   useEffect(() => {
     if (book && book.capa) {
       setTitle(book.titulo);
       setUrlBook(book.txt);
+      setBookId(book._id);
       const img = new Image();
       img.src = book.capa;
       img.onload = () => setImageLoaded(true);

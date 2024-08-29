@@ -7,6 +7,8 @@ interface BookContextType {
   setToParagraph: (paragraph: number) => void;
   title: string;
   setTitle: (title: string) => void;
+  bookId: string;
+  setBookId: (bookId: string) => void;
 }
 
 interface IBookProvider {
@@ -18,6 +20,7 @@ export const BookContext = createContext<BookContextType | undefined>(undefined)
 export const BookProvider = ({ children }: IBookProvider) => {
   const [urlBook, setUrlBook] = useState<string>("nobook");
   const [title, setTitle] = useState<string>("notitle");
+  const [bookId, setBookId] = useState<string>("");
   const [toParagraph, setToParagraph] = useState<number>(1);
 
   return (
@@ -29,6 +32,8 @@ export const BookProvider = ({ children }: IBookProvider) => {
         setToParagraph,
         title,
         setTitle,
+        bookId,
+        setBookId,
       }}
     >
       {children}

@@ -8,8 +8,12 @@ import Link from "next/link";
 import { useBook } from "@/hooks/useBook";
 import ModalReaderConfig from "@/components/Modals/ModalReaderConfig";
 import { useReaderConfig } from "@/hooks/useReaderConfig";
+import { addProgressBook } from "@/hooks/addProgressBook";
+import useAuth from "@/hooks/useAuth";
 
 export default function Leitor() {
+  const isAuth = useAuth();
+
   const { fontSize, background, fontFamily } = useReaderConfig();
   const [content, setContent] = useState("");
   const [paragraphCount, setParagraphCount] = useState(0);
@@ -20,7 +24,7 @@ export default function Leitor() {
   const searchParams = useSearchParams();
   const toParagraph = searchParams.get("p");
   const paragraphRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const { title, urlBook } = useBook();
+  const { title, urlBook, bookId } = useBook();
   const router = useRouter();
 
   useEffect(() => {
@@ -46,8 +50,6 @@ export default function Leitor() {
             const paragraphNum = Number(toParagraph);
             setParagraphNumber(paragraphNum);
             handleScrollToParagraph(paragraphNum);
-
-
           }
         } catch (error) {
           console.error("Failed to fetch book content:", error);
@@ -98,16 +100,52 @@ export default function Leitor() {
     };
   }, [handleScroll]);
 
-
   // Leva até o paragrafo atual
 
   useEffect(() => {
     if (!isLoading && toParagraph && paragraphRefs.current.length > 0) {
       const paragraphNum = Number(toParagraph);
       setParagraphNumber(paragraphNum);
-      handleScrollToParagraph(paragraphNum);
+
+      setTimeout(() => {
+        handleScrollToParagraph(paragraphNum);
+      }, 100);
     }
   }, [isLoading, toParagraph, paragraphRefs]);
+
+  // Salva progresso
+  useEffect(() => {
+    if (!isAuth) return;
+
+    const handleBeforeUnload = (event: any) => {
+      addProgressBook(
+        bookId,
+        0,
+        Math.round(readingPercentage) ?? 0,
+        currentParagraph
+      );
+
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    const handlePopState = () => {
+      addProgressBook(
+        bookId,
+        0,
+        Math.round(readingPercentage) ?? 0,
+        currentParagraph
+      );
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isAuth, bookId, currentParagraph]);
 
   if (!urlBook || isLoading)
     return <FullScreenLoader label="Carregando conteúdo" />;
@@ -127,8 +165,8 @@ export default function Leitor() {
             background === "dark"
               ? "#000000"
               : background === "sepia"
-                ? "#faf2e7"
-                : "#ffffff",
+              ? "#faf2e7"
+              : "#ffffff",
         }}
       ></div>
       <div
@@ -143,8 +181,8 @@ export default function Leitor() {
             background === "dark"
               ? "#000000"
               : background === "sepia"
-                ? "#faf2e7"
-                : "#ffffff",
+              ? "#faf2e7"
+              : "#ffffff",
         }}
       >
         <div>
@@ -160,11 +198,22 @@ export default function Leitor() {
                 className="flex w-full justify-between items-center font-poppins"
               >
                 <button
-                  onClick={() => router.back()}
+                  onClick={() => {
+                    addProgressBook(
+                      bookId,
+                      0,
+                      Math.round(readingPercentage) ?? 0,
+                      currentParagraph
+                    );
+                    router.back();
+                  }}
                   className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
                 >
                   <HiChevronLeft />
-                  <p className=" hidden lg:block font-lexend text-sm font-light" > Voltar</p>
+                  <p className=" hidden lg:block font-lexend text-sm font-light">
+                    {" "}
+                    Voltar
+                  </p>
                 </button>
                 <div className=" font-poppins flex flex-col justify-center items-center">
                   <h1 className=" font-darker text-xl font-medium">{title}</h1>
@@ -177,7 +226,10 @@ export default function Leitor() {
                   onClick={() => setModalConfigIsOpen(true)}
                   className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
                 >
-                  <p className=" hidden lg:block font-lexend text-sm font-light"> Configurações</p>
+                  <p className=" hidden lg:block font-lexend text-sm font-light">
+                    {" "}
+                    Configurações
+                  </p>
                   <HiDotsVertical />
                 </button>
               </div>
@@ -216,8 +268,8 @@ export default function Leitor() {
                   background === "dark"
                     ? "#000000"
                     : background === "sepia"
-                      ? "#faf2e7"
-                      : "#ffffff",
+                    ? "#faf2e7"
+                    : "#ffffff",
                 color: background === "dark" ? "#ffffff" : "#000000",
               }}
             >
