@@ -153,7 +153,7 @@ export default function Leitor() {
             <p>Parágrafo atual: {currentParagraph}</p>
             <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
           </div> */}
-          <div className=" mt-0  fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50">
+          <div className=" mt-0 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4">
             <div className="flex justify-between items-center flex-col gap-3">
               <div
                 id="buttons"
@@ -164,11 +164,11 @@ export default function Leitor() {
                   className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
                 >
                   <HiChevronLeft />
-                  <p className=" hidden lg:block"> Voltar</p>
+                  <p className=" hidden lg:block font-lexend text-sm font-light" > Voltar</p>
                 </button>
                 <div className=" font-poppins flex flex-col justify-center items-center">
-                  <h1>{title}</h1>
-                  <span className=" text-sm">{`Progresso: ${Math.round(
+                  <h1 className=" font-darker text-xl font-medium">{title}</h1>
+                  <span className=" text-sm font-lexend font-light">{`Progresso: ${Math.round(
                     readingPercentage
                   )}%`}</span>
                 </div>
@@ -177,7 +177,7 @@ export default function Leitor() {
                   onClick={() => setModalConfigIsOpen(true)}
                   className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
                 >
-                  <p className=" hidden lg:block"> Configurações</p>
+                  <p className=" hidden lg:block font-lexend text-sm font-light"> Configurações</p>
                   <HiDotsVertical />
                 </button>
               </div>

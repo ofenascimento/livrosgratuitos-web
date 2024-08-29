@@ -22,8 +22,8 @@ const ModalReaderConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
       className="fixed inset-0 flex items-center justify-center p-4"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50"
     >
-      <div className=" bg-gray-800 rounded-lg shadow-lg w-full max-w-md text-white">
-        <div className="flex justify-between items-center p-4 border-b-gray-100 border-b">
+      <div className=" bg-gray-800 rounded-lg shadow-lg w-full max-w-md text-white border-2 border-[#4a5568] font-lexend font-light">
+        <div className="flex justify-between items-center p-4 border-b-gray-500 border-b">
           <h2 className="text-lg font-semibold text-white">
             Configurações de leitura
           </h2>
