@@ -1,5 +1,6 @@
 import { urlApi } from "@/utils/url";
 import { useEffect, useState } from "react";
+import { getUserIdFromToken } from "./getUserIdFromToken";
 
 export const useFetchBook = (id: string) => {
   const [book, setBook] = useState<IBook | undefined>(undefined);
@@ -7,12 +8,16 @@ export const useFetchBook = (id: string) => {
   const [error, setError] = useState<Error | null>(null);
 
   const fetchBook = async () => {
-    console.log('sem auth')
     setIsLoading(true);
     try {
-      const url =
-        `${urlApi}/livros/public/${id}`;
-      const response = await fetch(url);
+      const token = await localStorage.getItem("userToken");
+      const userId = await getUserIdFromToken();
+      const url = token ? `${urlApi}/livros/${id}/${userId}` : `${urlApi}/livros/public/${id}`
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`Http error: ${response.status}`);

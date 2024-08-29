@@ -8,7 +8,6 @@ const useFetchBookAuth = (bookId: string) => {
   const [error, setError] = useState<Error | null>(null);
 
   const fetchBook = async () => {
-    console.log('com auth')
     setIsLoading(true);
     setError(null);
     try {

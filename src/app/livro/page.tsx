@@ -48,7 +48,7 @@ function Livros() {
         </div>
         <div className="w-full md:w-[70%] lg:w-[80%] mt-4 md:mt-auto">
           <h1 className="text-2xl font-bold text-white">{book.titulo}</h1>
-          <h3 className="my-2 text-white">{book.autor}</h3>
+          <h3 className="my-2 text-white font-lexend">{book.autor}</h3>
           <div className="flex gap-2">
             {book.categoria.map((item, index) => (
               <div
@@ -61,14 +61,14 @@ function Livros() {
           </div>
           <p className="mt-2 text-white font-lexend font-light">{book.descricao}</p>
           <div
-            className="flex-col gap-2 mt-2 w-full justify-center items-center hidden md:flex"
+            className="flex-col gap-2 mt-2 lg:mt-4 w-full justify-center items-center hidden md:flex"
             id="desktop-buttons"
           >
             <Link
               href={`/leitor`}
               className="w-full flex justify-center items-center"
             >
-              <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center">
+              <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-light">
                 Ler online
               </div>
             </Link>
