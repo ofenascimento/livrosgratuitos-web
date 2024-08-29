@@ -18,7 +18,7 @@ export default function SearchInput() {
           placeholder="Procure pelo título do livro"
           type="text"
           onKeyDown={handleKeyDown}
-          className=" bg-gray-700 w-full lg:w-[400px] outline-none focus:border-none focus:placeholder-transparent font-medium text-white"
+          className=" bg-gray-700 w-full lg:w-[400px] outline-none focus:border-none focus:placeholder-transparent font-light font-lexend text-white"
           onChange={(e) => setInputValue(e.target.value)}
         />
         <HiOutlineSearch

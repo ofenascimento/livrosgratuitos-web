@@ -59,7 +59,7 @@ function Livros() {
               </div>
             ))}
           </div>
-          <p className="mt-2 text-white">{book.descricao}</p>
+          <p className="mt-2 text-white font-lexend font-light">{book.descricao}</p>
           <div
             className="flex-col gap-2 mt-2 w-full justify-center items-center hidden md:flex"
             id="desktop-buttons"

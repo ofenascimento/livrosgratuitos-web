@@ -21,9 +21,9 @@ import Tooltip from "../Tooltip/Tooltip";
 import ModalLogin from "../Modals/ModalLogin/ModalLogin";
 
 export default function Navbar() {
+  const isAuth = useAuth();
   const [navbar, setNavbar] = useState(false);
   const [isModalLoginOpen, setIsModalLoginOpen] = useState<boolean>(false);
-  const isAuth = useAuth();
 
   return (
     <div className="w-full">

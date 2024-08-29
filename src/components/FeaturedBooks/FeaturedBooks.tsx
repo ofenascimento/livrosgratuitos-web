@@ -21,7 +21,7 @@ const FeaturedBooks: React.FC = () => {
                     textDecorationThickness: "5px",
                     textDecorationLine: "underline",
                 }}>Coleção Machado de Assis</h1>
-                <p className='mt-4 lg:mt-2 font-raleway'>Explorando Machado de Assis: Um mergulho nas obras icônicas do mestre da literatura brasileira. Descubra contos intrigantes como 'Dom Casmurro' e 'Memórias Póstumas de Brás Cubas', que desafiam convenções e exploram as complexidades da condição humana.</p>
+                <p className='mt-4 lg:mt-3 font-lexend font-light'>Explorando Machado de Assis: Um mergulho nas obras icônicas do mestre da literatura brasileira. Descubra contos intrigantes como 'Dom Casmurro' e 'Memórias Póstumas de Brás Cubas', que desafiam convenções e exploram as complexidades da condição humana.</p>
                 <div className='flex gap-2 py-5 overflow-x-auto scrollbar-hide'>
                     <Link href='/livro?bookId=65eeabf7822f5ccbb5d70831' className='cursor-pointer flex-shrink-0'>
                         <Image src='/featured-books/2.png' width={160} height={160} alt='' className='rounded-md' />

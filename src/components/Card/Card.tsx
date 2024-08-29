@@ -18,7 +18,7 @@ const Card = (props: ICard): React.ReactElement => {
               {props.titulo}
             </h1>
             {props.autor && (
-              <span className="text-sm text-white mt-1 text-center">
+              <span className="text-sm text-white mt-1 text-center font-lexend font-light">
                 {props.autor}
               </span>
             )}

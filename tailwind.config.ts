@@ -50,6 +50,8 @@ const config: Config = {
         raleway: ["var(--font-raleway)"],
         lora: ["var(--font-lora)"],
         merriweather: ["var(--font-merriweather)", "serif"],
+        lexend: ["var(--font-lexend)"],
+        darker: ["var(--font-darker-grotesque)"]
       },
       width: {
         "9/10": "90%",

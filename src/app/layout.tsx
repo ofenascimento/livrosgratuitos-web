@@ -1,6 +1,6 @@
 "use client";
 import type { Metadata } from "next";
-import { Poppins, Inter, Raleway, Merriweather, Lora } from "next/font/google";
+import { Poppins, Inter, Raleway, Merriweather, Lora, Lexend, Darker_Grotesque } from "next/font/google";
 import "./globals.css";
 import { metadata } from "./metadata";
 import { BookProvider } from "@/context/BookContext";
@@ -47,6 +47,22 @@ const lora = Lora({
   variable: "--font-lora",
 });
 
+const lexend = Lexend({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal"],
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-lexend",
+});
+
+const darkerGrotesque = Darker_Grotesque({
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal"],
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-darker-grotesque",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,7 +81,7 @@ export default function RootLayout({
       </head>
 
       <body
-        className={`${poppins.variable} ${inter.variable} ${raleway.variable} ${lora.variable} ${merriweather.variable}  font-raleway bg-black bg-blured `}
+        className={`${poppins.variable} ${inter.variable} ${raleway.variable} ${lora.variable} ${merriweather.variable} ${lexend.variable} ${darkerGrotesque.variable}  font-raleway bg-black bg-blured `}
       >
         <ReaderConfigProvider>
           <BookProvider>
