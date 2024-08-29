@@ -45,10 +45,9 @@ export default function Leitor() {
           if (toParagraph) {
             const paragraphNum = Number(toParagraph);
             setParagraphNumber(paragraphNum);
+            handleScrollToParagraph(paragraphNum);
 
-            setTimeout(() => {
-              handleScrollToParagraph(paragraphNum);
-            }, 100);
+
           }
         } catch (error) {
           console.error("Failed to fetch book content:", error);
@@ -99,6 +98,17 @@ export default function Leitor() {
     };
   }, [handleScroll]);
 
+
+  // Leva até o paragrafo atual
+
+  useEffect(() => {
+    if (!isLoading && toParagraph && paragraphRefs.current.length > 0) {
+      const paragraphNum = Number(toParagraph);
+      setParagraphNumber(paragraphNum);
+      handleScrollToParagraph(paragraphNum);
+    }
+  }, [isLoading, toParagraph, paragraphRefs]);
+
   if (!urlBook || isLoading)
     return <FullScreenLoader label="Carregando conteúdo" />;
 
@@ -117,8 +127,8 @@ export default function Leitor() {
             background === "dark"
               ? "#000000"
               : background === "sepia"
-              ? "#faf2e7"
-              : "#ffffff",
+                ? "#faf2e7"
+                : "#ffffff",
         }}
       ></div>
       <div
@@ -133,16 +143,16 @@ export default function Leitor() {
             background === "dark"
               ? "#000000"
               : background === "sepia"
-              ? "#faf2e7"
-              : "#ffffff",
+                ? "#faf2e7"
+                : "#ffffff",
         }}
       >
         <div>
           {/* <div className="fixed bottom-0 right-0 bg-orange-400 p-8">
-          <p>Número de parágrafos: {paragraphCount}</p>
-          <p>Parágrafo atual: {currentParagraph}</p>
-          <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
-        </div> */}
+            <p>Número de parágrafos: {paragraphCount}</p>
+            <p>Parágrafo atual: {currentParagraph}</p>
+            <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
+          </div> */}
           <div className=" mt-0  fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50">
             <div className="flex justify-between items-center flex-col gap-3">
               <div
@@ -206,8 +216,8 @@ export default function Leitor() {
                   background === "dark"
                     ? "#000000"
                     : background === "sepia"
-                    ? "#faf2e7"
-                    : "#ffffff",
+                      ? "#faf2e7"
+                      : "#ffffff",
                 color: background === "dark" ? "#ffffff" : "#000000",
               }}
             >
