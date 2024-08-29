@@ -9,6 +9,7 @@ declare global {
       _id: string;
       categoria: string[];
       descricao: string;
+      currentParagraph?: number;
     }
     interface IBooks {
         capa: string;
