@@ -36,24 +36,48 @@ export default function Navbar() {
                 style={{ width: "auto", height: "50px" }}
                 alt=""
               />
-             
+
             </a>
             <ModalLogin isOpen={isModalLoginOpen} onClose={() => setIsModalLoginOpen(false)} />
             <div className="md:hidden flex gap-2 justify-center items-center">
-              <div className="">
-                <Link href="/login">
-                  <div className="flex gap-2 bg-main-400 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                    Minha conta
-                    <MdPerson size={20} />
+              <div>
+                {isAuth ? (
+                  <>
+                    <li className="">
+                      <Link href="/">
+                        <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                          Minha conta
+                          <MdPerson size={20} />
+                        </div>
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <div className=" flex justify-center items-center gap-2">
+
+                    <button onClick={() => setIsModalLoginOpen(true)}>
+                      <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-white font-semibold">
+                        Entrar
+                      </h1>
+                    </button>
+
+
+                    <Link href="/criar-conta">
+                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                        Criar conta
+                        <MdPerson size={20} />
+                      </div>
+                    </Link>
+
                   </div>
-                </Link>
+                )}
               </div>
-              <button
+              {/* <button
                 className="p-2 text-white rounded-md outline-none focus:border-gray-400 focus:border"
                 onClick={() => setNavbar(!navbar)}
               >
                 {navbar ? <MdClose size={28} /> : <MdMenu size={28} />}
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -134,21 +158,45 @@ export default function Navbar() {
           </div>
           {/* Navbar Mobile */}
           <div
-            className={`flex-1 justify-self-center pb-3 mt-8 md:hidden md:pb-0 md:mt-0 h-screen ${
-              navbar ? "block" : "hidden"
-            }`}
+            className={`flex-1 justify-self-center pb-3 mt-8 md:hidden md:pb-0 md:mt-0 h-screen ${navbar ? "block" : "hidden"
+              }`}
           >
             <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white">
               <li className="">
                 <Link href="/login">Login</Link>
               </li>
-              <li className="">
-                <Link href="/criar-conta">
-                  <div className=" bg-main text-white font-medium rounded-full">
-                    Criar conta
-                  </div>
-                </Link>
-              </li>
+              <>
+                {isAuth ? (
+                  <>
+                    <li className="">
+                      <Link href="/">
+                        <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                          Minha conta
+                          <MdPerson size={20} />
+                        </div>
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className=" font-semibold ">
+                      <button onClick={() => setIsModalLoginOpen(true)}>
+                        <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-white">
+                          Entrar
+                        </h1>
+                      </button>
+                    </li>
+                    <li className="">
+                      <Link href="/criar-conta">
+                        <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                          Criar conta
+                          <MdPerson size={20} />
+                        </div>
+                      </Link>
+                    </li>
+                  </>
+                )}
+              </>
             </ul>
           </div>
         </div>
