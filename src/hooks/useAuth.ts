@@ -1,16 +1,13 @@
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const useAuth = () => {
-  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [isAuth, setIsAuth] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
-    const checkToken = () => {
-      const token = localStorage.getItem("userToken");
-      if (token) {
-        setIsAuth(true);
-      } else {
-        setIsAuth(false);
+    const checkToken = async () => {
+      if (typeof window !== "undefined") {
+        const token = await localStorage.getItem("userToken");
+        setIsAuth(token !== null);
       }
     };
     checkToken();

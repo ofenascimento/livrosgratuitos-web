@@ -43,14 +43,14 @@ export default function Navbar() {
               <div>
                 {isAuth ? (
                   <>
-                    <li className="">
-                      <Link href="/">
+                    
+                      <Link href="/minha-conta">
                         <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
                           Minha conta
                           <MdPerson size={20} />
                         </div>
                       </Link>
-                    </li>
+                   
                   </>
                 ) : (
                   <div className=" flex justify-center items-center gap-2">
@@ -127,7 +127,7 @@ export default function Navbar() {
               {isAuth ? (
                 <>
                   <li className="">
-                    <Link href="/">
+                    <Link href="/minha-conta">
                       <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
                         Minha conta
                         <MdPerson size={20} />
@@ -168,14 +168,12 @@ export default function Navbar() {
               <>
                 {isAuth ? (
                   <>
-                    <li className="">
-                      <Link href="/">
-                        <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                          Minha conta
-                          <MdPerson size={20} />
-                        </div>
-                      </Link>
-                    </li>
+                    <Link href="/minha-conta">
+                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                        Minha conta
+                        <MdPerson size={20} />
+                      </div>
+                    </Link>
                   </>
                 ) : (
                   <>
