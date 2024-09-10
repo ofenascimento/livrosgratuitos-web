@@ -42,40 +42,37 @@ const ModalReaderConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
               </div>
               <div className=" flex gap-3 mt-2 flex-wrap">
                 <button
-                  className={`py-2 px-4 rounded-full border-2 font-lora  ${
-                    fontFamily === "lora" ? " border-main-400" : " border-sepia"
-                  }`}
+                  className={`py-2 px-4 rounded-full border-2 font-merriweather  ${fontFamily === "merriweather"
+                      ? " border-main-400"
+                      : " border-sepia"
+                    }`}
+                  onClick={() => setFontFamily("merriweather")}
+                >
+                  Merriweather
+                </button>
+                <button
+                  className={`py-2 px-4 rounded-full border-2 font-lora  ${fontFamily === "lora" ? " border-main-400" : " border-sepia"
+                    }`}
                   onClick={() => setFontFamily("lora")}
                 >
                   Lora
                 </button>
                 <button
-                  className={`py-2 px-4 rounded-full border-2  ${
-                    fontFamily === "raleway"
+                  className={`py-2 px-4 rounded-full border-2  ${fontFamily === "raleway"
                       ? " border-main-400"
                       : " border-sepia"
-                  }`}
+                    }`}
                   onClick={() => setFontFamily("raleway")}
                 >
                   Raleway
                 </button>
-                <button
-                  className={`py-2 px-4 rounded-full border-2 font-merriweather  ${
-                    fontFamily === "merriweather"
-                      ? " border-main-400"
-                      : " border-sepia"
-                  }`}
-                  onClick={() => setFontFamily("merriweather")}
-                >
-                  Merriweather
-                </button>
+
 
                 <button
-                  className={`py-2 px-4 rounded-full border-2 font-poppins  ${
-                    fontFamily === "poppins"
+                  className={`py-2 px-4 rounded-full border-2 font-poppins  ${fontFamily === "poppins"
                       ? " border-main-400"
                       : " border-sepia"
-                  }`}
+                    }`}
                   onClick={() => setFontFamily("poppins")}
                 >
                   Poppins
@@ -92,27 +89,24 @@ const ModalReaderConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
               <div className=" flex gap-2 mt-2">
                 <button
                   onClick={() => setBackground("sepia")}
-                  className={`p-6 rounded-full border-2  ${
-                    background === "sepia"
+                  className={`p-6 rounded-full border-2  ${background === "sepia"
                       ? " border-main-400"
                       : " border-sepia"
-                  }`}
+                    }`}
                   style={{ backgroundColor: "#faf2e7" }}
                 ></button>
                 <button
                   onClick={() => setBackground("dark")}
-                  className={`p-6 rounded-full  border-2 ${
-                    background === "dark" ? " border-main-400" : " border-black"
-                  }`}
+                  className={`p-6 rounded-full  border-2 ${background === "dark" ? " border-main-400" : " border-black"
+                    }`}
                   style={{ backgroundColor: "#000000" }}
                 ></button>
                 <button
                   onClick={() => setBackground("light")}
-                  className={`p-6 rounded-full border-2 ${
-                    background === "light"
+                  className={`p-6 rounded-full border-2 ${background === "light"
                       ? " border-main-400"
                       : " border-white"
-                  }`}
+                    }`}
                   style={{ backgroundColor: "#ffffff" }}
                 ></button>
               </div>
@@ -124,36 +118,32 @@ const ModalReaderConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
 
               <div className=" flex gap-4 mt-2">
                 <button
-                  className={`p-2 px-4 border-2 rounded-lg ${
-                    fontSize === 16 ? "border-main-400" : "border-white"
-                  }`}
+                  className={`p-2 px-4 border-2 rounded-lg ${fontSize === 16 ? "border-main-400" : "border-white"
+                    }`}
                   style={{ fontSize: 16 }}
                   onClick={() => setFontSize(16)}
                 >
                   Tt
                 </button>
                 <button
-                  className={`p-2 px-4 border-2 rounded-lg ${
-                    fontSize === 18 ? "border-main-400" : "border-white"
-                  }`}
+                  className={`p-2 px-4 border-2 rounded-lg ${fontSize === 18 ? "border-main-400" : "border-white"
+                    }`}
                   style={{ fontSize: 18 }}
                   onClick={() => setFontSize(18)}
                 >
                   Tt
                 </button>
                 <button
-                  className={`p-2 px-4 border-2 rounded-lg ${
-                    fontSize === 20 ? "border-main-400" : "border-white"
-                  }`}
+                  className={`p-2 px-4 border-2 rounded-lg ${fontSize === 20 ? "border-main-400" : "border-white"
+                    }`}
                   style={{ fontSize: 20 }}
                   onClick={() => setFontSize(20)}
                 >
                   Tt
                 </button>
                 <button
-                  className={`p-2 px-4 border-2 rounded-lg ${
-                    fontSize === 24 ? "border-main-400" : "border-white"
-                  }`}
+                  className={`p-2 px-4 border-2 rounded-lg ${fontSize === 24 ? "border-main-400" : "border-white"
+                    }`}
                   style={{ fontSize: 24 }}
                   onClick={() => setFontSize(24)}
                 >

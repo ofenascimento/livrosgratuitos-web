@@ -18,7 +18,7 @@ export const ReaderConfigContext = createContext<ReaderConfigType | undefined>(
 );
 
 export function ReaderConfigProvider({ children }: IReaderConfigProvider) {
-  const [fontFamily, setFontFamily] = useState<string>("lora");
+  const [fontFamily, setFontFamily] = useState<string>("merriweather");
   const [background, setBackground] = useState<string>("sepia");
   const [fontSize, setFontSize] = useState<number>(20);
   return (
