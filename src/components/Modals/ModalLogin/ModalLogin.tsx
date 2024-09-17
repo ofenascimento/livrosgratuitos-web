@@ -5,6 +5,8 @@ import styles from "./styles.module.scss";
 
 import { urlApi } from "@/utils/url";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/Loader/Loader";
+import SpinnerLoader from "@/components/Loader/Spinner";
 
 interface IModalLogin {
   isOpen: boolean;
@@ -16,7 +18,7 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   // useEffect(() => {
   //     const checkToken = async () => {
@@ -42,6 +44,7 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(`${urlApi}/users/login`, {
         method: "POST",
         headers: {
@@ -59,6 +62,9 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
       }
     } catch (error) {
       console.error(error);
+    }
+    finally {
+      setIsLoading(false)
     }
   };
 
@@ -91,7 +97,8 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           onClick={handleLogin}
           className="mt-4 bg-main-400 rounded-lg text-white px-4 py-2 mx-2 font-base font-semibold lg:font-medium font-poppins"
         >
-          Entrar
+          {isLoading ? <><SpinnerLoader /></> : 'Entrar'}
+
         </button>
         <div className="mt-6 px-4">
           <p className="text-xs text-center border-b-2 border-b-gray-600 pb-4 font-poppins font-light">
