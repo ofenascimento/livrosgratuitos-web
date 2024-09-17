@@ -88,7 +88,7 @@ function Livros() {
         id="fixed-mobile-buttons"
       >
         <Link
-          href={`/leitor?urlContent=${encodeURIComponent(book.txt)}`}
+           href={`/leitor${book.currentParagraph ? `?p=${book.currentParagraph}` : ''}`}
           className="w-full flex justify-center items-center"
         >
           <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center text-white">
