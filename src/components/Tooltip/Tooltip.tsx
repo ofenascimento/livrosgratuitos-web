@@ -13,8 +13,8 @@ const Tooltip = ({ children, text }: ITooltip) => {
       onMouseLeave={() => setVisible(false)}
     >
       {children}
-      {visible && <div className={styles.tooltip}>{text}</div>}
-    </div>
+      {visible && <div className={`${styles.tooltip} font-lexend font-light`}>{text}</div>}
+      </div>
   );
 };
 
