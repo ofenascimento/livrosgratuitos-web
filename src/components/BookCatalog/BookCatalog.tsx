@@ -108,7 +108,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
             </>
           }
         />
-        <div className="w-full flex flex-wrap gap-8 items-center ml-3 md:ml-0 justify-start mt-2">
+        <div className="w-full flex flex-wrap gap-4 items-center justify-center mt-2">
           {books.map((item, index) => (
             <Card
               key={index}
