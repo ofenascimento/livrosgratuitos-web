@@ -19,11 +19,14 @@ import SearchInput from "../SearchInput/SearchInput";
 import useAuth from "@/hooks/useAuth";
 import Tooltip from "../Tooltip/Tooltip";
 import ModalLogin from "../Modals/ModalLogin/ModalLogin";
+import ModalCreateAccount from "../Modals/ModalCreateAccount/ModalCreateAccount";
 
 export default function Navbar() {
   const isAuth = useAuth();
   const [navbar, setNavbar] = useState(false);
   const [isModalLoginOpen, setIsModalLoginOpen] = useState<boolean>(false);
+  const [isModalCreateAccountOpen, setIsModalCreateAccountOpen] = useState<boolean>(false);
+
 
   return (
     <div className="w-full">
@@ -39,18 +42,19 @@ export default function Navbar() {
 
             </a>
             <ModalLogin isOpen={isModalLoginOpen} onClose={() => setIsModalLoginOpen(false)} />
+            <ModalCreateAccount isOpen={isModalCreateAccountOpen} onClose={() => setIsModalCreateAccountOpen(false)}/>
             <div className="md:hidden flex gap-2 justify-center items-center">
               <div>
                 {isAuth ? (
                   <>
-                    
-                      <Link href="/minha-conta">
-                        <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                          Minha conta
-                          <MdPerson size={20} />
-                        </div>
-                      </Link>
-                   
+
+                    <Link href="/minha-conta">
+                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                        Minha conta
+                        <MdPerson size={20} />
+                      </div>
+                    </Link>
+
                   </>
                 ) : (
                   <div className=" flex justify-center items-center gap-2">
@@ -62,12 +66,12 @@ export default function Navbar() {
                     </button>
 
 
-                    <Link href="/criar-conta">
+                    <button onClick={() => setIsModalCreateAccountOpen(true)}>
                       <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
                         Criar conta
                         <MdPerson size={20} />
                       </div>
-                    </Link>
+                    </button>
 
                   </div>
                 )}
@@ -145,12 +149,12 @@ export default function Navbar() {
                     </button>
                   </li>
                   <li className="">
-                    <Link href="/criar-conta">
+                    <button onClick={() => setIsModalCreateAccountOpen(true)}>
                       <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
                         Criar conta
                         <MdPerson size={20} />
                       </div>
-                    </Link>
+                    </button>
                   </li>
                 </>
               )}
