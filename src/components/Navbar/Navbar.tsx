@@ -25,8 +25,8 @@ export default function Navbar() {
   const isAuth = useAuth();
   const [navbar, setNavbar] = useState(false);
   const [isModalLoginOpen, setIsModalLoginOpen] = useState<boolean>(false);
-  const [isModalCreateAccountOpen, setIsModalCreateAccountOpen] = useState<boolean>(false);
-
+  const [isModalCreateAccountOpen, setIsModalCreateAccountOpen] =
+    useState<boolean>(false);
 
   return (
     <div className="w-full">
@@ -39,32 +39,56 @@ export default function Navbar() {
                 style={{ width: "auto", height: "50px" }}
                 alt=""
               />
-
             </a>
-            <ModalLogin isOpen={isModalLoginOpen} onClose={() => setIsModalLoginOpen(false)} />
-            <ModalCreateAccount isOpen={isModalCreateAccountOpen} onClose={() => setIsModalCreateAccountOpen(false)}/>
+            <ModalLogin
+              isOpen={isModalLoginOpen}
+              onClose={() => setIsModalLoginOpen(false)}
+            />
+            <ModalCreateAccount
+              isOpen={isModalCreateAccountOpen}
+              onClose={() => setIsModalCreateAccountOpen(false)}
+            />
             <div className="md:hidden flex gap-2 justify-center items-center">
               <div>
                 {isAuth ? (
-                  <>
+                  <div className=" flex justify-center items-center gap-2">
+                    <Link
+                      href="/favoritos"
+                      className="px-3 py-3 rounded-full text-white flex flex-row justify-center items-center gap-2"
+                      style={{ backgroundColor: "#FF407D" }}
+                    >
+                      <MdBook size={20} />
+                    </Link>
+
+                    <Link
+                      href="/livros-progresso"
+                      style={{ backgroundColor: "#C24914" }}
+                      className=" px-3 py-3  text-gray-200 rounded-full flex justify-center items-center"
+                    >
+                      <MdMenuBook size={20} />
+                    </Link>
+
+                    <Link
+                      href="/livros-finalizados"
+                      style={{ backgroundColor: "#468966" }}
+                      className="px-3 py-3 bg-gray-800 rounded-full text-white flex flex-row justify-center items-center gap-2"
+                    >
+                      <FaCheckDouble />
+                    </Link>
 
                     <Link href="/minha-conta">
-                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                        Minha conta
+                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-3 py-3 justify-center items-center">
                         <MdPerson size={20} />
                       </div>
                     </Link>
-
-                  </>
+                  </div>
                 ) : (
                   <div className=" flex justify-center items-center gap-2">
-
                     <button onClick={() => setIsModalLoginOpen(true)}>
                       <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-white font-semibold">
                         Entrar
                       </h1>
                     </button>
-
 
                     <button onClick={() => setIsModalCreateAccountOpen(true)}>
                       <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
@@ -72,7 +96,6 @@ export default function Navbar() {
                         <MdPerson size={20} />
                       </div>
                     </button>
-
                   </div>
                 )}
               </div>
@@ -162,8 +185,9 @@ export default function Navbar() {
           </div>
           {/* Navbar Mobile */}
           <div
-            className={`flex-1 justify-self-center pb-3 mt-8 md:hidden md:pb-0 md:mt-0 h-screen ${navbar ? "block" : "hidden"
-              }`}
+            className={`flex-1 justify-self-center pb-3 mt-8 md:hidden md:pb-0 md:mt-0 h-screen ${
+              navbar ? "block" : "hidden"
+            }`}
           >
             <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white">
               <li className="">
