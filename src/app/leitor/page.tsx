@@ -21,6 +21,8 @@ export default function Leitor() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [paragraphNumber, setParagraphNumber] = useState<number>(1);
   const [currentParagraph, setCurrentParagraph] = useState<number>(1);
+  const [isProgressLoadingVisible, setIsProgressLoadingVisible] =
+    useState(false);
   const searchParams = useSearchParams();
   const toParagraph = searchParams.get("p");
   const paragraphRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -65,11 +67,17 @@ export default function Leitor() {
   }, [urlBook, toParagraph]);
 
   const handleScrollToParagraph = (paragraphNum: number) => {
+    setIsProgressLoadingVisible(true);
+
     const paragraphIndex = paragraphNum - 1;
     if (paragraphRefs.current[paragraphIndex]) {
       paragraphRefs.current[paragraphIndex]?.scrollIntoView({
         behavior: "smooth",
       });
+
+      setTimeout(() => {
+        setIsProgressLoadingVisible(false);
+      }, 1000); 
     } else {
       console.warn(`Paragraph ${paragraphNum} not found.`);
     }
@@ -156,133 +164,140 @@ export default function Leitor() {
 
   if (urlBook === "nobook") return null;
   return (
-    <div className={`relative min-h-screen font-${fontFamily}`}>
-      <div
-        className="fixed inset-0 min-h-screen"
-        style={{
-          zIndex: -1,
-          backgroundColor:
-            background === "dark"
-              ? "#000000"
-              : background === "sepia"
-              ? "#faf2e7"
-              : "#ffffff",
-        }}
-      ></div>
-      <div
-        className="relative min-h-screen"
-        style={{
-          padding: "20px",
-          maxWidth: "800px",
-          margin: "0 auto",
-          lineHeight: "1.6",
-          color: "#fff",
-          backgroundColor:
-            background === "dark"
-              ? "#000000"
-              : background === "sepia"
-              ? "#faf2e7"
-              : "#ffffff",
-        }}
-      >
-        <div>
-          {/* <div className="fixed bottom-0 right-0 bg-orange-400 p-8">
+    <>
+      {isProgressLoadingVisible && (
+        <FullScreenLoader label="Carregando seu progresso atual" />
+      )}
+      <div className={`relative min-h-screen font-${fontFamily}`}>
+        <div
+          className="fixed inset-0 min-h-screen"
+          style={{
+            zIndex: -1,
+            backgroundColor:
+              background === "dark"
+                ? "#000000"
+                : background === "sepia"
+                ? "#faf2e7"
+                : "#ffffff",
+          }}
+        ></div>
+        <div
+          className="relative min-h-screen"
+          style={{
+            padding: "20px",
+            maxWidth: "800px",
+            margin: "0 auto",
+            lineHeight: "1.6",
+            color: "#fff",
+            backgroundColor:
+              background === "dark"
+                ? "#000000"
+                : background === "sepia"
+                ? "#faf2e7"
+                : "#ffffff",
+          }}
+        >
+          <div>
+            {/* <div className="fixed bottom-0 right-0 bg-orange-400 p-8">
             <p>Número de parágrafos: {paragraphCount}</p>
             <p>Parágrafo atual: {currentParagraph}</p>
             <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
           </div> */}
-          <div className=" mt-0 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4">
-            <div className="flex justify-between items-center flex-col gap-3">
-              <div
-                id="buttons"
-                className="flex w-full justify-between items-center font-poppins"
-              >
-                <button
-                  onClick={() => {
-                    addProgressBook(
-                      bookId,
-                      0,
-                      Math.round(readingPercentage) ?? 0,
-                      currentParagraph
-                    );
-                    router.back();
-                  }}
-                  className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
+            <div className=" mt-0 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4">
+              <div className="flex justify-between items-center flex-col gap-3">
+                <div
+                  id="buttons"
+                  className="flex w-full justify-between items-center font-poppins"
                 >
-                  <HiChevronLeft />
-                  <p className=" hidden lg:block font-lexend text-sm font-light">
-                    {" "}
-                    Voltar
-                  </p>
-                </button>
-                <div className=" font-poppins flex flex-col justify-center items-center">
-                  <h1 className=" font-darker text-xl font-medium">{title}</h1>
-                  <span className=" text-sm font-lexend font-light">{`Progresso: ${Math.round(
-                    readingPercentage
-                  )}%`}</span>
-                </div>
+                  <button
+                    onClick={() => {
+                      addProgressBook(
+                        bookId,
+                        0,
+                        Math.round(readingPercentage) ?? 0,
+                        currentParagraph
+                      );
+                      router.back();
+                    }}
+                    className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
+                  >
+                    <HiChevronLeft />
+                    <p className=" hidden lg:block font-lexend text-sm font-light">
+                      {" "}
+                      Voltar
+                    </p>
+                  </button>
+                  <div className=" font-poppins flex flex-col justify-center items-center">
+                    <h1 className=" font-darker text-xl font-medium">
+                      {title}
+                    </h1>
+                    <span className=" text-sm font-lexend font-light">{`Progresso: ${Math.round(
+                      readingPercentage
+                    )}%`}</span>
+                  </div>
 
-                <button
-                  onClick={() => setModalConfigIsOpen(true)}
-                  className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+                  <button
+                    onClick={() => setModalConfigIsOpen(true)}
+                    className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+                  >
+                    <p className=" hidden lg:block font-lexend text-sm font-light">
+                      {" "}
+                      Configurações
+                    </p>
+                    <HiDotsVertical />
+                  </button>
+                </div>
+                <div
+                  className="progress-bar-container w-full"
+                  style={{
+                    backgroundColor: "#ddd",
+                    borderRadius: "4px",
+                    overflow: "hidden",
+                  }}
                 >
-                  <p className=" hidden lg:block font-lexend text-sm font-light">
-                    {" "}
-                    Configurações
-                  </p>
-                  <HiDotsVertical />
-                </button>
+                  <div
+                    className="progress-bar bg-main-400"
+                    style={{
+                      width: `${readingPercentage}%`,
+                      height: "10px",
+                    }}
+                  />
+                </div>
               </div>
+            </div>
+            <div className="h-24"></div>
+            {paragraphs.map((paragraph, index) => (
               <div
-                className="progress-bar-container w-full"
+                key={index}
+                id={`paragraph-${index + 1}`}
+                ref={(el) => {
+                  paragraphRefs.current[index] = el;
+                }}
                 style={{
-                  backgroundColor: "#ddd",
-                  borderRadius: "4px",
-                  overflow: "hidden",
+                  whiteSpace: "pre-wrap",
+                  wordWrap: "break-word",
+                  marginBottom: "1em",
+                  fontSize: fontSize,
+                  backgroundColor:
+                    background === "dark"
+                      ? "#000000"
+                      : background === "sepia"
+                      ? "#faf2e7"
+                      : "#ffffff",
+                  color: background === "dark" ? "#ffffff" : "#000000",
                 }}
               >
-                <div
-                  className="progress-bar bg-main-400"
-                  style={{
-                    width: `${readingPercentage}%`,
-                    height: "10px",
-                  }}
-                />
+                {paragraph}
               </div>
-            </div>
+            ))}
+            <div className=" h-[700px]"></div>
           </div>
-          <div className="h-24"></div>
-          {paragraphs.map((paragraph, index) => (
-            <div
-              key={index}
-              id={`paragraph-${index + 1}`}
-              ref={(el) => {
-                paragraphRefs.current[index] = el;
-              }}
-              style={{
-                whiteSpace: "pre-wrap",
-                wordWrap: "break-word",
-                marginBottom: "1em",
-                fontSize: fontSize,
-                backgroundColor:
-                  background === "dark"
-                    ? "#000000"
-                    : background === "sepia"
-                    ? "#faf2e7"
-                    : "#ffffff",
-                color: background === "dark" ? "#ffffff" : "#000000",
-              }}
-            >
-              {paragraph}
-            </div>
-          ))}
-          <div className=" h-[700px]"></div>
+          <ModalReaderConfig
+            isOpen={modalConfigIsOpen}
+            onRequestClose={() => setModalConfigIsOpen(false)}
+          />
         </div>
-        <ModalReaderConfig
-          isOpen={modalConfigIsOpen}
-          onRequestClose={() => setModalConfigIsOpen(false)}
-        />
       </div>
-    </div>
+    </>
   );
 }
