@@ -123,7 +123,7 @@ function FavoritosPage() {
           </>
         }
       />
-      <div className="w-full  flex flex-wrap  gap-8 items-center ml-3 justify-start mt-2">
+      <div className="w-full flex flex-wrap gap-4 items-center justify-center mt-2">
         {favoriteBooks.map((item, index) => (
           <Card
             key={index}

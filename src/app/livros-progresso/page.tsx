@@ -127,16 +127,19 @@ function FavoritosPage() {
           </>
         }
       />
-      <div className="w-full flex flex-wrap gap-8 items-center ml-3 justify-start mt-2">
+      <div className="w-full flex flex-wrap gap-4 items-center justify-center mt-2">
         {readingList.map((item, index) => (
-          <Card
-            key={index}
-            id={item._id}
-            capa={item.capa}
-            titulo={item.titulo}
-            progress={item.progressPercentage}
-          />
+          item.progressPercentage === 0 ? null : (
+            <Card
+              key={index}
+              id={item._id}
+              capa={item.capa}
+              titulo={item.titulo}
+              progress={item.progressPercentage}
+            />
+          )
         ))}
+
       </div>
       <Footer />
     </div>

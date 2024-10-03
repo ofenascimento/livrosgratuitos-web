@@ -1,6 +1,7 @@
 import React from "react";
 import { ICard } from "./types";
 import Link from "next/link";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 const Card = (props: ICard): React.ReactElement => {
   return (
@@ -24,9 +25,12 @@ const Card = (props: ICard): React.ReactElement => {
             )}
 
             {props.progress && (
-              <span className="text-sm text-white text-center mt-1">
-                {`Progresso: ${props.progress}%`}
-              </span>
+              <>
+                <span className="text-sm  text-center mt-1 font-lexend font-light text-gray-300">
+                  {`Progresso: ${props.progress}%`}
+                </span>
+                <ProgressBar progress={props.progress} />
+              </>
             )}
           </div>
         </div>
