@@ -10,6 +10,7 @@ declare global {
       categoria: string[];
       descricao: string;
       currentParagraph?: number;
+      isFavorite?: boolean;
     }
     interface IBooks {
         capa: string;
