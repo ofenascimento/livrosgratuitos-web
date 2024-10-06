@@ -3,6 +3,7 @@ import BookList from "@/components/BookList/BookList";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
+import { addBookToReadingBook } from "@/hooks/addBookToReadingList";
 import { addFavoriteBook } from "@/hooks/addFavoriteBook";
 import { removeFavoriteBook } from "@/hooks/removeFavoriteBook";
 import useAuth from "@/hooks/useAuth";
@@ -19,14 +20,14 @@ function Livros() {
   const { book, isLoading } = useFetchBook(bookId ?? "");
   const [imageLoaded, setImageLoaded] = useState(false);
   const { setTitle, setUrlBook, setBookId } = useBook();
-  const [isFavorited, setIsFavorited] = useState<boolean | null>(null)
+  const [isFavorited, setIsFavorited] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (book && book.capa) {
       setTitle(book.titulo);
       setUrlBook(book.txt);
       setBookId(book._id);
-      setIsFavorited(book.isFavorite ?? false)
+      setIsFavorited(book.isFavorite ?? false);
       const img = new Image();
       img.src = book.capa;
       img.onload = () => setImageLoaded(true);
@@ -56,7 +57,13 @@ function Livros() {
             <h1 className="text-2xl font-bold text-white">{book.titulo}</h1>
             <div>
               {isFavorited ? (
-                <button className="rounded-full border border-slate-600 bg-dark-background p-3 lg:px-4 lg:py-2 flex justify-center items-center gap-3" onClick={() => { removeFavoriteBook(book._id); setIsFavorited(false) }}>
+                <button
+                  className="rounded-full border border-slate-600 bg-dark-background p-3 lg:px-4 lg:py-2 flex justify-center items-center gap-3"
+                  onClick={() => {
+                    removeFavoriteBook(book._id);
+                    setIsFavorited(false);
+                  }}
+                >
                   <svg
                     className="text-[#FF407D]"
                     xmlns="http://www.w3.org/2000/svg"
@@ -68,10 +75,15 @@ function Livros() {
                     <path d="M734-313 615-432l51-51 68 68 136-136 51 51-187 187ZM432-480Zm0 360-108-96q-79-70-132-124t-85-99q-32-45-45.5-84.5T48-605q0-89 60.5-150T257-816q50 0 96.5 21t78.5 59q32.3-38.1 76.95-59.05Q553.6-816 603-816q78 0 136.5 47.5T812-648h-75q-14-42-50-69t-84-27q-57 0-87.5 28.5T452-648h-40q-34-40-65.5-68T257-744q-57 0-97 40t-40 99q0 31.37 12.5 63.68 12.5 32.32 47 75.82 34.5 43.5 95 103T432-217q25-22 73.5-65t68.5-62l8.05 8.05 17.45 17.45 17.45 17.45L625-293q-21 20-46 42t-41 36l-106 95Z" />
                   </svg>
                   <p className="hidden lg:block">Favoritado</p>
-                  
                 </button>
               ) : (
-                <button className="rounded-full border border-slate-600 bg-dark-background p-3 lg:px-4 lg:py-2  flex justify-center items-center gap-3" onClick={() => { addFavoriteBook(book._id); setIsFavorited(true) }}>
+                <button
+                  className="rounded-full border border-slate-600 bg-dark-background p-3 lg:px-4 lg:py-2  flex justify-center items-center gap-3"
+                  onClick={() => {
+                    addFavoriteBook(book._id);
+                    setIsFavorited(true);
+                  }}
+                >
                   <svg
                     className="text-white"
                     xmlns="http://www.w3.org/2000/svg"
@@ -107,12 +119,20 @@ function Livros() {
             id="desktop-buttons"
           >
             <Link
-              href={`/leitor${book.currentParagraph ? `?p=${book.currentParagraph}` : ""
-                }`}
+              href={`/leitor${
+                book.currentParagraph ? `?p=${book.currentParagraph}` : ""
+              }`}
               className="w-full flex justify-center items-center"
+              onClick={() => {
+                !book.currentParagraph || book.currentParagraph === 0
+                  ? addBookToReadingBook(book._id)
+                  : null;
+              }}
             >
               <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-light">
-                Ler online
+                {book.currentParagraph && book.currentParagraph !== 0
+                  ? "Continuar leitura"
+                  : "Ler online"}
               </div>
             </Link>
 
@@ -130,12 +150,20 @@ function Livros() {
         id="fixed-mobile-buttons"
       >
         <Link
-          href={`/leitor${book.currentParagraph ? `?p=${book.currentParagraph}` : ""
-            }`}
+          href={`/leitor${
+            book.currentParagraph ? `?p=${book.currentParagraph}` : ""
+          }`}
           className="w-full flex justify-center items-center"
+          onClick={() => {
+            !book.currentParagraph || book.currentParagraph === 0
+              ? addBookToReadingBook(book._id)
+              : null;
+          }}
         >
           <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center text-white">
-            Ler online
+            {book.currentParagraph && book.currentParagraph !== 0
+              ? "Continuar leitura"
+              : "Ler online"}{" "}
           </div>
         </Link>
       </div>
