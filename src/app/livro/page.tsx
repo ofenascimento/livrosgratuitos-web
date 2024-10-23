@@ -21,6 +21,7 @@ function Livros() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const { setTitle, setUrlBook, setBookId } = useBook();
   const [isFavorited, setIsFavorited] = useState<boolean | null>(null);
+  const { setToParagraph, toParagraph } = useBook();
 
   useEffect(() => {
     if (book && book.capa) {
@@ -31,6 +32,8 @@ function Livros() {
       const img = new Image();
       img.src = book.capa;
       img.onload = () => setImageLoaded(true);
+      setToParagraph(book.currentParagraph ?? 0);
+      console.log(toParagraph);
     }
   }, [book]);
 
@@ -119,9 +122,7 @@ function Livros() {
             id="desktop-buttons"
           >
             <Link
-              href={`/leitor${
-                book.currentParagraph ? `?p=${book.currentParagraph}` : ""
-              }`}
+              href={`/leitor${book.currentParagraph}`}
               className="w-full flex justify-center items-center"
               onClick={() => {
                 !book.currentParagraph || book.currentParagraph === 0

@@ -24,10 +24,11 @@ export default function Leitor() {
   const [isProgressLoadingVisible, setIsProgressLoadingVisible] =
     useState(false);
   const searchParams = useSearchParams();
-  const toParagraph = searchParams.get("p");
+  // const toParagraph = searchParams.get("p");
   const paragraphRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { title, urlBook, bookId } = useBook();
   const router = useRouter();
+  const { toParagraph } = useBook()
 
   useEffect(() => {
     if (urlBook === "nobook") {
@@ -77,7 +78,7 @@ export default function Leitor() {
 
       setTimeout(() => {
         setIsProgressLoadingVisible(false);
-      }, 1000); 
+      }, 1000);
     } else {
       console.warn(`Paragraph ${paragraphNum} not found.`);
     }
@@ -177,8 +178,8 @@ export default function Leitor() {
               background === "dark"
                 ? "#000000"
                 : background === "sepia"
-                ? "#faf2e7"
-                : "#ffffff",
+                  ? "#faf2e7"
+                  : "#ffffff",
           }}
         ></div>
         <div
@@ -193,8 +194,8 @@ export default function Leitor() {
               background === "dark"
                 ? "#000000"
                 : background === "sepia"
-                ? "#faf2e7"
-                : "#ffffff",
+                  ? "#faf2e7"
+                  : "#ffffff",
           }}
         >
           <div>
@@ -282,8 +283,8 @@ export default function Leitor() {
                     background === "dark"
                       ? "#000000"
                       : background === "sepia"
-                      ? "#faf2e7"
-                      : "#ffffff",
+                        ? "#faf2e7"
+                        : "#ffffff",
                   color: background === "dark" ? "#ffffff" : "#000000",
                 }}
               >
