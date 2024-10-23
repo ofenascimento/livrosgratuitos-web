@@ -122,7 +122,7 @@ function Livros() {
             id="desktop-buttons"
           >
             <Link
-              href={`/leitor${book.currentParagraph}`}
+              href={`/leitor`}
               className="w-full flex justify-center items-center"
               onClick={() => {
                 !book.currentParagraph || book.currentParagraph === 0
@@ -151,9 +151,7 @@ function Livros() {
         id="fixed-mobile-buttons"
       >
         <Link
-          href={`/leitor${
-            book.currentParagraph ? `?p=${book.currentParagraph}` : ""
-          }`}
+          href={`/leitor`}
           className="w-full flex justify-center items-center"
           onClick={() => {
             !book.currentParagraph || book.currentParagraph === 0
