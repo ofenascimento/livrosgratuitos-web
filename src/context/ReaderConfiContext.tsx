@@ -18,27 +18,35 @@ export const ReaderConfigContext = createContext<ReaderConfigType | undefined>(
 );
 
 export function ReaderConfigProvider({ children }: IReaderConfigProvider) {
+  const isBrowser = typeof window !== "undefined";
+
   const [fontFamily, setFontFamily] = useState<string>(
-    localStorage.getItem("fontFamily") || "merriweather"
+    isBrowser ? localStorage.getItem("fontFamily") || "merriweather" : "merriweather"
   );
   const [background, setBackground] = useState<string>(
-    localStorage.getItem("background") || "sepia"
+    isBrowser ? localStorage.getItem("background") || "sepia" : "sepia"
   );
   const [fontSize, setFontSize] = useState<number>(
-    Number(localStorage.getItem("fontSize")) || 20
+    isBrowser ? Number(localStorage.getItem("fontSize")) || 20 : 20
   );
 
   useEffect(() => {
-    localStorage.setItem("fontFamily", fontFamily);
-  }, [fontFamily]);
+    if (isBrowser) {
+      localStorage.setItem("fontFamily", fontFamily);
+    }
+  }, [fontFamily, isBrowser]);
 
   useEffect(() => {
-    localStorage.setItem("background", background);
-  }, [background]);
+    if (isBrowser) {
+      localStorage.setItem("background", background);
+    }
+  }, [background, isBrowser]);
 
   useEffect(() => {
-    localStorage.setItem("fontSize", fontSize.toString());
-  }, [fontSize]);
+    if (isBrowser) {
+      localStorage.setItem("fontSize", fontSize.toString());
+    }
+  }, [fontSize, isBrowser]);
 
   return (
     <ReaderConfigContext.Provider
