@@ -8,7 +8,7 @@ const StorySliderSkeleton = () => {
         {[...Array(8)].map((_, index) => (
           <div key={index} className="flex-shrink-0 w-24">
             <div className="flex flex-col justify-center items-center">
-              <div className="h-24 w-24 bg-gray-700 rounded-full animate-pulse"></div>
+              <div className="h-24 w-24 bg-gray-700 rounded-3xl animate-pulse"></div>
             </div>
           </div>
         ))}

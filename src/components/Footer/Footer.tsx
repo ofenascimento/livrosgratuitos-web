@@ -73,7 +73,7 @@ export default function Footer() {
             </a>
           </div>
           <p className="mt-8 text-base leading-6 text-center text-white">
-            © 2024 livrosgratuitos.com. Todos os direitos reservados.
+            © 2024 livrosgratuitos.com Todos os direitos reservados.
           </p>
         </div>
         <LegalDetails />

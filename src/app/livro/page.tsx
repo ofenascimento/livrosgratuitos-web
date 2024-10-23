@@ -100,8 +100,8 @@ function Livros() {
             </div>
           </div>
 
-          <h3 className="my-2 text-white font-lexend">{book.autor}</h3>
-          <div className="flex gap-2">
+          <h3 className="mb-2 text-white font-lexend">{book.autor}</h3>
+          <div className="flex gap-2 mb-4">
             {book.categoria.map((item, index) => (
               <div
                 key={index}
