@@ -25,7 +25,7 @@
 }
 
 .bg-blured {
-  background-image: url('https://tools4css.com/background.svg');
+  background-image: url('../../public/background.svg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
