@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 interface ReaderConfigType {
   fontFamily: string;
@@ -18,9 +18,28 @@ export const ReaderConfigContext = createContext<ReaderConfigType | undefined>(
 );
 
 export function ReaderConfigProvider({ children }: IReaderConfigProvider) {
-  const [fontFamily, setFontFamily] = useState<string>("merriweather");
-  const [background, setBackground] = useState<string>("sepia");
-  const [fontSize, setFontSize] = useState<number>(20);
+  const [fontFamily, setFontFamily] = useState<string>(
+    localStorage.getItem("fontFamily") || "merriweather"
+  );
+  const [background, setBackground] = useState<string>(
+    localStorage.getItem("background") || "sepia"
+  );
+  const [fontSize, setFontSize] = useState<number>(
+    Number(localStorage.getItem("fontSize")) || 20
+  );
+
+  useEffect(() => {
+    localStorage.setItem("fontFamily", fontFamily);
+  }, [fontFamily]);
+
+  useEffect(() => {
+    localStorage.setItem("background", background);
+  }, [background]);
+
+  useEffect(() => {
+    localStorage.setItem("fontSize", fontSize.toString());
+  }, [fontSize]);
+
   return (
     <ReaderConfigContext.Provider
       value={{
