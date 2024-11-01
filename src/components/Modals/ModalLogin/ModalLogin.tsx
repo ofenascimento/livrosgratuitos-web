@@ -18,7 +18,8 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   // useEffect(() => {
   //     const checkToken = async () => {
@@ -60,11 +61,13 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
         await localStorage.setItem("userToken", data.token);
         window.location.reload();
       }
+      if (response.status === 400) {
+        setError(true);
+      }
     } catch (error) {
-      console.error(error);
-    }
-    finally {
-      setIsLoading(false)
+      setError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,15 +84,29 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
         <p className="mt-2 text-center mb-6 text-gray-300 font-lexend font-light">
           Entre com o seu email
         </p>
+        {error && (
+          <div className="  w-full pb-2 rounded-lg flex justify-center items-center">
+            <span className=" text-center w-full text-red-400">
+              Usuário ou senha inválidos!
+            </span>
+          </div>
+        )}
+
         <input
           type="text"
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError(false);
+          }}
           className="border-2 bg-dark-background border-gray-600 p-2 m-2 rounded-lg text-white font-lexend font-light"
           placeholder="Digite seu email"
         />
         <input
           type="password"
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError(false);
+          }}
           className="border-2 bg-dark-background border-gray-600 p-2 m-2 rounded-lg text-white font-lexend font-light"
           placeholder="Digite sua senha"
         />
@@ -97,8 +114,13 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           onClick={handleLogin}
           className="mt-4 bg-main-400 rounded-lg text-white px-4 py-2 mx-2 font-base font-semibold lg:font-medium font-poppins"
         >
-          {isLoading ? <><SpinnerLoader /></> : 'Entrar'}
-
+          {isLoading ? (
+            <>
+              <SpinnerLoader />
+            </>
+          ) : (
+            "Entrar"
+          )}
         </button>
         <div className="mt-6 px-4">
           <p className="text-xs text-center border-b-2 border-b-gray-600 pb-4 font-poppins font-light">
