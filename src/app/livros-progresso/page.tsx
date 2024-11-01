@@ -40,10 +40,6 @@ function FavoritosPage() {
     }
   }, [readingList, isLoading]);
 
-  if (authLoading || isLoading || !imagesLoaded) {
-    return <FullScreenLoader label="Carregando seus livros em progresso" />;
-  }
-
   if (!isAuth) {
     return (
       <>
@@ -81,6 +77,11 @@ function FavoritosPage() {
       </>
     );
   }
+  if (isLoading || !imagesLoaded) {
+    return <FullScreenLoader label="Carregando seus livros em progresso" />;
+  }
+
+
 
   if (!readingList || readingList.length === 0) {
     return (
