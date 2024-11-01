@@ -11,6 +11,7 @@ declare global {
       descricao: string;
       currentParagraph?: number;
       isFavorite?: boolean;
+      progressPercentage?: number;
     }
     interface IBooks {
         capa: string;
