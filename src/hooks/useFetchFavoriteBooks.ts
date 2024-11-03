@@ -14,7 +14,6 @@ const useFetchFavoriteBooks = (refreshKey = 0) => {
       const token = await localStorage.getItem("userToken");
       const userId = await getUserIdFromToken();
       const url = `${urlApi}/users/${userId}/favorite-books`;
-      console.log(urlApi)
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,

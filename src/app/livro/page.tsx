@@ -40,7 +40,7 @@ function Livros() {
       img.src = book.capa;
       img.onload = () => setImageLoaded(true);
       setToParagraph(book.currentParagraph ?? 0);
-      console.log(toParagraph);
+      // console.log(toParagraph);
     }
   }, [book]);
 

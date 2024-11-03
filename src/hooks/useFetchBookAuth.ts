@@ -14,7 +14,7 @@ const useFetchBookAuth = (bookId: string) => {
       const token = await localStorage.getItem("userToken");
       const userId = await getUserIdFromToken();
       const url = `${urlApi}/livros/${bookId}/${userId}`;
-      console.log(url)
+      // console.log(url)
       const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -24,8 +24,6 @@ const useFetchBookAuth = (bookId: string) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log('fetch book auth')
-      console.log(data);
       setBook(data);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("An error occurred"));
