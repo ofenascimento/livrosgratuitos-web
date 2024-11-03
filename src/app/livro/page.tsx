@@ -1,6 +1,7 @@
 "use client";
 import BookList from "@/components/BookList/BookList";
 import Footer from "@/components/Footer/Footer";
+import ModalLogin from "@/components/Modals/ModalLogin/ModalLogin";
 import ModalShare from "@/components/Modals/ModalShare/ModalShare";
 import Navbar from "@/components/Navbar/Navbar";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
@@ -26,6 +27,8 @@ function Livros() {
   const [isFavorited, setIsFavorited] = useState<boolean | null>(null);
   const { setToParagraph, toParagraph } = useBook();
   const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
+  const [modalLoginIsOpen, setModalLoginIsOpen] = useState<boolean>(false);
+  const isAuth = useAuth()
 
   useEffect(() => {
     if (book && book.capa) {
@@ -89,8 +92,12 @@ function Livros() {
                   <button
                     className="rounded-full border border-slate-600 bg-dark-background p-3 lg:px-4 lg:py-2  flex justify-center items-center gap-3"
                     onClick={() => {
-                      addFavoriteBook(book._id);
-                      setIsFavorited(true);
+                      if (isAuth) {
+                        addFavoriteBook(book._id);
+                        setIsFavorited(true);
+                      } else {
+                        setModalLoginIsOpen(true)
+                      }
                     }}
                   >
                     <svg
@@ -189,13 +196,13 @@ function Livros() {
           </div>
         </Link>
         {book.progressPercentage && (
-              <div className="mt-3">
-                <ProgressBar progress={book.progressPercentage ?? 0} />
-                <div className=" w-full text-center mt-2 font-lexend font-light">
-                  Progresso: {book.progressPercentage}%
-                </div>
-              </div>
-            )}
+          <div className="mt-3">
+            <ProgressBar progress={book.progressPercentage ?? 0} />
+            <div className=" w-full text-center mt-2 font-lexend font-light">
+              Progresso: {book.progressPercentage}%
+            </div>
+          </div>
+        )}
       </div>
       <BookList
         options={{ q: "9", sort: "true" }}
@@ -224,6 +231,7 @@ function Livros() {
         bookImage={book.capa}
         onClose={() => setModalShareIsOpen(false)}
       />
+      <ModalLogin isOpen={modalLoginIsOpen} onClose={() => setModalLoginIsOpen(false)} />
     </>
   );
 }
