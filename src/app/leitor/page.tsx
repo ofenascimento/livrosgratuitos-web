@@ -10,6 +10,9 @@ import ModalReaderConfig from "@/components/Modals/ModalReaderConfig";
 import { useReaderConfig } from "@/hooks/useReaderConfig";
 import { addProgressBook } from "@/hooks/addProgressBook";
 import useAuth from "@/hooks/useAuth";
+import { TiBookmark } from "react-icons/ti";
+import { GiSpellBook } from "react-icons/gi";
+import { MdOutlineDoneAll } from "react-icons/md";
 
 export default function Leitor() {
   const isAuth = useAuth();
@@ -291,12 +294,19 @@ export default function Leitor() {
                 {paragraph}
               </div>
             ))}
-            <div className=" h-[700px]"></div>
+            <div className=" h-[300px]"></div>
           </div>
           <ModalReaderConfig
             isOpen={modalConfigIsOpen}
             onRequestClose={() => setModalConfigIsOpen(false)}
           />
+          {
+            isAuth && <div className=" w-full flex flex-col justify-center items-center font-raleway pb-32">
+              <h1 className=" text-xl lg:text-3xl font-semibold font-lexend">Você deseja finalizar esse livro?</h1>
+              <button className=" bg-green-600 p-2 rounded-lg mt-5 font-poppins px-8 py-2 font-medium w-64  flex justify-center gap-2 items-center">FINALIZAR LIVRO <MdOutlineDoneAll size={24} /> </button>
+            </div>
+          }
+
         </div>
       </div>
     </>
