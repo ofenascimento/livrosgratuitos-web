@@ -6,12 +6,21 @@ import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import ImageSlider from "@/components/ImageSlider/ImageSlider";
 import FeaturedBooks from "@/components/FeaturedBooks/FeaturedBooks";
+import AdBanner from "@/components/ADS/AdBanner";
 
 export default function Home() {
   return (
     <>
-      <SEO shouldExcludeTitleSuffix title="Livros Gratuitos - Leia livros 100% de graça" />
+      <SEO
+        shouldExcludeTitleSuffix
+        title="Livros Gratuitos - Leia livros 100% de graça"
+      />
       <Navbar />
+      <AdBanner
+        dataAdFormat="auto"
+        dataFullWidthResponsive={true}
+        dataAdSlot="8063478458"
+      />
       <div className="mt-4 block md:hidden">
         <SearchInput />
       </div>
