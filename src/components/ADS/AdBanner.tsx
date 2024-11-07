@@ -3,36 +3,39 @@
 import React, { useEffect } from "react";
 
 type AdBannerTypes = {
-  dataAdSlot: string;
-  dataAdFormat: string;
-  dataFullWidthResponsive: boolean;
+    dataAdSlot: string;
+    dataAdFormat: string;
+    dataFullWidthResponsive: boolean;
 };
 
 const AdBanner = ({
-  dataAdSlot,
-  dataAdFormat,
-  dataFullWidthResponsive,
+    dataAdSlot,
+    dataAdFormat,
+    dataFullWidthResponsive,
 }: AdBannerTypes) => {
-  useEffect(() => {
-    try {
-      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
-        {}
-      );
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  }, []);
+    useEffect(() => {
+        try {
+            ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
+                {}
+            );
+        } catch (error: any) {
+            console.log(error.message);
+        }
+    }, []);
 
-  return (
-    <ins
-      className="adsbygoogle"
-      style={{ display: "block" }}
-      data-ad-client="ca-pub-2529229033686497"
-      data-ad-slot={dataAdSlot}
-      data-ad-format={dataAdFormat}
-      data-full-width-responsive={dataFullWidthResponsive.toString()}
-    ></ins>
-  );
+    return (
+        <div className="my-2">
+            <ins
+                className="adsbygoogle"
+                style={{ display: "block" }}
+                data-ad-client="ca-pub-2529229033686497"
+                data-ad-slot={dataAdSlot}
+                data-ad-format={dataAdFormat}
+                data-full-width-responsive={dataFullWidthResponsive.toString()}
+            ></ins>
+        </div>
+
+    );
 };
 
 export default AdBanner;
