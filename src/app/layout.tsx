@@ -5,6 +5,7 @@ import "./globals.css";
 import { metadata } from "./metadata";
 import { BookProvider } from "@/context/BookContext";
 import { ReaderConfigProvider } from "@/context/ReaderConfiContext";
+import GoogleAdsense from "@/components/Ads";
 
 
 const poppins = Poppins({
@@ -93,6 +94,7 @@ export default function RootLayout({
           </BookProvider>
         </ReaderConfigProvider>
       </body>
+      <GoogleAdsense />
     </html>
   );
 }
