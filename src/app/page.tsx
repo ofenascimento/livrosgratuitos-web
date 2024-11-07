@@ -10,7 +10,7 @@ import FeaturedBooks from "@/components/FeaturedBooks/FeaturedBooks";
 export default function Home() {
   return (
     <>
-      <SEO shouldExcludeTitleSuffix title="Livros Gratuitos" />
+      <SEO shouldExcludeTitleSuffix title="Livros Gratuitos - Leia livros 100% de graça" />
       <Navbar />
       <div className="mt-4 block md:hidden">
         <SearchInput />
