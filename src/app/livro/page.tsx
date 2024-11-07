@@ -1,4 +1,5 @@
 "use client";
+import AdBanner from "@/components/ADS/AdBanner";
 import BookList from "@/components/BookList/BookList";
 import Footer from "@/components/Footer/Footer";
 import ModalLogin from "@/components/Modals/ModalLogin/ModalLogin";
@@ -204,6 +205,11 @@ function Livros() {
           </div>
         )}
       </div>
+      <AdBanner
+        dataAdFormat="auto"
+        dataFullWidthResponsive={true}
+        dataAdSlot="8063478458"
+      />
       <BookList
         options={{ q: "9", sort: "true" }}
         label={
