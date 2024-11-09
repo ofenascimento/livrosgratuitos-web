@@ -210,7 +210,7 @@ function Livros() {
       <AdBanner
         dataAdFormat=""
         dataFullWidthResponsive={false}
-        dataAdSlot="9240597242"
+        dataAdSlot="2423907456"
       />
       <BookList
         options={{ q: "9", sort: "true" }}
