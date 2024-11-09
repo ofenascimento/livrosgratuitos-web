@@ -1,5 +1,6 @@
 "use client";
 import AdBanner from "@/components/ADS/AdBanner";
+import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import BookList from "@/components/BookList/BookList";
 import Footer from "@/components/Footer/Footer";
 import ModalLogin from "@/components/Modals/ModalLogin/ModalLogin";
@@ -53,6 +54,7 @@ function Livros() {
     <>
       <Navbar />
       <div className=" text-white flex-col md:flex-row flex mt-8 mb-6 ">
+        <AdBannerMobile dataAdSlot="6603126932" />
         <div className="  w-full md:w-[30%] flex justify-center items-center">
           <img
             src={book.capa}

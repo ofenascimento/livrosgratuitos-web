@@ -7,6 +7,7 @@ import Footer from "@/components/Footer/Footer";
 import ImageSlider from "@/components/ImageSlider/ImageSlider";
 import FeaturedBooks from "@/components/FeaturedBooks/FeaturedBooks";
 import AdBanner from "@/components/ADS/AdBanner";
+import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
         dataAdFormat="auto"
         dataAdSlot="2423907456"
       />
+      <AdBannerMobile dataAdSlot="6603126932" />
       <div className="mt-4 block md:hidden">
         <SearchInput />
       </div>
