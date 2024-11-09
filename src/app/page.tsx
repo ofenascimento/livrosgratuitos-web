@@ -18,8 +18,7 @@ export default function Home() {
       <Navbar />
       <AdBanner
         dataAdFormat="auto"
-        dataFullWidthResponsive={true}
-        dataAdSlot="8063478458"
+        dataAdSlot="4527326616"
       />
       <div className="mt-4 block md:hidden">
         <SearchInput />
