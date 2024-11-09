@@ -18,7 +18,7 @@ export default function Home() {
       <Navbar />
       <AdBanner
         dataAdFormat="auto"
-        dataAdSlot="4527326616"
+        dataAdSlot="2423907456"
         dataFullWidthResponsive={true}
       />
       <div className="mt-4 block md:hidden">
