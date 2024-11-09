@@ -206,9 +206,9 @@ function Livros() {
         )}
       </div>
       <AdBanner
-        dataAdFormat="auto"
-        dataFullWidthResponsive={true}
-        dataAdSlot="8063478458"
+        dataAdFormat=""
+        dataFullWidthResponsive={false}
+        dataAdSlot="9240597242"
       />
       <BookList
         options={{ q: "9", sort: "true" }}

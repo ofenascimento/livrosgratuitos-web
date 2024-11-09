@@ -4,8 +4,8 @@ import React, { useEffect } from "react";
 
 type AdBannerTypes = {
     dataAdSlot: string;
-    dataAdFormat: string;
-    dataFullWidthResponsive: boolean;
+    dataAdFormat?: string;
+    dataFullWidthResponsive?: boolean;
 };
 
 const AdBanner = ({

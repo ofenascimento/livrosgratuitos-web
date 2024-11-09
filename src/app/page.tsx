@@ -19,7 +19,6 @@ export default function Home() {
       <AdBanner
         dataAdFormat="auto"
         dataAdSlot="2423907456"
-        dataFullWidthResponsive={true}
       />
       <div className="mt-4 block md:hidden">
         <SearchInput />
@@ -56,6 +55,10 @@ export default function Home() {
           </>
         }
       />
+      <AdBanner
+        dataAdFormat="auto"
+        dataAdSlot="3946512730"
+      />
       <ImageSlider auto />
       <BookList
         options={{ q: "9", sort: "true" }}
@@ -76,6 +79,10 @@ export default function Home() {
             novas histórias 😍
           </>
         }
+      />
+      <AdBanner
+        dataAdFormat="auto"
+        dataAdSlot="2423907456"
       />
       <FeaturedBooks />
       <Footer />
