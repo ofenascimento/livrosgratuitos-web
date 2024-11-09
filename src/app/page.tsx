@@ -19,6 +19,7 @@ export default function Home() {
       <AdBanner
         dataAdFormat="auto"
         dataAdSlot="4527326616"
+        dataFullWidthResponsive={true}
       />
       <div className="mt-4 block md:hidden">
         <SearchInput />
