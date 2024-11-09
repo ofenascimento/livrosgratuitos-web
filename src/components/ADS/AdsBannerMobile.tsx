@@ -24,7 +24,7 @@ const AdBannerMobile = ({
     }, []);
 
     return (
-        <div className="my-3 w-full justify-center items-center hidden md:flex">
+        <div className="my-3 w-full justify-center items-center flex md:hidden">
             <ins
                 className="adsbygoogle"
                 style={{ display: "inline-block", width: 350, height: 50 }}
