@@ -24,7 +24,7 @@ const AdBanner = ({
     }, []);
 
     return (
-        <div className="my-2">
+        <div className="my-3 w-full justify-center items-center hidden md:flex">
             <ins
                 className="adsbygoogle"
                 style={{ display: "inline-block", width: 728, height: 90 }}
