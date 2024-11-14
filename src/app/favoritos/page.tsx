@@ -1,4 +1,5 @@
 "use client";
+import AdBanner from "@/components/ADS/AdBanner";
 import Card from "@/components/Card/Card";
 import Footer from "@/components/Footer/Footer";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
@@ -122,6 +123,11 @@ function FavoritosPage() {
             </span>{" "}
           </>
         }
+      />
+      <AdBanner
+        dataAdFormat=""
+        dataFullWidthResponsive={false}
+        dataAdSlot="2423907456"
       />
       <div className="w-full flex flex-wrap gap-4 items-center justify-center mt-2">
         {favoriteBooks.map((item, index) => (

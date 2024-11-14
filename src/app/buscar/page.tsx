@@ -1,4 +1,5 @@
 "use client";
+import AdBanner from "@/components/ADS/AdBanner";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
 import BookList from "@/components/BookList/BookList";
 import Footer from "@/components/Footer/Footer";
@@ -21,6 +22,11 @@ function BuscarPage() {
   return (
     <div className=" min-h-screen">
       <Navbar />
+      <AdBanner
+        dataAdFormat=""
+        dataFullWidthResponsive={false}
+        dataAdSlot="2423907456"
+      />
       <BookCatalog titulo={search} />
       <br />
       <Footer />
