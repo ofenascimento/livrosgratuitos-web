@@ -13,6 +13,8 @@ import useAuth from "@/hooks/useAuth";
 import { TiBookmark } from "react-icons/ti";
 import { GiSpellBook } from "react-icons/gi";
 import { MdOutlineDoneAll } from "react-icons/md";
+import AdBanner from "@/components/ADS/AdBanner";
+import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 
 export default function Leitor() {
   const isAuth = useAuth();
@@ -309,6 +311,8 @@ export default function Leitor() {
 
         </div>
       </div>
+      <AdBanner dataAdSlot="2423907456" fixed />
+      <AdBannerMobile dataAdSlot="6603126932" fixed />
     </>
   );
 }

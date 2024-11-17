@@ -6,12 +6,14 @@ type AdBannerTypes = {
     dataAdSlot: string;
     dataAdFormat?: string;
     dataFullWidthResponsive?: boolean;
+    fixed?: boolean;
 };
 
 const AdBannerMobile = ({
     dataAdSlot,
     dataAdFormat,
     dataFullWidthResponsive,
+    fixed
 }: AdBannerTypes) => {
     useEffect(() => {
         try {
@@ -24,7 +26,9 @@ const AdBannerMobile = ({
     }, []);
 
     return (
-        <div className="my-3 w-full justify-center items-center flex md:hidden">
+        <div className={`my-3 w-full justify-center items-center flex md:hidden ${
+            fixed ? "fixed bottom-0 left-0 z-50" : ""
+        }`}>
             <ins
                 className="adsbygoogle"
                 style={{ display: "inline-block", width: 350, height: 50 }}
