@@ -6,7 +6,8 @@ type AdBannerTypes = {
     dataAdSlot: string;
     dataAdFormat?: string;
     dataFullWidthResponsive?: boolean;
-    fixed?: boolean; // Nova prop
+    fixed?: boolean;
+    customClassName?: string;
 };
 
 const AdBanner = ({
@@ -14,6 +15,7 @@ const AdBanner = ({
     dataAdFormat,
     dataFullWidthResponsive,
     fixed,
+    customClassName
 }: AdBannerTypes) => {
     useEffect(() => {
         try {
@@ -27,9 +29,9 @@ const AdBanner = ({
 
     return (
         <div
-            className={`my-3 w-full justify-center items-center hidden md:flex ${
-                fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""
-            }`}
+            className={`w-full justify-center items-center hidden md:flex ${
+                fixed ? "fixed bottom-0 left-0 z-50 my-0" : "my-2"
+            } ${customClassName}`}
             style={fixed ? { backgroundColor: "#fff" } : {}}
         >
             <ins
