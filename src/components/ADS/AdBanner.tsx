@@ -28,7 +28,7 @@ const AdBanner = ({
     return (
         <div
             className={`my-3 w-full justify-center items-center hidden md:flex ${
-                fixed ? "fixed bottom-0 left-0 z-50" : ""
+                fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""
             }`}
             style={fixed ? { backgroundColor: "#fff" } : {}}
         >
