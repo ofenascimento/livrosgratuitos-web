@@ -20,7 +20,7 @@ export default function Home() {
       <AdBanner
         dataAdFormat="auto"
         dataAdSlot="2423907456"
-        customClassName="mb-2"
+        customClassName="mb-2 mt-4"
       />
       <AdBannerMobile dataAdSlot="6603126932" />
       <div className="mt-4 block md:hidden">
@@ -87,6 +87,7 @@ export default function Home() {
       <AdBanner
         dataAdFormat="auto"
         dataAdSlot="2423907456"
+        customClassName="mb-4"
       />
       <FeaturedBooks />
       <Footer />

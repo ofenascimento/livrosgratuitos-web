@@ -7,13 +7,15 @@ type AdBannerTypes = {
     dataAdFormat?: string;
     dataFullWidthResponsive?: boolean;
     fixed?: boolean;
+    customClassName?: string;
 };
 
 const AdBannerMobile = ({
     dataAdSlot,
     dataAdFormat,
     dataFullWidthResponsive,
-    fixed
+    fixed,
+    customClassName
 }: AdBannerTypes) => {
     useEffect(() => {
         try {
@@ -26,7 +28,7 @@ const AdBannerMobile = ({
     }, []);
 
     return (
-        <div className={`my-3 w-full justify-center items-center flex md:hidden ${
+        <div className={`${customClassName} w-full justify-center items-center flex md:hidden ${
             fixed ? "fixed bottom-0 left-0 z-50" : ""
         }`}>
             <ins

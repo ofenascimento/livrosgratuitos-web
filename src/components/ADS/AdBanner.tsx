@@ -30,12 +30,12 @@ const AdBanner = ({
   return (
     <div
       className={`${customClassName} w-full justify-center items-center hidden md:flex ${
-        fixed ? "fixed bottom-0 left-0 z-50 my-0" : "my-3"
+        fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""
       } `}
       style={fixed ? { backgroundColor: "#fff" } : {}}
     >
       <ins
-        className="adsbygoogle"
+        className="adsbygoogle bg-gray-600 rounded-lg"
         style={{ display: "inline-block", width: 728, height: 90 }}
         data-ad-client="ca-pub-2529229033686497"
         data-ad-slot={dataAdSlot}

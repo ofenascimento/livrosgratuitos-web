@@ -53,9 +53,15 @@ function Livros() {
   return (
     <>
       <Navbar />
-      <div className=" text-white flex-col md:flex-row flex mt-6 md:mt-8 mb-6 ">
+      <AdBanner
+        dataAdFormat=""
+        dataFullWidthResponsive={false}
+        dataAdSlot="3946512730"
+        customClassName="mt-4"
+      />
+      <div className=" text-white flex-col md:flex-row flex mt-6 md:mt-4 mb-6 ">
         <AdBannerMobile dataAdSlot="6603126932" />
-        <div className="  w-full md:w-[30%] flex justify-center items-center">
+        <div className="w-full md:w-[30%] flex justify-center items-center">
           <img
             src={book.capa}
             alt=""
@@ -211,6 +217,7 @@ function Livros() {
         dataAdFormat=""
         dataFullWidthResponsive={false}
         dataAdSlot="2423907456"
+        customClassName="mb-4"
       />
       <BookList
         options={{ q: "9", sort: "true" }}
