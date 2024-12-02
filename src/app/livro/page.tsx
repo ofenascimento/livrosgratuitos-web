@@ -59,8 +59,8 @@ function Livros() {
         dataAdSlot="3946512730"
         customClassName="mt-4"
       />
+      <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
       <div className=" text-white flex-col md:flex-row flex mt-6 md:mt-4 mb-6 ">
-        <AdBannerMobile dataAdSlot="6603126932" />
         <div className="w-full md:w-[30%] flex justify-center items-center">
           <img
             src={book.capa}

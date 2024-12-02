@@ -32,7 +32,7 @@ const AdBannerMobile = ({
             fixed ? "fixed bottom-0 left-0 z-50" : ""
         }`}>
             <ins
-                className="adsbygoogle"
+                className="adsbygoogle bg-gray-600 rounded-lg"
                 style={{ display: "inline-block", width: 350, height: 50 }}
                 data-ad-client="ca-pub-2529229033686497"
                 data-ad-slot={dataAdSlot}
