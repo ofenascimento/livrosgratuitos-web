@@ -1,5 +1,6 @@
 "use client";
 import AdBanner from "@/components/ADS/AdBanner";
+import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import Card from "@/components/Card/Card";
 import Footer from "@/components/Footer/Footer";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
@@ -46,7 +47,9 @@ function FavoritosPage() {
           dataAdFormat=""
           dataFullWidthResponsive={false}
           dataAdSlot="2423907456"
+          customClassName="mt-4"
         />
+        <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
         <div className="flex items-center mt-2 justify-center">
           <div className="max-w-md w-full p-4 rounded-lg flex justify-center items-center flex-col gap-2">
             <h2 className="text-4xl font-bold text-center m-0 text-white">
@@ -84,6 +87,13 @@ function FavoritosPage() {
     return (
       <div>
         <Navbar />
+        <AdBanner
+          dataAdFormat=""
+          dataFullWidthResponsive={false}
+          dataAdSlot="2423907456"
+          customClassName="mt-4"
+        />
+        <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
         <div className=" flex justify-center items-center w-full flex-col">
           <Title
             customClassName="items-start mt-4"
@@ -109,6 +119,13 @@ function FavoritosPage() {
   return (
     <div>
       <Navbar />
+      <AdBanner
+        dataAdFormat=""
+        dataFullWidthResponsive={false}
+        dataAdSlot="2423907456"
+        customClassName="mt-4"
+      />
+      <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
       <Title
         customClassName="items-start mt-4"
         title={
