@@ -34,6 +34,7 @@ function Livros() {
 
   useEffect(() => {
     if (book && book.capa) {
+      console.log(book);
       setTitle(book.titulo);
       setUrlBook(book.txt);
       setBookId(book._id);
@@ -177,7 +178,10 @@ function Livros() {
             )}
 
             {book.pdf && (
-              <button className="bg-main px-4 py-2 rounded-full w-full md:w-2/4">
+              <button
+                onClick={() => window.open(book.pdf, '_blank')}
+                className="bg-main px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B]"
+              >
                 Baixar PDF
               </button>
             )}
