@@ -30,11 +30,10 @@ function Livros() {
   const { setToParagraph, toParagraph } = useBook();
   const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
   const [modalLoginIsOpen, setModalLoginIsOpen] = useState<boolean>(false);
-  const isAuth = useAuth()
+  const isAuth = useAuth();
 
   useEffect(() => {
     if (book && book.capa) {
-      console.log(book);
       setTitle(book.titulo);
       setUrlBook(book.txt);
       setBookId(book._id);
@@ -106,7 +105,7 @@ function Livros() {
                         addFavoriteBook(book._id);
                         setIsFavorited(true);
                       } else {
-                        setModalLoginIsOpen(true)
+                        setModalLoginIsOpen(true);
                       }
                     }}
                   >
@@ -149,6 +148,14 @@ function Livros() {
           <p className="mt-2 text-white font-lexend font-light">
             {book.descricao}
           </p>
+          {book.pdf && (
+              <button
+                onClick={() => window.open(book.pdf, "_blank")}
+                className="bg-main my-2 md:hidden px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B]"
+              >
+                Baixar PDF
+              </button>
+            )}
           <div
             className="flex-col gap-2 mt-2 lg:mt-4 w-full justify-center items-center hidden md:flex"
             id="desktop-buttons"
@@ -163,23 +170,28 @@ function Livros() {
               }}
             >
               <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-light">
-                {book.currentParagraph && book.currentParagraph !== 0
+                {book.currentParagraph &&
+                book.currentParagraph !== 0 &&
+                book.progressPercentage !== undefined &&
+                book.progressPercentage > 0
                   ? "Continuar leitura"
                   : "Ler online"}
               </div>
             </Link>
-            {book.progressPercentage && (
-              <div className="md:w-2/4">
-                <ProgressBar progress={book.progressPercentage ?? 0} />
-                <div className=" w-full text-center mt-2 font-lexend font-light">
-                  Progresso: {book.progressPercentage}%
+            {book.progressPercentage !== undefined &&
+              book.progressPercentage > 0 &&
+              book.currentParagraph !== 0 && (
+                <div className="md:w-2/4">
+                  <ProgressBar progress={book.progressPercentage ?? 0} />
+                  <div className="w-full text-center mt-2 font-lexend font-light">
+                    Progresso: {book.progressPercentage}%
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {book.pdf && (
               <button
-                onClick={() => window.open(book.pdf, '_blank')}
+                onClick={() => window.open(book.pdf, "_blank")}
                 className="bg-main px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B]"
               >
                 Baixar PDF
@@ -203,19 +215,25 @@ function Livros() {
           }}
         >
           <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center text-white">
-            {book.currentParagraph && book.currentParagraph !== 0
+            {book.currentParagraph &&
+            book.currentParagraph !== 0 &&
+            book.progressPercentage !== undefined &&
+            book.progressPercentage > 0
               ? "Continuar leitura"
               : "Ler online"}{" "}
           </div>
         </Link>
-        {book.progressPercentage && (
-          <div className="mt-3">
-            <ProgressBar progress={book.progressPercentage ?? 0} />
-            <div className=" w-full text-center mt-2 font-lexend font-light">
-              Progresso: {book.progressPercentage}%
+        {
+          book.progressPercentage !== 0 &&
+          book.progressPercentage !== undefined &&
+          book.progressPercentage > 0 && (
+            <div className="mt-3 mb-3">
+              <ProgressBar progress={book.progressPercentage ?? 0} />
+              <div className=" w-full text-center mt-2 font-lexend font-light">
+                Progresso: {book.progressPercentage}%
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
       <AdBanner
         dataAdFormat=""
@@ -250,7 +268,10 @@ function Livros() {
         bookImage={book.capa}
         onClose={() => setModalShareIsOpen(false)}
       />
-      <ModalLogin isOpen={modalLoginIsOpen} onClose={() => setModalLoginIsOpen(false)} />
+      <ModalLogin
+        isOpen={modalLoginIsOpen}
+        onClose={() => setModalLoginIsOpen(false)}
+      />
     </>
   );
 }
