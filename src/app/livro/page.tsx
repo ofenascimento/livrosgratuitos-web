@@ -149,35 +149,37 @@ function Livros() {
             {book.descricao}
           </p>
           {book.pdf && (
-              <button
-                onClick={() => window.open(book.pdf, "_blank")}
-                className="bg-main my-2 md:hidden px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B]"
-              >
-                Baixar PDF
-              </button>
-            )}
+            <button
+              onClick={() => window.open(book.pdf, "_blank")}
+              className="bg-main my-2 md:hidden px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B]"
+            >
+              Baixar PDF
+            </button>
+          )}
           <div
             className="flex-col gap-2 mt-2 lg:mt-4 w-full justify-center items-center hidden md:flex"
             id="desktop-buttons"
           >
-            <Link
-              href={`/leitor`}
-              className="w-full flex justify-center items-center"
-              onClick={() => {
-                !book.currentParagraph || book.currentParagraph === 0
-                  ? addBookToReadingBook(book._id)
-                  : null;
-              }}
-            >
-              <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-light">
-                {book.currentParagraph &&
-                book.currentParagraph !== 0 &&
-                book.progressPercentage !== undefined &&
-                book.progressPercentage > 0
-                  ? "Continuar leitura"
-                  : "Ler online"}
-              </div>
-            </Link>
+            {book.txt !== "" && (
+              <Link
+                href={`/leitor`}
+                className="w-full flex justify-center items-center"
+                onClick={() => {
+                  !book.currentParagraph || book.currentParagraph === 0
+                    ? addBookToReadingBook(book._id)
+                    : null;
+                }}
+              >
+                <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-light">
+                  {book.currentParagraph &&
+                  book.currentParagraph !== 0 &&
+                  book.progressPercentage !== undefined &&
+                  book.progressPercentage > 0
+                    ? "Continuar leitura"
+                    : "Ler online"}
+                </div>
+              </Link>
+            )}
             {book.progressPercentage !== undefined &&
               book.progressPercentage > 0 &&
               book.currentParagraph !== 0 && (
@@ -205,26 +207,27 @@ function Livros() {
         className=" fixed bottom-0  z-50 left-0 w-full p-4 bg-black md:hidden"
         id="fixed-mobile-buttons"
       >
-        <Link
-          href={`/leitor`}
-          className="w-full flex justify-center items-center"
-          onClick={() => {
-            !book.currentParagraph || book.currentParagraph === 0
-              ? addBookToReadingBook(book._id)
-              : null;
-          }}
-        >
-          <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center text-white">
-            {book.currentParagraph &&
-            book.currentParagraph !== 0 &&
-            book.progressPercentage !== undefined &&
-            book.progressPercentage > 0
-              ? "Continuar leitura"
-              : "Ler online"}{" "}
-          </div>
-        </Link>
-        {
-          book.progressPercentage !== 0 &&
+        {book.txt !== "" && (
+          <Link
+            href={`/leitor`}
+            className="w-full flex justify-center items-center"
+            onClick={() => {
+              !book.currentParagraph || book.currentParagraph === 0
+                ? addBookToReadingBook(book._id)
+                : null;
+            }}
+          >
+            <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center text-white">
+              {book.currentParagraph &&
+              book.currentParagraph !== 0 &&
+              book.progressPercentage !== undefined &&
+              book.progressPercentage > 0
+                ? "Continuar leitura"
+                : "Ler online"}{" "}
+            </div>
+          </Link>
+        )}
+        {book.progressPercentage !== 0 &&
           book.progressPercentage !== undefined &&
           book.progressPercentage > 0 && (
             <div className="mt-3 mb-3">
