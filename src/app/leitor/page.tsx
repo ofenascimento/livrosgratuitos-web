@@ -33,7 +33,7 @@ export default function Leitor() {
   const paragraphRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { title, urlBook, bookId } = useBook();
   const router = useRouter();
-  const { toParagraph } = useBook()
+  const { toParagraph } = useBook();
 
   useEffect(() => {
     if (urlBook === "nobook") {
@@ -183,8 +183,8 @@ export default function Leitor() {
               background === "dark"
                 ? "#000000"
                 : background === "sepia"
-                  ? "#faf2e7"
-                  : "#ffffff",
+                ? "#faf2e7"
+                : "#ffffff",
           }}
         ></div>
         <div
@@ -199,8 +199,8 @@ export default function Leitor() {
               background === "dark"
                 ? "#000000"
                 : background === "sepia"
-                  ? "#faf2e7"
-                  : "#ffffff",
+                ? "#faf2e7"
+                : "#ffffff",
           }}
         >
           <div>
@@ -272,43 +272,53 @@ export default function Leitor() {
               </div>
             </div>
             <div className="h-24"></div>
-            {paragraphs.map((paragraph, index) => (
-              <div
-                key={index}
-                id={`paragraph-${index + 1}`}
-                ref={(el) => {
-                  paragraphRefs.current[index] = el;
-                }}
-                style={{
-                  whiteSpace: "pre-wrap",
-                  wordWrap: "break-word",
-                  marginBottom: "1em",
-                  fontSize: fontSize,
-                  backgroundColor:
-                    background === "dark"
-                      ? "#000000"
-                      : background === "sepia"
+            {paragraphs.map((paragraph, index) => {
+              const isUpperCase =
+                paragraph.trim() === paragraph.trim().toUpperCase();
+
+              return (
+                <div
+                  key={index}
+                  id={`paragraph-${index + 1}`}
+                  ref={(el) => {
+                    paragraphRefs.current[index] = el;
+                  }}
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    wordWrap: "break-word",
+                    marginBottom: "1em",
+                    fontSize: fontSize,
+                    fontWeight: isUpperCase ? "bold" : "normal",
+                    backgroundColor:
+                      background === "dark"
+                        ? "#000000"
+                        : background === "sepia"
                         ? "#faf2e7"
                         : "#ffffff",
-                  color: background === "dark" ? "#ffffff" : "#000000",
-                }}
-              >
-                {paragraph}
-              </div>
-            ))}
+                    color: background === "dark" ? "#ffffff" : "#000000",
+                  }}
+                >
+                  {paragraph}
+                </div>
+              );
+            })}
+
             <div className=" h-[300px]"></div>
           </div>
           <ModalReaderConfig
             isOpen={modalConfigIsOpen}
             onRequestClose={() => setModalConfigIsOpen(false)}
           />
-          {
-            isAuth && <div className=" w-full flex flex-col justify-center items-center font-raleway pb-32">
-              <h1 className=" text-xl lg:text-3xl font-semibold font-lexend">Você deseja finalizar esse livro?</h1>
-              <button className=" bg-green-600 p-2 rounded-lg mt-5 font-poppins px-8 py-2 font-medium w-64  flex justify-center gap-2 items-center">FINALIZAR LIVRO <MdOutlineDoneAll size={24} /> </button>
+          {isAuth && (
+            <div className=" w-full flex flex-col justify-center items-center font-raleway pb-32">
+              <h1 className=" text-xl lg:text-3xl font-semibold font-lexend">
+                Você deseja finalizar esse livro?
+              </h1>
+              <button className=" bg-green-600 p-2 rounded-lg mt-5 font-poppins px-8 py-2 font-medium w-64  flex justify-center gap-2 items-center">
+                FINALIZAR LIVRO <MdOutlineDoneAll size={24} />{" "}
+              </button>
             </div>
-          }
-
+          )}
         </div>
       </div>
       <AdBanner dataAdSlot="2423907456" fixed />
