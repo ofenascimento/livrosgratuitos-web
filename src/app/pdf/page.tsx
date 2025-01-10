@@ -10,15 +10,20 @@ import { FaCircleChevronLeft } from "react-icons/fa6";
 import { useBook } from "@/hooks/useBook";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 const PdfPage = () => {
-  const { title, urlBook, urlPdfBook } = useBook();
+  const { title, setTitle, urlBook, urlPdfBook } = useBook();
+
+
+
   const pdfUrl =
     "https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Flira-dos-vinte-anos.pdf?alt=media&token=f1fdf453-a0ec-42b5-90ea-74de165a17d0";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const router = useRouter();
+  const isMobile = useIsMobile()
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -29,11 +34,16 @@ const PdfPage = () => {
   };
 
   useEffect(() => {
-    console.log(urlBook)
     if (title === "notitle") {
       router.push("/");
+      return;
     }
-  }, [title]);
+  
+    if (isMobile && title.length > 20) {
+      setTitle(`${title.slice(0, 20).trim()}...`);
+    }
+  }, [title, isMobile, router, setTitle]);
+  
 
   if (title === "notitle") return null;
 
@@ -54,7 +64,7 @@ const PdfPage = () => {
             <div className="flex justify-center items-center gap-2">
               <button
                 onClick={openModal}
-                className="bg-white text-main-500 px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
+                className="bg-white text-main-500 px-2 md:px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
               >
                 <p className="font-lexend font-normal hidden md:block">Tela cheia</p>
                 <MdFullscreenExit size={20} />
@@ -64,7 +74,7 @@ const PdfPage = () => {
                   <Link
                     href={"/leitor"}
                     onClick={openModal}
-                    className="bg-white text-main-500 px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
+                    className="bg-white text-main-500 px-2 md:px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
                   >
                     <>
                     <p className="font-lexend font-normal hidden md:block">Ler online</p>
