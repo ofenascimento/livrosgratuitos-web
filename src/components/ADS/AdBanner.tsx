@@ -32,7 +32,6 @@ const AdBanner = ({
       className={`${customClassName} w-full justify-center items-center hidden md:flex ${
         fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""
       } `}
-      style={fixed ? { backgroundColor: "#fff" } : {}}
     >
       <ins
         className="adsbygoogle bg-gray-600 rounded-lg"

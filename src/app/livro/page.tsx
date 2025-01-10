@@ -16,7 +16,7 @@ import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import useFetchBookAuth from "@/hooks/useFetchBookAuth";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { MdOutlineShare } from "react-icons/md";
 
@@ -25,17 +25,21 @@ function Livros() {
   const bookId = searchParams.get("bookId");
   const { book, isLoading } = useFetchBook(bookId ?? "");
   const [imageLoaded, setImageLoaded] = useState(false);
-  const { setTitle, setUrlBook, setBookId } = useBook();
+  const { setTitle, setUrlBook, setBookId, setPdfUrlBook } = useBook();
   const [isFavorited, setIsFavorited] = useState<boolean | null>(null);
   const { setToParagraph, toParagraph } = useBook();
   const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
   const [modalLoginIsOpen, setModalLoginIsOpen] = useState<boolean>(false);
   const isAuth = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (book && book.capa) {
       setTitle(book.titulo);
       setUrlBook(book.txt);
+      if(book.pdf) {
+        setPdfUrlBook(book.pdf);
+      }
       setBookId(book._id);
       setIsFavorited(book.isFavorite ?? false);
       const img = new Image();
@@ -149,12 +153,12 @@ function Livros() {
             {book.descricao}
           </p>
           {book.pdf && (
-            <button
-              onClick={() => window.open(book.pdf, "_blank")}
-              className="bg-main my-2 md:hidden px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B]"
+            <Link
+              href={`/pdf`}
+              className="bg-main my-2 md:hidden px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B] text-center"
             >
-              Baixar PDF
-            </button>
+              Ver PDF
+            </Link>
           )}
           <div
             className="flex-col gap-2 mt-2 lg:mt-4 w-full justify-center items-center hidden md:flex"
@@ -192,12 +196,12 @@ function Livros() {
               )}
 
             {book.pdf && (
-              <button
-                onClick={() => window.open(book.pdf, "_blank")}
-                className="bg-main px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B]"
+              <Link
+                href={`/pdf`}
+                className="bg-main px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B] text-center"
               >
-                Baixar PDF
-              </button>
+                Ver PDF
+              </Link>
             )}
           </div>
         </div>
