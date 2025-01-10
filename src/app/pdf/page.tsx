@@ -54,7 +54,7 @@ const PdfPage = () => {
             <div className="flex justify-center items-center gap-2">
               <button
                 onClick={openModal}
-                className="bg-white text-main-500 px-4 py-2 rounded-md shadow-md hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
+                className="bg-white text-main-500 px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
               >
                 <p className="font-lexend font-normal hidden md:block">Tela cheia</p>
                 <MdFullscreenExit size={20} />
@@ -64,7 +64,7 @@ const PdfPage = () => {
                   <Link
                     href={"/leitor"}
                     onClick={openModal}
-                    className="bg-white text-main-500 px-4 py-2 rounded-md shadow-md hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
+                    className="bg-white text-main-500 px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
                   >
                     <>
                     <p className="font-lexend font-normal hidden md:block">Ler online</p>
@@ -105,7 +105,7 @@ const PdfPage = () => {
                   <Link
                     href={"/leitor"}
                     onClick={openModal}
-                    className="bg-white text-main-500 px-4 py-2 rounded-md shadow-md hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
+                    className="bg-white text-main-500 px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
                   >
                     <>
                       Ler online
