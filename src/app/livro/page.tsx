@@ -18,7 +18,9 @@ import useFetchBookAuth from "@/hooks/useFetchBookAuth";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { FaFilePdf } from "react-icons/fa";
 import { MdOutlineShare } from "react-icons/md";
+import { PiFilePdf } from "react-icons/pi";
 
 function Livros() {
   const searchParams = useSearchParams();
@@ -37,7 +39,7 @@ function Livros() {
     if (book && book.capa) {
       setTitle(book.titulo);
       setUrlBook(book.txt);
-      if(book.pdf) {
+      if (book.pdf) {
         setPdfUrlBook(book.pdf);
       }
       setBookId(book._id);
@@ -155,9 +157,12 @@ function Livros() {
           {book.pdf && (
             <Link
               href={`/pdf`}
-              className="bg-main my-2 md:hidden px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B] text-center"
+              className="w-full"
             >
-              Ver PDF
+              <div className="w-full bg-[#F72C5B] bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center">
+                Ver PDF
+              </div>
+
             </Link>
           )}
           <div
@@ -176,9 +181,9 @@ function Livros() {
               >
                 <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-light">
                   {book.currentParagraph &&
-                  book.currentParagraph !== 0 &&
-                  book.progressPercentage !== undefined &&
-                  book.progressPercentage > 0
+                    book.currentParagraph !== 0 &&
+                    book.progressPercentage !== undefined &&
+                    book.progressPercentage > 0
                     ? "Continuar leitura"
                     : "Ler online"}
                 </div>
@@ -198,9 +203,12 @@ function Livros() {
             {book.pdf && (
               <Link
                 href={`/pdf`}
-                className="bg-main px-4 py-2 rounded-full w-full md:w-2/4 bg-[#F72C5B] text-center"
+                className="md:w-2/4"
               >
-                Ver PDF
+                <div className="w-full bg-[#F72C5B] bg-main hidden md:block px-4 py-2 rounded-full  text-center">
+                  Ver PDF
+                </div>
+
               </Link>
             )}
           </div>
@@ -223,9 +231,9 @@ function Livros() {
           >
             <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center text-white">
               {book.currentParagraph &&
-              book.currentParagraph !== 0 &&
-              book.progressPercentage !== undefined &&
-              book.progressPercentage > 0
+                book.currentParagraph !== 0 &&
+                book.progressPercentage !== undefined &&
+                book.progressPercentage > 0
                 ? "Continuar leitura"
                 : "Ler online"}{" "}
             </div>
