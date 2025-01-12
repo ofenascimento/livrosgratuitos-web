@@ -15,6 +15,7 @@ import { GiSpellBook } from "react-icons/gi";
 import { MdOutlineDoneAll } from "react-icons/md";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
+import BannerWithButton from "@/components/BannerWithButton/BannerWithButton";
 
 export default function Leitor() {
   const isAuth = useAuth();
@@ -34,6 +35,9 @@ export default function Leitor() {
   const { title, urlBook, bookId } = useBook();
   const router = useRouter();
   const { toParagraph } = useBook();
+
+
+  useEffect(() => { console.log(currentParagraph) }, [currentParagraph, setCurrentParagraph])
 
   useEffect(() => {
     if (urlBook === "nobook") {
@@ -183,8 +187,8 @@ export default function Leitor() {
               background === "dark"
                 ? "#000000"
                 : background === "sepia"
-                ? "#faf2e7"
-                : "#ffffff",
+                  ? "#faf2e7"
+                  : "#ffffff",
           }}
         ></div>
         <div
@@ -199,8 +203,8 @@ export default function Leitor() {
               background === "dark"
                 ? "#000000"
                 : background === "sepia"
-                ? "#faf2e7"
-                : "#ffffff",
+                  ? "#faf2e7"
+                  : "#ffffff",
           }}
         >
           <div>
@@ -293,8 +297,8 @@ export default function Leitor() {
                       background === "dark"
                         ? "#000000"
                         : background === "sepia"
-                        ? "#faf2e7"
-                        : "#ffffff",
+                          ? "#faf2e7"
+                          : "#ffffff",
                     color: background === "dark" ? "#ffffff" : "#000000",
                   }}
                 >
@@ -302,23 +306,15 @@ export default function Leitor() {
                 </div>
               );
             })}
-
+            <div className="h-[30px]"></div>
+            <BannerWithButton title="Deseja finalizar o livro?" subtitle="Ele ficará disponível em sua aba de livros finalizados" srcImg="/ilustrations/book-1.png?v=" buttonLabel="Finalizar livro" onClick={() => {}} />
             <div className=" h-[300px]"></div>
           </div>
           <ModalReaderConfig
             isOpen={modalConfigIsOpen}
             onRequestClose={() => setModalConfigIsOpen(false)}
           />
-          {isAuth && (
-            <div className=" w-full flex flex-col justify-center items-center font-raleway pb-32">
-              <h1 className=" text-xl lg:text-3xl font-semibold font-lexend">
-                Você deseja finalizar esse livro?
-              </h1>
-              <button className=" bg-green-600 p-2 rounded-lg mt-5 font-poppins px-8 py-2 font-medium w-64  flex justify-center gap-2 items-center">
-                FINALIZAR LIVRO <MdOutlineDoneAll size={24} />{" "}
-              </button>
-            </div>
-          )}
+
         </div>
       </div>
       <AdBanner dataAdSlot="2423907456" fixed />
