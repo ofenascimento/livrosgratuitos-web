@@ -232,7 +232,7 @@ export default function Leitor() {
                     className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
                   >
                     <HiChevronLeft />
-                    <p className=" hidden lg:block font-lexend text-sm font-light">
+                    <p className=" hidden lg:block font-lexend text-sm font-normal">
                       {" "}
                       Voltar
                     </p>
@@ -250,7 +250,7 @@ export default function Leitor() {
                     onClick={() => setModalConfigIsOpen(true)}
                     className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
                   >
-                    <p className=" hidden lg:block font-lexend text-sm font-light">
+                    <p className=" hidden lg:block font-lexend text-sm font-normal">
                       {" "}
                       Configurações
                     </p>
