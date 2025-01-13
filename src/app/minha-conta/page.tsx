@@ -84,6 +84,8 @@ const AccountPage = () => {
         className="text-center bg-red-500 w-64 p-3 rounded-lg"
         onClick={() => {
           localStorage.removeItem("userToken");
+          document.cookie =
+          "userToken=; path=/; domain=.livrosgratuitos.com; expires=Thu, 01 Jan 1970 00:00:00 UTC; Secure; SameSite=Strict";
           router.push("/");
         }}
       >
