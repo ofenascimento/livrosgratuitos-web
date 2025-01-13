@@ -57,8 +57,12 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
         }),
       });
       const data = await response.json();
+  
       if (response.status === 201) {
         await localStorage.setItem("userToken", data.token);
+  
+        document.cookie = `userToken=${data.token}; path=/; domain=.livrosgratuitos.com; Secure; SameSite=Strict`;
+  
         window.location.reload();
       }
       if (response.status === 400) {
@@ -70,6 +74,7 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div
