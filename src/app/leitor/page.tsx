@@ -16,6 +16,7 @@ import { MdOutlineDoneAll } from "react-icons/md";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import BannerWithButton from "@/components/BannerWithButton/BannerWithButton";
+import React from "react";
 
 export default function Leitor() {
   const isAuth = useAuth();
@@ -172,6 +173,13 @@ export default function Leitor() {
 
   const readingPercentage = (currentParagraph / paragraphCount) * 100;
 
+  const adSlots = [
+    "1531484803",
+    "9218403137",
+    "4626457987",
+    "2809176959",
+  ];
+
   if (urlBook === "nobook") return null;
   return (
     <>
@@ -280,34 +288,45 @@ export default function Leitor() {
               const isUpperCase =
                 paragraph.trim() === paragraph.trim().toUpperCase();
 
+
+              const bannerIndex = Math.floor(index / 8);
+
               return (
-                <div
-                  key={index}
-                  id={`paragraph-${index + 1}`}
-                  ref={(el) => {
-                    paragraphRefs.current[index] = el;
-                  }}
-                  style={{
-                    whiteSpace: "pre-wrap",
-                    wordWrap: "break-word",
-                    marginBottom: "1em",
-                    fontSize: fontSize,
-                    fontWeight: isUpperCase ? "bold" : "normal",
-                    backgroundColor:
-                      background === "dark"
-                        ? "#000000"
-                        : background === "sepia"
-                          ? "#faf2e7"
-                          : "#ffffff",
-                    color: background === "dark" ? "#ffffff" : "#000000",
-                  }}
-                >
-                  {paragraph}
-                </div>
-              );
+                <React.Fragment key={index}>
+                  <div
+                    id={`paragraph-${index + 1}`}
+                    ref={(el) => {
+                      paragraphRefs.current[index] = el;
+                    }}
+                    style={{
+                      whiteSpace: "pre-wrap",
+                      wordWrap: "break-word",
+                      marginBottom: "1em",
+                      fontSize: fontSize,
+                      fontWeight: isUpperCase ? "bold" : "normal",
+                      backgroundColor:
+                        background === "dark"
+                          ? "#000000"
+                          : background === "sepia"
+                            ? "#faf2e7"
+                            : "#ffffff",
+                      color: background === "dark" ? "#ffffff" : "#000000",
+                    }}
+                  >
+                    {paragraph}
+                  </div>
+                  {(index + 1) % 8 === 0 && adSlots[bannerIndex] && (
+                    <AdBanner
+                      customClassName="mb-5"
+                      key={`banner-${bannerIndex}`}
+                      dataAdSlot={adSlots[bannerIndex]}
+                      responsive
+                    />
+                  )}
+                </React.Fragment>)
             })}
             <div className="h-[30px]"></div>
-            <BannerWithButton title="Deseja finalizar o livro?" subtitle="Ele ficará disponível em sua aba de livros finalizados" srcImg="/ilustrations/book-1.png?v=" buttonLabel="Finalizar livro" onClick={() => {}} />
+            <BannerWithButton title="Deseja finalizar o livro?" subtitle="Ele ficará disponível em sua aba de livros finalizados" srcImg="/ilustrations/book-1.png?v=" buttonLabel="Finalizar livro" onClick={() => { }} />
             <div className=" h-[300px]"></div>
           </div>
           <ModalReaderConfig
