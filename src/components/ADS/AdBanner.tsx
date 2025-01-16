@@ -29,18 +29,17 @@ const AdBanner = ({
       console.log(error.message);
     }
 
+    // Aguarda alguns segundos para que o anúncio seja carregado
     const timeout = setTimeout(() => {
       if (insRef.current && containerRef.current) {
         // Verifica se há um <iframe> dentro do <ins>
         const hasIframe = insRef.current.querySelector("iframe") !== null;
-        // Se houver um <iframe>, exibe o container
-        if (hasIframe) {
-          containerRef.current.style.display = "flex"; 
-          // ou remova o estilo para restaurar o padrão: containerRef.current.style.display = "";
+        // Se não houver <iframe>, oculta o container
+        if (!hasIframe) {
+          containerRef.current.style.display = "none";
         }
-        // Se não houver <iframe>, mantém o container oculto
       }
-    }, 3000); // tempo de espera ajustável
+    }, 1000);
 
     return () => clearTimeout(timeout);
   }, []);
@@ -48,14 +47,13 @@ const AdBanner = ({
   return (
     <div
       ref={containerRef}
-      style={{ display: "none" }}
-      className={`${customClassName} w-full justify-center items-center md:flex ${
+      className={`${customClassName} w-full justify-center items-center hidden md:flex ${
         fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""
       }`}
     >
       <ins
         ref={insRef}
-        className={`adsbygoogle ${!responsive && "bg-gray-600"} rounded-lg`}
+        className={`adsbygoogle rounded-lg`}
         style={{
           display: "inline-block",
           width: responsive ? "auto" : 728,
