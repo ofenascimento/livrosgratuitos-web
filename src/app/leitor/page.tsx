@@ -317,7 +317,7 @@ export default function Leitor() {
                   >
                     {paragraph}
                   </div>
-                  {(index + 1) % 8 === 0 && adBanners[bannerIndex]}
+                  {(index + 1) % 8 === 0 && adBanners[bannerIndex % adBanners.length]}
                 </React.Fragment>)
             })}
             <div className="h-[30px]"></div>
