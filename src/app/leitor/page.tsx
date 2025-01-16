@@ -291,7 +291,7 @@ export default function Leitor() {
                 paragraph.trim() === paragraph.trim().toUpperCase();
 
 
-              const bannerIndex = Math.floor(index / 8);
+              const bannerIndex = Math.floor(index / 10);
 
               return (
                 <React.Fragment key={index}>
@@ -317,7 +317,7 @@ export default function Leitor() {
                   >
                     {paragraph}
                   </div>
-                  {(index + 1) % 8 === 0 && adBanners[bannerIndex % adBanners.length]}
+                  {(index + 1) % 10 === 0 && adBanners[bannerIndex % adBanners.length]}
                 </React.Fragment>)
             })}
             <div className="h-[30px]"></div>
