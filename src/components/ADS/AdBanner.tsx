@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type AdBannerTypes = {
   dataAdSlot: string;
@@ -20,7 +20,8 @@ const AdBanner = ({
   responsive
 }: AdBannerTypes) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const insRef = useRef<HTMLModElement>(null); 
+  const insRef = useRef<HTMLModElement>(null);
+  const [isVisible, setIsVisible] = useState(false); // Começa invisível
 
   useEffect(() => {
     try {
@@ -30,19 +31,15 @@ const AdBanner = ({
     }
 
     const timeout = setTimeout(() => {
-      if (insRef.current && containerRef.current) {
+      if (insRef.current) {
         const adStatus = insRef.current.getAttribute("data-ad-status");
-        if (adStatus === "unfilled") {
-          containerRef.current.style.display = "none";
-          return;
-        }
-
         const hasIframe = insRef.current.querySelector("iframe") !== null;
-        if (!hasIframe) {
-          containerRef.current.style.display = "none";
+
+        if (adStatus === "filled" && hasIframe) {
+          setIsVisible(true); // Torna visível somente se for preenchido
         }
       }
-    }, 2000);
+    }, 100); // Verificação rápida
 
     return () => clearTimeout(timeout);
   }, []);
@@ -50,9 +47,16 @@ const AdBanner = ({
   return (
     <div
       ref={containerRef}
-      className={`${customClassName} w-full justify-center items-center hidden md:flex ${
-        fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""
-      }`}
+      className={`
+        ${customClassName || ""} 
+        w-full justify-center items-center hidden md:flex 
+        transition-opacity duration-500 ease-out overflow-hidden 
+        ${fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""}
+      `}
+      style={{
+        height: isVisible ? "auto" : 0,
+        opacity: isVisible ? 1 : 0,
+      }}
     >
       <ins
         ref={insRef}
