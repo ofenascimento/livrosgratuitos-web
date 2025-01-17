@@ -20,7 +20,7 @@ const AdBanner = ({
   responsive
 }: AdBannerTypes) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const insRef = useRef<HTMLModElement>(null);
+  const insRef = useRef<HTMLModElement>(null); 
 
   useEffect(() => {
     try {
@@ -29,17 +29,20 @@ const AdBanner = ({
       console.log(error.message);
     }
 
-    // Aguarda alguns segundos para que o anúncio seja carregado
     const timeout = setTimeout(() => {
       if (insRef.current && containerRef.current) {
-        // Verifica se há um <iframe> dentro do <ins>
+        const adStatus = insRef.current.getAttribute("data-ad-status");
+        if (adStatus === "unfilled") {
+          containerRef.current.style.display = "none";
+          return;
+        }
+
         const hasIframe = insRef.current.querySelector("iframe") !== null;
-        // Se não houver <iframe>, oculta o container
         if (!hasIframe) {
           containerRef.current.style.display = "none";
         }
       }
-    }, 1000);
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, []);
@@ -53,7 +56,7 @@ const AdBanner = ({
     >
       <ins
         ref={insRef}
-        className={`adsbygoogle rounded-lg`}
+        className="adsbygoogle rounded-lg"
         style={{
           display: "inline-block",
           width: responsive ? "auto" : 728,
