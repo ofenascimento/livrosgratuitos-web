@@ -21,7 +21,7 @@ const AdBanner = ({
 }: AdBannerTypes) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const insRef = useRef<HTMLModElement>(null);
-  const [showAd, setShowAd] = useState(true);
+  const [adUnfilled, setAdUnfilled] = useState(false);
 
   useEffect(() => {
     try {
@@ -31,18 +31,21 @@ const AdBanner = ({
     }
 
     const observer = new MutationObserver(() => {
-      const adStatus = insRef.current?.getAttribute("data-ad-status");
-      if (!adStatus || adStatus === "unfilled") {
-        setShowAd(false);
-      } else {
-        setShowAd(true);
+      const adsbygoogleStatus = insRef.current?.getAttribute("data-adsbygoogle-status");
+      if (adsbygoogleStatus === "done") {
+        const adStatus = insRef.current?.getAttribute("data-ad-status");
+        if (adStatus === "unfilled") {
+          setAdUnfilled(true);
+        } else {
+          setAdUnfilled(false);
+        }
       }
     });
 
     if (insRef.current) {
       observer.observe(insRef.current, {
         attributes: true,
-        attributeFilter: ["data-ad-status"],
+        attributeFilter: ["data-adsbygoogle-status", "data-ad-status"],
       });
     }
 
@@ -51,9 +54,9 @@ const AdBanner = ({
     };
   }, []);
 
-  if (!showAd) return null;
 
   return (
+    !adUnfilled &&
     <div
       ref={containerRef}
       className={`

@@ -18,7 +18,7 @@ const AdBannerMobile = ({
   customClassName
 }: AdBannerTypes) => {
   const insRef = useRef<HTMLModElement>(null);
-  const [showAd, setShowAd] = useState(true);
+  const [adUnfilled, setAdUnfilled] = useState(false);
 
   useEffect(() => {
     try {
@@ -28,18 +28,21 @@ const AdBannerMobile = ({
     }
 
     const observer = new MutationObserver(() => {
-      const adStatus = insRef.current?.getAttribute("data-ad-status");
-      if (!adStatus || adStatus === "unfilled") {
-        setShowAd(false);
-      } else {
-        setShowAd(true);
+      const adsbygoogleStatus = insRef.current?.getAttribute("data-adsbygoogle-status");
+      if (adsbygoogleStatus === "done") {
+        const adStatus = insRef.current?.getAttribute("data-ad-status");
+        if (adStatus === "unfilled") {
+          setAdUnfilled(true);
+        } else {
+          setAdUnfilled(false);
+        }
       }
     });
 
     if (insRef.current) {
       observer.observe(insRef.current, {
         attributes: true,
-        attributeFilter: ["data-ad-status"],
+        attributeFilter: ["data-adsbygoogle-status", "data-ad-status"],
       });
     }
 
@@ -48,22 +51,22 @@ const AdBannerMobile = ({
     };
   }, []);
 
-  if (!showAd) return null;
-
   return (
-    <div
-      className={`${customClassName || ""} w-full justify-center items-center flex md:hidden ${
-        fixed ? "fixed bottom-0 left-0 z-50" : ""
-      }`}
-    >
-      <ins
-        ref={insRef}
-        className="adsbygoogle bg-gray-600 rounded-lg"
-        style={{ display: "inline-block", width: 350, height: 50 }}
-        data-ad-client="ca-pub-2529229033686497"
-        data-ad-slot={dataAdSlot}
-      ></ins>
-    </div>
+    !adUnfilled && (
+      <div
+        className={`${customClassName || ""} w-full justify-center items-center flex md:hidden ${
+          fixed ? "fixed bottom-0 left-0 z-50" : ""
+        }`}
+      >
+        <ins
+          ref={insRef}
+          className="adsbygoogle bg-gray-600 rounded-lg"
+          style={{ display: "inline-block", width: 350, height: 50 }}
+          data-ad-client="ca-pub-2529229033686497"
+          data-ad-slot={dataAdSlot}
+        ></ins>
+      </div>
+    )
   );
 };
 
