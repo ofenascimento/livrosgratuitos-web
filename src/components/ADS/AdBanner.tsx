@@ -21,7 +21,7 @@ const AdBanner = ({
 }: AdBannerTypes) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const insRef = useRef<HTMLModElement>(null);
-  const [adUnfilled, setAdUnfilled] = useState(false);
+  const [showAd, setShowAd] = useState(true);
 
   useEffect(() => {
     try {
@@ -31,10 +31,11 @@ const AdBanner = ({
     }
 
     const observer = new MutationObserver(() => {
-      if (insRef.current?.getAttribute("data-ad-status") === "unfilled") {
-        setAdUnfilled(true);
+      const adStatus = insRef.current?.getAttribute("data-ad-status");
+      if (!adStatus || adStatus === "unfilled") {
+        setShowAd(false);
       } else {
-        setAdUnfilled(false);
+        setShowAd(true);
       }
     });
 
@@ -50,6 +51,8 @@ const AdBanner = ({
     };
   }, []);
 
+  if (!showAd) return null;
+
   return (
     <div
       ref={containerRef}
@@ -60,20 +63,17 @@ const AdBanner = ({
         ${fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""}
       `}
     >
-      {
-        !adUnfilled && <ins
-          ref={insRef}
-          className="adsbygoogle rounded-lg bg-slate-700 "
-          style={{
-            display: "inline-block",
-            width: responsive ? "auto" : 728,
-            height: responsive ? "auto" : 90,
-          }}
-          data-ad-client="ca-pub-2529229033686497"
-          data-ad-slot={dataAdSlot}
-        ></ins>
-      }
-
+      <ins
+        ref={insRef}
+        className="adsbygoogle rounded-lg bg-slate-700 "
+        style={{
+          display: "inline-block",
+          width: responsive ? "auto" : 728,
+          height: responsive ? "auto" : 90,
+        }}
+        data-ad-client="ca-pub-2529229033686497"
+        data-ad-slot={dataAdSlot}
+      ></ins>
     </div>
   );
 };

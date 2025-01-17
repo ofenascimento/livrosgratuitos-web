@@ -18,7 +18,7 @@ const AdBannerMobile = ({
   customClassName
 }: AdBannerTypes) => {
   const insRef = useRef<HTMLModElement>(null);
-  const [adUnfilled, setAdUnfilled] = useState(false);
+  const [showAd, setShowAd] = useState(true);
 
   useEffect(() => {
     try {
@@ -28,10 +28,11 @@ const AdBannerMobile = ({
     }
 
     const observer = new MutationObserver(() => {
-      if (insRef.current?.getAttribute("data-ad-status") === "unfilled") {
-        setAdUnfilled(true);
+      const adStatus = insRef.current?.getAttribute("data-ad-status");
+      if (!adStatus || adStatus === "unfilled") {
+        setShowAd(false);
       } else {
-        setAdUnfilled(false);
+        setShowAd(true);
       }
     });
 
@@ -47,7 +48,7 @@ const AdBannerMobile = ({
     };
   }, []);
 
-  if (adUnfilled) return null;
+  if (!showAd) return null;
 
   return (
     <div
