@@ -18,7 +18,7 @@ const PostPage = () => {
     return (
         <>
             <Navbar />
-            <div className="w-full mx-auto px-4 lg:px-0 max-w-4xl">
+            <div className="w-full mx-auto px-4 lg:px-0">
                 <Title title="5 Livros de Machado de Assis que Você Deve Ler" />
                 <Description description="Confira 5 livros incríveis de Machado de Assis que marcam a literatura brasileira com histórias envolventes e reflexões profundas" />
                 <Content>
