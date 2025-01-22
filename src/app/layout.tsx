@@ -1,12 +1,21 @@
 "use client";
 import type { Metadata } from "next";
-import { Poppins, Inter, Raleway, Merriweather, Lora, Lexend, Darker_Grotesque } from "next/font/google";
+import {
+  Poppins,
+  Inter,
+  Raleway,
+  Merriweather,
+  Lora,
+  Lexend,
+  Darker_Grotesque,
+  Nunito,
+  Red_Hat_Display,
+} from "next/font/google";
 import "./globals.css";
 import { metadata } from "./metadata";
 import { BookProvider } from "@/context/BookContext";
 import { ReaderConfigProvider } from "@/context/ReaderConfiContext";
 import GoogleAdsense from "@/components/Ads";
-
 
 const poppins = Poppins({
   weight: ["400", "500", "700"],
@@ -17,7 +26,7 @@ const poppins = Poppins({
 });
 
 const inter = Inter({
-  weight: ["400", "500", "700"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   style: ["normal"],
   display: "swap",
   subsets: ["latin"],
@@ -64,6 +73,22 @@ const darkerGrotesque = Darker_Grotesque({
   variable: "--font-darker-grotesque",
 });
 
+const nunito = Nunito({
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-nunito",
+});
+
+const redHat = Red_Hat_Display({
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal"],
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-redhat",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -76,13 +101,32 @@ export default function RootLayout({
           name="description"
           content={metadata.description ?? "Livros Gratuitos"}
         />
-        <meta name="google-site-verification" content="KOaKjo4TUKs2O2SdRxRs61dwmfSAe-f-4RvutfYlBnY" />
-        <meta name="google-adsense-account" content="ca-pub-2529229033686497"></meta>
+        <meta
+          name="google-site-verification"
+          content="KOaKjo4TUKs2O2SdRxRs61dwmfSAe-f-4RvutfYlBnY"
+        />
+        <meta
+          name="google-adsense-account"
+          content="ca-pub-2529229033686497"
+        />
         <title>{String(metadata.title)}</title>
       </head>
 
       <body
-        className={`${poppins.variable} ${inter.variable} ${raleway.variable} ${lora.variable} ${merriweather.variable} ${lexend.variable} ${darkerGrotesque.variable}  font-raleway bg-black bg-blured `}
+        className={`
+          ${poppins.variable} 
+          ${inter.variable} 
+          ${raleway.variable} 
+          ${lora.variable} 
+          ${merriweather.variable} 
+          ${lexend.variable} 
+          ${darkerGrotesque.variable} 
+          ${nunito.variable}
+          ${redHat.variable}
+          font-raleway 
+          bg-black 
+          bg-blured 
+        `}
       >
         <ReaderConfigProvider>
           <BookProvider>

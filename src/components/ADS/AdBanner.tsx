@@ -9,6 +9,8 @@ type AdBannerTypes = {
   fixed?: boolean;
   customClassName?: string;
   responsive?: boolean;
+  vertical?: boolean;
+  square?: boolean;
 };
 
 const AdBanner = ({
@@ -17,7 +19,9 @@ const AdBanner = ({
   dataFullWidthResponsive,
   fixed,
   customClassName,
-  responsive
+  responsive,
+  vertical,
+  square
 }: AdBannerTypes) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const insRef = useRef<HTMLModElement>(null);
@@ -71,8 +75,8 @@ const AdBanner = ({
         className="adsbygoogle rounded-lg bg-slate-700 "
         style={{
           display: "inline-block",
-          width: responsive ? "auto" : 728,
-          height: responsive ? "auto" : 90,
+          width: responsive ? "auto" : vertical ? 120 : square ? 250 : 728,
+          height: responsive ? "auto" : vertical ? 728 : square ? 250 : 90,
         }}
         data-ad-client="ca-pub-2529229033686497"
         data-ad-slot={dataAdSlot}

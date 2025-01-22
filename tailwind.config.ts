@@ -51,7 +51,9 @@ const config: Config = {
         lora: ["var(--font-lora)"],
         merriweather: ["var(--font-merriweather)", "serif"],
         lexend: ["var(--font-lexend)"],
-        darker: ["var(--font-darker-grotesque)"]
+        darker: ["var(--font-darker-grotesque)"],
+        nunito: ["var(--font-nunito)"],
+        redRat: ["var(--font-redhat)"]
       },
       width: {
         "9/10": "90%",
