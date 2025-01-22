@@ -97,7 +97,7 @@ function FavoritosPage() {
             title={<>Nenhum livro favoritado por enquanto</>}
           />
           <Image
-            src="/no-books.webp"
+            src="/no-book.webp"
             className=" rounded-3xl mb-2"
             width={300}
             height={50}
