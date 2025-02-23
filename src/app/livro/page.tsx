@@ -3,6 +3,7 @@ import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import BookList from "@/components/BookList/BookList";
 import Footer from "@/components/Footer/Footer";
+import Metadata from "@/components/Metadata";
 import ModalLogin from "@/components/Modals/ModalLogin/ModalLogin";
 import ModalShare from "@/components/Modals/ModalShare/ModalShare";
 import Navbar from "@/components/Navbar/Navbar";
@@ -15,6 +16,7 @@ import useAuth from "@/hooks/useAuth";
 import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import useFetchBookAuth from "@/hooks/useFetchBookAuth";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -56,8 +58,10 @@ function Livros() {
     return <LivroPageSkeleton />;
   }
 
+
   return (
     <>
+      <Metadata seoTitle={book.titulo} seoDescription={book.descricao} />
       <Navbar />
       <AdBanner
         dataAdFormat=""
