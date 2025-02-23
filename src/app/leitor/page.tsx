@@ -141,7 +141,7 @@ export default function Leitor() {
         bookId,
         0,
         Math.round(readingPercentage) ?? 0,
-        currentParagraph
+        currentParagraph - 1
       );
 
       event.preventDefault();
@@ -153,7 +153,7 @@ export default function Leitor() {
         bookId,
         0,
         Math.round(readingPercentage) ?? 0,
-        currentParagraph
+        currentParagraph - 1
       );
     };
 
@@ -235,7 +235,7 @@ export default function Leitor() {
                         bookId,
                         0,
                         Math.round(readingPercentage) ?? 0,
-                        currentParagraph
+                        currentParagraph - 1
                       );
                       router.back();
                     }}
