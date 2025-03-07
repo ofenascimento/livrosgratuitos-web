@@ -12,6 +12,8 @@ declare global {
       currentParagraph?: number;
       isFavorite?: boolean;
       progressPercentage?: number;
+      urlHtml?: string;
+      slug?: string;
     }
     interface IBooks {
         capa: string;

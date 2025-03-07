@@ -1,4 +1,5 @@
 'use client'
+import CustomLayout from '@/components/CustomLayout/CustomLayout';
 import Footer from '@/components/Footer/Footer'
 import Navbar from '@/components/Navbar/Navbar'
 import { useSearchParams } from 'next/navigation';
@@ -9,7 +10,7 @@ function TermosDeServico() {
     const isApp = searchParams.get('app');
     
     return (
-        <div>
+        <CustomLayout>
             {
                 !isApp && <Navbar />
             }
@@ -101,7 +102,7 @@ function TermosDeServico() {
                 !isApp &&  <Footer />
             }
             
-        </div>
+        </CustomLayout>
     )
 }
 

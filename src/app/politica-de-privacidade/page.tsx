@@ -3,13 +3,14 @@ import Footer from '@/components/Footer/Footer';
 import Navbar from '@/components/Navbar/Navbar';
 import React from 'react';
 import { useSearchParams } from 'next/navigation'
+import CustomLayout from '@/components/CustomLayout/CustomLayout';
 
 function Privacidade() {
     const searchParams = useSearchParams();
     const isApp = searchParams.get('app');
 
     return (
-        <div>
+        <CustomLayout>
             {
                 !isApp && <Navbar />
             }
@@ -90,7 +91,7 @@ function Privacidade() {
                 !isApp && <Footer />
             }
             
-        </div>
+        </CustomLayout>
     );
 }
 

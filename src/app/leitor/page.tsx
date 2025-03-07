@@ -17,6 +17,7 @@ import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import BannerWithButton from "@/components/BannerWithButton/BannerWithButton";
 import React from "react";
+import CustomLayout from "@/components/CustomLayout/CustomLayout";
 
 export default function Leitor() {
   const isAuth = useAuth();
@@ -185,154 +186,156 @@ export default function Leitor() {
   if (urlBook === "nobook") return null;
   return (
     <>
-      {isProgressLoadingVisible && (
-        <FullScreenLoader label="Carregando seu progresso atual" />
-      )}
-      <div className={`relative min-h-screen font-${fontFamily}`}>
-        <div
-          className="fixed inset-0 min-h-screen"
-          style={{
-            zIndex: -1,
-            backgroundColor:
-              background === "dark"
-                ? "#000000"
-                : background === "sepia"
-                  ? "#faf2e7"
-                  : "#ffffff",
-          }}
-        ></div>
-        <div
-          className="relative min-h-screen"
-          style={{
-            padding: "20px",
-            maxWidth: "800px",
-            margin: "0 auto",
-            lineHeight: "1.6",
-            color: "#fff",
-            backgroundColor:
-              background === "dark"
-                ? "#000000"
-                : background === "sepia"
-                  ? "#faf2e7"
-                  : "#ffffff",
-          }}
-        >
-          <div>
-            {/* <div className="fixed bottom-0 right-0 bg-orange-400 p-8">
+      <CustomLayout>
+        {isProgressLoadingVisible && (
+          <FullScreenLoader label="Carregando seu progresso atual" />
+        )}
+        <div className={`relative min-h-screen font-${fontFamily}`}>
+          <div
+            className="fixed inset-0 min-h-screen"
+            style={{
+              zIndex: -1,
+              backgroundColor:
+                background === "dark"
+                  ? "#000000"
+                  : background === "sepia"
+                    ? "#faf2e7"
+                    : "#ffffff",
+            }}
+          ></div>
+          <div
+            className="relative min-h-screen"
+            style={{
+              padding: "20px",
+              maxWidth: "800px",
+              margin: "0 auto",
+              lineHeight: "1.6",
+              color: "#fff",
+              backgroundColor:
+                background === "dark"
+                  ? "#000000"
+                  : background === "sepia"
+                    ? "#faf2e7"
+                    : "#ffffff",
+            }}
+          >
+            <div>
+              {/* <div className="fixed bottom-0 right-0 bg-orange-400 p-8">
             <p>Número de parágrafos: {paragraphCount}</p>
             <p>Parágrafo atual: {currentParagraph}</p>
             <p>Porcentagem de leitura: {Math.round(readingPercentage)}%</p>
           </div> */}
-            <div className=" mt-0 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50">
-              <div className="flex justify-between items-center flex-col gap-3">
-                <div
-                  id="buttons"
-                  className="flex w-full justify-between items-center font-poppins"
-                >
-                  <button
-                    onClick={() => {
-                      addProgressBook(
-                        bookId,
-                        0,
-                        Math.round(readingPercentage) ?? 0,
-                        currentParagraph - 1
-                      );
-                      router.back();
-                    }}
-                    className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
-                  >
-                    <HiChevronLeft />
-                    <p className=" hidden lg:block font-lexend text-sm font-normal">
-                      {" "}
-                      Voltar
-                    </p>
-                  </button>
-                  <div className=" font-poppins flex flex-col justify-center items-center">
-                    <h1 className=" font-darker text-xl font-medium">
-                      {title}
-                    </h1>
-                    <span className=" text-sm font-lexend font-light">{`Progresso: ${Math.round(
-                      readingPercentage
-                    )}%`}</span>
-                  </div>
-
-                  <button
-                    onClick={() => setModalConfigIsOpen(true)}
-                    className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
-                  >
-                    <p className=" hidden lg:block font-lexend text-sm font-normal">
-                      {" "}
-                      Configurações
-                    </p>
-                    <HiDotsVertical />
-                  </button>
-                </div>
-                <div
-                  className="progress-bar-container w-full"
-                  style={{
-                    backgroundColor: "#ddd",
-                    borderRadius: "4px",
-                    overflow: "hidden",
-                  }}
-                >
+              <div className=" mt-0 fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-800 p-4 z-50">
+                <div className="flex justify-between items-center flex-col gap-3">
                   <div
-                    className="progress-bar bg-main-400"
+                    id="buttons"
+                    className="flex w-full justify-between items-center font-poppins"
+                  >
+                    <button
+                      onClick={() => {
+                        addProgressBook(
+                          bookId,
+                          0,
+                          Math.round(readingPercentage) ?? 0,
+                          currentParagraph - 1
+                        );
+                        router.back();
+                      }}
+                      className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
+                    >
+                      <HiChevronLeft />
+                      <p className=" hidden lg:block font-lexend text-sm font-normal">
+                        {" "}
+                        Voltar
+                      </p>
+                    </button>
+                    <div className=" font-poppins flex flex-col justify-center items-center">
+                      <h1 className=" font-darker text-xl font-medium">
+                        {title}
+                      </h1>
+                      <span className=" text-sm font-lexend font-light">{`Progresso: ${Math.round(
+                        readingPercentage
+                      )}%`}</span>
+                    </div>
+
+                    <button
+                      onClick={() => setModalConfigIsOpen(true)}
+                      className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+                    >
+                      <p className=" hidden lg:block font-lexend text-sm font-normal">
+                        {" "}
+                        Configurações
+                      </p>
+                      <HiDotsVertical />
+                    </button>
+                  </div>
+                  <div
+                    className="progress-bar-container w-full"
                     style={{
-                      width: `${readingPercentage}%`,
-                      height: "10px",
+                      backgroundColor: "#ddd",
+                      borderRadius: "4px",
+                      overflow: "hidden",
                     }}
-                  />
+                  >
+                    <div
+                      className="progress-bar bg-main-400"
+                      style={{
+                        width: `${readingPercentage}%`,
+                        height: "10px",
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
+              <div className="h-24"></div>
+              {paragraphs.map((paragraph, index) => {
+                const isUpperCase =
+                  paragraph.trim() === paragraph.trim().toUpperCase();
+
+
+                const bannerIndex = Math.floor(index / 10);
+
+                return (
+                  <React.Fragment key={index}>
+                    <div
+                      id={`paragraph-${index + 1}`}
+                      ref={(el) => {
+                        paragraphRefs.current[index] = el;
+                      }}
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        wordWrap: "break-word",
+                        marginBottom: "1em",
+                        fontSize: fontSize,
+                        fontWeight: isUpperCase ? "bold" : "normal",
+                        backgroundColor:
+                          background === "dark"
+                            ? "#000000"
+                            : background === "sepia"
+                              ? "#faf2e7"
+                              : "#ffffff",
+                        color: background === "dark" ? "#ffffff" : "#000000",
+                      }}
+                    >
+                      {paragraph}
+                    </div>
+                    {(index + 1) % 10 === 0 && adBanners[bannerIndex % adBanners.length]}
+                  </React.Fragment>)
+              })}
+              <div className="h-[30px]"></div>
+              <BannerWithButton title="Deseja finalizar o livro?" subtitle="Ele ficará disponível em sua aba de livros finalizados" srcImg="/ilustrations/book-1.png?v=" buttonLabel="Finalizar livro" onClick={() => { }} />
+              <div className=" h-[300px]"></div>
             </div>
-            <div className="h-24"></div>
-            {paragraphs.map((paragraph, index) => {
-              const isUpperCase =
-                paragraph.trim() === paragraph.trim().toUpperCase();
+            <ModalReaderConfig
+              isOpen={modalConfigIsOpen}
+              onRequestClose={() => setModalConfigIsOpen(false)}
+            />
 
-
-              const bannerIndex = Math.floor(index / 10);
-
-              return (
-                <React.Fragment key={index}>
-                  <div
-                    id={`paragraph-${index + 1}`}
-                    ref={(el) => {
-                      paragraphRefs.current[index] = el;
-                    }}
-                    style={{
-                      whiteSpace: "pre-wrap",
-                      wordWrap: "break-word",
-                      marginBottom: "1em",
-                      fontSize: fontSize,
-                      fontWeight: isUpperCase ? "bold" : "normal",
-                      backgroundColor:
-                        background === "dark"
-                          ? "#000000"
-                          : background === "sepia"
-                            ? "#faf2e7"
-                            : "#ffffff",
-                      color: background === "dark" ? "#ffffff" : "#000000",
-                    }}
-                  >
-                    {paragraph}
-                  </div>
-                  {(index + 1) % 10 === 0 && adBanners[bannerIndex % adBanners.length]}
-                </React.Fragment>)
-            })}
-            <div className="h-[30px]"></div>
-            <BannerWithButton title="Deseja finalizar o livro?" subtitle="Ele ficará disponível em sua aba de livros finalizados" srcImg="/ilustrations/book-1.png?v=" buttonLabel="Finalizar livro" onClick={() => { }} />
-            <div className=" h-[300px]"></div>
           </div>
-          <ModalReaderConfig
-            isOpen={modalConfigIsOpen}
-            onRequestClose={() => setModalConfigIsOpen(false)}
-          />
-
         </div>
-      </div>
-      <AdBanner dataAdSlot="2423907456" fixed />
-      <AdBannerMobile dataAdSlot="6603126932" fixed />
+        <AdBanner dataAdSlot="2423907456" fixed />
+        <AdBannerMobile dataAdSlot="6603126932" fixed />
+      </CustomLayout>
     </>
   );
 }

@@ -2,6 +2,7 @@
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import Card from "@/components/Card/Card";
+import CustomLayout from "@/components/CustomLayout/CustomLayout";
 import Footer from "@/components/Footer/Footer";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import Navbar from "@/components/Navbar/Navbar";
@@ -46,71 +47,75 @@ function FavoritosPage() {
   if (!isAuth)
     return (
       <>
-        <Navbar />
-        <AdBanner
-          dataAdFormat=""
-          dataFullWidthResponsive={false}
-          dataAdSlot="2423907456"
-          customClassName="mt-4"
-        />
-        <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
-        <div className="flex items-center mt-2 justify-center">
-          <div className="max-w-md w-full p-4 rounded-lg flex justify-center items-center flex-col gap-2">
-            <h2 className="text-4xl font-bold text-center m-0 text-white">
-              Favorite seus livros
-            </h2>
-            <p className=" text-white text-center">
-              Faça login ou crie uma conta para favoritar seus livros
-            </p>
-            <Image
-              src="/favorites-ilustration.webp"
-              className=" rounded-3xl mb-2"
-              width={300}
-              height={50}
-              alt=""
-            />
-            <Link
-              href="login"
-              className="w-full bg-main-400 text-center text-white py-2 px-4 rounded-full font-medium"
-            >
-              Fazer login
-            </Link>
-            <Link
-              href="criar-conta"
-              className="w-full bg-main-400 text-center text-white py-2 px-4 rounded-full font-medium"
-            >
-              Criar conta
-            </Link>
+        <CustomLayout>
+          <Navbar />
+          <AdBanner
+            dataAdFormat=""
+            dataFullWidthResponsive={false}
+            dataAdSlot="2423907456"
+            customClassName="mt-4"
+          />
+          <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
+          <div className="flex items-center mt-2 justify-center">
+            <div className="max-w-md w-full p-4 rounded-lg flex justify-center items-center flex-col gap-2">
+              <h2 className="text-4xl font-bold text-center m-0 text-white">
+                Favorite seus livros
+              </h2>
+              <p className=" text-white text-center">
+                Faça login ou crie uma conta para favoritar seus livros
+              </p>
+              <Image
+                src="/favorites-ilustration.webp"
+                className=" rounded-3xl mb-2"
+                width={300}
+                height={50}
+                alt=""
+              />
+              <Link
+                href="login"
+                className="w-full bg-main-400 text-center text-white py-2 px-4 rounded-full font-medium"
+              >
+                Fazer login
+              </Link>
+              <Link
+                href="criar-conta"
+                className="w-full bg-main-400 text-center text-white py-2 px-4 rounded-full font-medium"
+              >
+                Criar conta
+              </Link>
+            </div>
           </div>
-        </div>
-        <Footer />
+          <Footer />
+        </CustomLayout>
       </>
     );
 
   if (favoriteBooks === null || favoriteBooks.length === 0) {
     return (
-      <div>
-        <Navbar />
-        <div className=" flex justify-center items-center w-full flex-col">
-          <Title
-            customClassName="items-start mt-4"
-            title={<>Nenhum livro favoritado por enquanto</>}
-          />
-          <Image
-            src="/no-book.webp"
-            className=" rounded-3xl mb-2"
-            width={300}
-            height={50}
-            alt=""
-          />
+      <CustomLayout>
+        <div>
+          <Navbar />
+          <div className=" flex justify-center items-center w-full flex-col">
+            <Title
+              customClassName="items-start mt-4"
+              title={<>Nenhum livro favoritado por enquanto</>}
+            />
+            <Image
+              src="/no-book.webp"
+              className=" rounded-3xl mb-2"
+              width={300}
+              height={50}
+              alt=""
+            />
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </CustomLayout>
     );
   }
 
   return (
-    <div>
+    <CustomLayout>
       <Navbar />
       <AdBanner
         dataAdFormat=""
@@ -152,7 +157,7 @@ function FavoritosPage() {
         ))}
       </div>
       <Footer />
-    </div>
+    </CustomLayout>
   );
 }
 

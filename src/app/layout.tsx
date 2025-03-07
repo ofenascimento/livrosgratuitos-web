@@ -1,5 +1,6 @@
 "use client";
 import type { Metadata } from "next";
+import { usePathname } from "next/navigation"; // ✅ Importa o hook correto
 import {
   Poppins,
   Inter,
@@ -94,6 +95,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+
+  const isTestPage = pathname.includes("/teste");
+
   return (
     <html lang="en">
       <head>
@@ -112,8 +117,7 @@ export default function RootLayout({
         <title>{String(metadata.title)}</title>
       </head>
 
-      <body
-        className={`
+      <body className={isTestPage ? "" : `
           ${poppins.variable} 
           ${inter.variable} 
           ${raleway.variable} 
@@ -130,11 +134,7 @@ export default function RootLayout({
       >
         <ReaderConfigProvider>
           <BookProvider>
-            <div className="min-h-screen flex items-center justify-center lg:bg-blured text-white">
-              <div className="w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 rounded-lg ">
-                {children}
-              </div>
-            </div>
+            {children}
           </BookProvider>
         </ReaderConfigProvider>
       </body>
