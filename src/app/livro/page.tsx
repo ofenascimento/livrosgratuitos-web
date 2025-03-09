@@ -35,23 +35,9 @@ function Livros() {
   const { setToParagraph, toParagraph } = useBook();
   const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
   const [modalLoginIsOpen, setModalLoginIsOpen] = useState<boolean>(false);
-  const [isInstagramModalOpen, setIsInstagramModalOpen] = useState(false);
 
   const isAuth = useAuth();
   const router = useRouter();
-
-  const isInstagramWebView = (): boolean => {
-    if (typeof window === "undefined") return false;
-    const userAgent = navigator.userAgent;
-    return /Instagram/i.test(userAgent);
-  };
-
-
-  useEffect(() => {
-    if (isInstagramWebView()) {
-      setIsInstagramModalOpen(true);
-    }
-  }, []);
 
 
 
@@ -310,10 +296,7 @@ function Livros() {
           isOpen={modalLoginIsOpen}
           onClose={() => setModalLoginIsOpen(false)}
         />
-        <ModalInstagram
-          isOpen={isInstagramModalOpen}
-          onClose={() => setIsInstagramModalOpen(false)}
-        />
+        
       </CustomLayout>
     </>
   );
