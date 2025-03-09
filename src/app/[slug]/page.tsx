@@ -18,6 +18,7 @@ import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import useFetchBookAuth from "@/hooks/useFetchBookAuth";
 import { useFetchBookBySlug } from "@/hooks/useFetchBookBySlug";
+import useCopyToClipboard from "@/utils/useToClipboard";
 import Head from "next/head";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -38,8 +39,29 @@ function Livros() {
     const { setToParagraph, toParagraph } = useBook();
     const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
     const [modalLoginIsOpen, setModalLoginIsOpen] = useState<boolean>(false);
+    const [fullUrl, setFullUrl] = useState<string>("");
+    const [isInstagramModalOpen, setIsInstagramModalOpen] = useState(false);
+
     const isAuth = useAuth();
-    const router = useRouter();
+    const { isCopied, copyText } = useCopyToClipboard()
+
+    const isInstagramWebView = (): boolean => {
+        if (typeof window === "undefined" || typeof navigator === "undefined") return false;
+        return navigator.userAgent.toLowerCase().includes("instagram");
+    };
+
+
+    useEffect(() => {
+        if (isInstagramWebView()) {
+            setIsInstagramModalOpen(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setFullUrl(window.location.href);
+        }
+    }, []);
 
     useEffect(() => {
         if (book && book.capa) {
@@ -296,6 +318,29 @@ function Livros() {
                     isOpen={modalLoginIsOpen}
                     onClose={() => setModalLoginIsOpen(false)}
                 />
+                {isInstagramModalOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
+                            <h2 className="text-xl font-bold text-gray-800">Abra no navegador</h2>
+                            <p className="text-gray-600 mt-2">
+                                Infelizmente o livro não pode ser aberto pelo navegador do instagram. Copie o link e cole no seu navegador de preferência.
+
+                            </p>
+                            <div className="bg-indigo-200 rounded-lg mt-2 py-2">
+                                <span className=" text-main-500 font-semibold">{fullUrl}</span>
+                            </div>
+                            <button
+                                className="mt-4 bg-main-600 font-semibold text-white px-4 py-2 rounded-md w-full"
+                                onClick={() => {
+                                    copyText(fullUrl)
+                                }}
+                            >
+                                {isCopied ? 'Link copiado' : 'Copiar link'}
+                            </button>
+
+                        </div>
+                    </div>
+                )}
             </CustomLayout>
         </>
     );

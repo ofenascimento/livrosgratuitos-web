@@ -318,7 +318,7 @@ function Livros() {
           isOpen={modalLoginIsOpen}
           onClose={() => setModalLoginIsOpen(false)}
         />
-        {isInstagramModalOpen && (
+        {true && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
               <h2 className="text-xl font-bold text-gray-800">Abra no navegador</h2>
@@ -326,7 +326,9 @@ function Livros() {
                 Infelizmente o livro não pode ser aberto pelo navegador do instagram. Copie o link e cole no seu navegador de preferência.
 
               </p>
-              <span className=" text-main-500 font-semibold mt-2">{fullUrl}</span>
+              <div className="bg-indigo-200 rounded-lg mt-2 py-2">
+                <span className=" text-main-500 font-semibold">{fullUrl}</span>
+              </div>
               <button
                 className="mt-4 bg-main-600 font-semibold text-white px-4 py-2 rounded-md w-full"
                 onClick={() => {
