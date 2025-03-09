@@ -25,6 +25,7 @@ import { FaFilePdf } from "react-icons/fa";
 import { MdOutlineShare } from "react-icons/md";
 import { PiFilePdf } from "react-icons/pi";
 
+
 function Livros() {
   const searchParams = useSearchParams();
   const bookId = searchParams.get("bookId");
@@ -41,10 +42,10 @@ function Livros() {
   const router = useRouter();
 
   const isInstagramWebView = (): boolean => {
-    if (typeof window === "undefined") return false;
-    const userAgent = navigator.userAgent.toLowerCase();
-    return userAgent.includes("instagram");
+    if (typeof window === "undefined" || typeof navigator === "undefined") return false;
+    return navigator.userAgent.toLowerCase().includes("instagram");
   };
+
 
   useEffect(() => {
     if (isInstagramWebView()) {
@@ -309,10 +310,32 @@ function Livros() {
           isOpen={modalLoginIsOpen}
           onClose={() => setModalLoginIsOpen(false)}
         />
-        <ModalInstagram
-          isOpen={isInstagramModalOpen}
-          onClose={() => setIsInstagramModalOpen(false)}
-        />
+        {isInstagramModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
+              <h2 className="text-xl font-bold text-gray-800">Abra no navegador</h2>
+              <p className="text-gray-600 mt-2">
+                Para uma melhor experiência, abra este link no seu navegador.
+              </p>
+              <button
+                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md"
+                onClick={() => {
+                  window.open(window.location.href, "_blank");
+                  setIsInstagramModalOpen(false);
+                }}
+              >
+                Abrir no navegador
+              </button>
+              <button
+                className="mt-2 text-gray-500 underline"
+                onClick={() => setIsInstagramModalOpen(false)}
+              >
+                Continuar aqui
+              </button>
+            </div>
+          </div>
+        )}
+
       </CustomLayout>
     </>
   );
