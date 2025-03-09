@@ -17,9 +17,10 @@ import useAuth from "@/hooks/useAuth";
 import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import useFetchBookAuth from "@/hooks/useFetchBookAuth";
+import useCopyToClipboard from "@/utils/useToClipboard";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { FaFilePdf } from "react-icons/fa";
 import { MdOutlineShare } from "react-icons/md";
@@ -36,10 +37,12 @@ function Livros() {
   const { setToParagraph, toParagraph } = useBook();
   const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
   const [modalLoginIsOpen, setModalLoginIsOpen] = useState<boolean>(false);
+  const [fullUrl, setFullUrl] = useState<string>("");
   const [isInstagramModalOpen, setIsInstagramModalOpen] = useState(false);
 
   const isAuth = useAuth();
-  const router = useRouter();
+  const { isCopied, copyText } = useCopyToClipboard()
+
 
   const isInstagramWebView = (): boolean => {
     if (typeof window === "undefined" || typeof navigator === "undefined") return false;
@@ -53,6 +56,11 @@ function Livros() {
     }
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setFullUrl(window.location.href);
+    }
+  }, []);
 
 
   useEffect(() => {
@@ -315,23 +323,19 @@ function Livros() {
             <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
               <h2 className="text-xl font-bold text-gray-800">Abra no navegador</h2>
               <p className="text-gray-600 mt-2">
-                Para uma melhor experiência, abra este link no seu navegador.
+                Infelizmente o livro não pode ser aberto pelo navegador do instagram. Copie o link e cole no seu navegador de preferência.
+
               </p>
+              <span className=" text-main-500 font-semibold mt-2">{fullUrl}</span>
               <button
-                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md"
+                className="mt-4 bg-main-600 font-semibold text-white px-4 py-2 rounded-md w-full"
                 onClick={() => {
-                  window.open(window.location.href, "_blank");
-                  setIsInstagramModalOpen(false);
+                  copyText(fullUrl)
                 }}
               >
-                Abrir no navegador
+                {isCopied ? 'Link copiado' : 'Copiar link'}
               </button>
-              <button
-                className="mt-2 text-gray-500 underline"
-                onClick={() => setIsInstagramModalOpen(false)}
-              >
-                Continuar aqui
-              </button>
+
             </div>
           </div>
         )}
