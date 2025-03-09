@@ -5,7 +5,7 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 
 const Card = (props: ICard): React.ReactElement => {
   return (
-    <Link href={`/livro?bookId=${props.id}`}>
+    <Link href={`${props.slug ? `/${props.slug}`: `/livro?bookId=${props.id}`}`}>
       <div className="flex-shrink-0 w-40 shadow-lg flex flex-col justify-center items-center">
         <img
           src={props.capa}

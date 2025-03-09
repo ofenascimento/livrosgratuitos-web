@@ -31,6 +31,7 @@ const useFetchBooks = (params: Params) => {
       }
       const data = await response.json();
       setBooks(data);
+      console.log(data)
     } catch (error) {
       setError(
         error instanceof Error ? error : new Error("Failed to fetch books")

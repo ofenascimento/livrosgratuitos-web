@@ -25,7 +25,6 @@ export const useFetchBookBySlug = (slug: string) => {
       }
       const data = await response.json();
       setBook(data);
-      console.log(data)
     } catch (error) {
       setError(
         error instanceof Error ? error : new Error("Failed to fetch book")

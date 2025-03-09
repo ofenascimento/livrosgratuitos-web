@@ -97,6 +97,7 @@ export default function BookList({ options, label }: IBookList) {
                 capa={item.capa}
                 titulo={item.titulo}
                 autor={item.autor}
+                slug={item.slug}
               />
             ))}
           </div>

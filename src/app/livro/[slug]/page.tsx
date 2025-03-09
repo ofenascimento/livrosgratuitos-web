@@ -30,10 +30,6 @@ export default function TesteLeitor() {
     const slug = params?.slug as string;
     const { book } = useFetchBookBySlug(slug);
 
-    useEffect(() => {
-        console.log(book);
-    }, []);
-
     const {
         fontSize,
         background,

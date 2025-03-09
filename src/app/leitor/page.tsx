@@ -38,9 +38,6 @@ export default function Leitor() {
   const router = useRouter();
   const { toParagraph } = useBook();
 
-
-  useEffect(() => { console.log(currentParagraph) }, [currentParagraph, setCurrentParagraph])
-
   useEffect(() => {
     if (urlBook === "nobook") {
       router.push("/");

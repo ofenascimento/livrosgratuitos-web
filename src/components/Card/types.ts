@@ -4,4 +4,5 @@ export interface ICard {
   titulo: string;
   autor?: string;
   progress?: number;
+  slug?: string;
 }
