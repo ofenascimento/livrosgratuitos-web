@@ -202,7 +202,7 @@ function Livros() {
                         >
                             {book.txt !== "" && (
                                 <Link
-                                    href={`/livro/${slug}`}
+                                    href={`/leitor`}
                                     className="w-full flex justify-center items-center"
                                     onClick={() => {
                                         !book.currentParagraph || book.currentParagraph === 0
