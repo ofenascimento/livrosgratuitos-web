@@ -72,7 +72,7 @@ const AdBanner = ({
     >
       <ins
         ref={insRef}
-        className="adsbygoogle rounded-lg bg-slate-700 "
+        className="adsbygoogle rounded-lg animate-pulse bg-slate-700 relative "
         style={{
           display: "inline-block",
           width: responsive ? "auto" : vertical ? 120 : square ? 250 : 728,
@@ -80,7 +80,12 @@ const AdBanner = ({
         }}
         data-ad-client="ca-pub-2529229033686497"
         data-ad-slot={dataAdSlot}
-      ></ins>
+      >
+        <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold">
+          Anúncio
+        </p>
+      </ins>
+
     </div>
   );
 };
