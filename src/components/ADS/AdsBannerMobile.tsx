@@ -19,6 +19,7 @@ const AdBannerMobile = ({
 }: AdBannerTypes) => {
   const insRef = useRef<HTMLModElement>(null);
   const [adUnfilled, setAdUnfilled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     try {
@@ -36,6 +37,7 @@ const AdBannerMobile = ({
         } else {
           setAdUnfilled(false);
         }
+        setIsLoading(false);
       }
     });
 
@@ -59,14 +61,17 @@ const AdBannerMobile = ({
       >
         <ins
           ref={insRef}
-          className="adsbygoogle animate-pulse bg-slate-700 rounded-lg relative"
+          className={`adsbygoogle bg-slate-700 rounded-lg relative ${isLoading ? "animate-pulse" : ""}`}
           style={{ display: "inline-block", width: 350, height: 50 }}
           data-ad-client="ca-pub-2529229033686497"
           data-ad-slot={dataAdSlot}
-        > <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold">
-            Anúncio
-          </p></ins>
-
+        >
+          {isLoading && (
+            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold">
+              Anúncio
+            </p>
+          )}
+        </ins>
       </div>
     )
   );

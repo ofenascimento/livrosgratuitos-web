@@ -26,6 +26,7 @@ const AdBanner = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const insRef = useRef<HTMLModElement>(null);
   const [adUnfilled, setAdUnfilled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     try {
@@ -43,6 +44,7 @@ const AdBanner = ({
         } else {
           setAdUnfilled(false);
         }
+        setIsLoading(false);
       }
     });
 
@@ -58,35 +60,39 @@ const AdBanner = ({
     };
   }, []);
 
+  const width = responsive ? "auto" : vertical ? 120 : square ? 250 : 728;
+  const height = responsive ? "auto" : vertical ? 728 : square ? 250 : 90;
 
   return (
-    !adUnfilled &&
-    <div
-      ref={containerRef}
-      className={`
-        ${customClassName || ""} 
-        w-full justify-center items-center hidden md:flex
-        transition-all duration-500 ease-out overflow-hidden 
-        ${fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""}
-      `}
-    >
-      <ins
-        ref={insRef}
-        className="adsbygoogle rounded-lg animate-pulse bg-slate-700 relative "
-        style={{
-          display: "inline-block",
-          width: responsive ? "auto" : vertical ? 120 : square ? 250 : 728,
-          height: responsive ? "auto" : vertical ? 728 : square ? 250 : 90,
-        }}
-        data-ad-client="ca-pub-2529229033686497"
-        data-ad-slot={dataAdSlot}
+    !adUnfilled && (
+      <div
+        ref={containerRef}
+        className={`
+          ${customClassName || ""} 
+          w-full justify-center items-center hidden md:flex
+          transition-all duration-500 ease-out overflow-hidden 
+          ${fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""}
+        `}
       >
-        <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold">
-          Anúncio
-        </p>
-      </ins>
-
-    </div>
+        <ins
+          ref={insRef}
+          className={`adsbygoogle rounded-lg bg-slate-700 relative ${isLoading ? "animate-pulse" : ""}`}
+          style={{
+            display: "inline-block",
+            width,
+            height,
+          }}
+          data-ad-client="ca-pub-2529229033686497"
+          data-ad-slot={dataAdSlot}
+        >
+          {isLoading && (
+            <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold">
+              Anúncio
+            </p>
+          )}
+        </ins>
+      </div>
+    )
   );
 };
 
