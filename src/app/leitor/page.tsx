@@ -86,7 +86,7 @@ export default function Leitor() {
 
       setTimeout(() => {
         setIsProgressLoadingVisible(false);
-      }, 1000);
+      }, 3000);
     } else {
       console.warn(`Paragraph ${paragraphNum} not found.`);
     }
