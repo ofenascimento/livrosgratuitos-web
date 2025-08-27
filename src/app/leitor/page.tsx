@@ -172,13 +172,6 @@ export default function Leitor() {
   const readingPercentage = (currentParagraph / paragraphCount) * 100;
 
 
-  const adBanners = [
-    <AdBanner key="0" customClassName="mb-6" dataAdSlot="3907771671" />,
-    <AdBanner key="1" customClassName="mb-6" dataAdSlot="1261427039" />,
-    <AdBanner key="2" customClassName="mb-6" dataAdSlot="7655444992" />,
-    <AdBanner key="3" customClassName="mb-6" dataAdSlot="9907840295" />
-  ];
-
 
   if (urlBook === "nobook") return null;
   return (
@@ -316,7 +309,6 @@ export default function Leitor() {
                     >
                       {paragraph}
                     </div>
-                    {(index + 1) % 10 === 0 && adBanners[bannerIndex % adBanners.length]}
                   </React.Fragment>)
               })}
               <div className="h-[30px]"></div>
