@@ -27,7 +27,7 @@ const ModalShare: React.FC<IModalShare> = ({
             className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 ${isOpen ? "flex" : "hidden"}`}
         >
             <div className="absolute inset-0" onClick={onClose}></div>
-            <div ref={modalRef} className="relative  bg-[#1a202c] p-5 rounded-lg shadow-lg w-full max-w-xs md:max-w-md font-lexend">
+            <div ref={modalRef} className="relative border border-slate-600 bg-[#1a202c] p-5 rounded-lg shadow-lg w-full max-w-xs md:max-w-md font-lexend">
                 <div className="flex justify-end">
                     <MdClose className="cursor-pointer" size={20} onClick={onClose} />
                 </div>
@@ -45,7 +45,7 @@ const ModalShare: React.FC<IModalShare> = ({
                     />
                 </div>
                 <button
-                    className="flex justify-between w-full items-center bg-gray-800 mb-2 p-3 rounded-md cursor-pointer"
+                    className="flex justify-betwee border border-slate-600 justify-between w-full items-center bg-gray-800 mb-2 p-3 rounded-md cursor-pointer"
                     onClick={() => copyText(window.location.href)}
                 >
                     <div className="flex items-center gap-2">
@@ -61,7 +61,7 @@ const ModalShare: React.FC<IModalShare> = ({
 
                 </button>
                 <div
-                    className="flex justify-between items-center bg-gray-800 mb-2 p-3 rounded-md cursor-pointer"
+                    className="flex justify-between border border-slate-600 items-center bg-gray-800 mb-2 p-3 rounded-md cursor-pointer"
                     onClick={() => window.open(`https://api.whatsapp.com/send?text=${currentUrl}`, '_blank')}
                 >
                     <div className="flex items-center gap-2">
@@ -71,7 +71,7 @@ const ModalShare: React.FC<IModalShare> = ({
                     <RiShareBoxFill />
                 </div>
                 <div
-                    className="flex justify-between items-center bg-gray-800 mb-2 p-3 rounded-md cursor-pointer"
+                    className="flex justify-between border border-slate-600 items-center bg-gray-800 mb-2 p-3 rounded-md cursor-pointer"
                     onClick={() => window.open(`https://twitter.com/intent/tweet?text=${currentUrl}`, '_blank')}
                 >
                     <div className="flex items-center gap-2">
