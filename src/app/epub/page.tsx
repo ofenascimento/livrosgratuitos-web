@@ -206,8 +206,14 @@ export default function EpubReaderPage() {
                                 <button
                                     onClick={() => {
                                         try {
+                                            containerRef.current?.scrollIntoView({
+                                                behavior: "smooth", 
+                                                block: "start", 
+                                            });
+
                                             rendition?.display(item.href);
-                                        } catch { }
+                                        } catch {
+                                        }
                                         setOpenToc(false);
                                     }}
                                     className="w-full rounded-lg px-2 py-1 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
