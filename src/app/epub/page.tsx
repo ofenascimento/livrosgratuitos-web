@@ -10,13 +10,14 @@ import { ReactReaderStyle } from "react-reader";
 import { useSearchParams } from "next/navigation";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
+import AutorInfo from "@/components/AutorInfo/AutorInfo";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
 
 interface PageData {
     currentPage: number;
     totalPages: number;
-    percentage: number; 
+    percentage: number;
 }
 
 export default function EpubReaderPage() {
@@ -72,7 +73,7 @@ export default function EpubReaderPage() {
     // 🌟 CORREÇÃO 2: Usa useEffect para carregar o location real (do localStorage) APÓS a hidratação.
     useEffect(() => {
         setIsClient(true);
-        
+
         if (typeof window !== "undefined") {
             // Acessa o localStorage somente no cliente
             const savedLocation = localStorage.getItem(`${bookId}:loc`) || 0;
@@ -89,7 +90,7 @@ export default function EpubReaderPage() {
                 try {
                     const currentPageNumber = rendition.book.locations.locationFromCfi(loc);
                     const totalPages = rendition.book.locations.length();
-                    const percentageProgress = rendition.book.locations.percentageFromCfi(loc); 
+                    const percentageProgress = rendition.book.locations.percentageFromCfi(loc);
 
                     if (currentPageNumber !== null) {
                         setPageData({
@@ -129,7 +130,7 @@ export default function EpubReaderPage() {
                         if (typeof location === "string" && r.book.locations) {
                             const initialLoc = r.book.locations.locationFromCfi(location);
                             const totalLoc = r.book.locations.length();
-                            const percentageProgress = r.book.locations.percentageFromCfi(location); 
+                            const percentageProgress = r.book.locations.percentageFromCfi(location);
 
                             if (initialLoc !== null) {
                                 setPageData({
@@ -247,7 +248,7 @@ export default function EpubReaderPage() {
                             customClassName="mt-4"
                         />
                         <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
-                        
+
                         {/* 🌟 CORREÇÃO 3: Renderiza o leitor apenas no cliente */}
                         {isClient ? (
                             // @ts-ignore
@@ -262,12 +263,12 @@ export default function EpubReaderPage() {
                                 loadingView={<></>}
                             />
                         ) : (
-                             // Placeholder enquanto o livro carrega o estado do cliente
+                            // Placeholder enquanto o livro carrega o estado do cliente
                             <div className="h-full w-full flex items-center justify-center text-gray-500">
                                 Carregando livro...
                             </div>
                         )}
-                        
+
                         <AdBanner
                             dataAdFormat=""
                             dataFullWidthResponsive={false}
@@ -276,15 +277,7 @@ export default function EpubReaderPage() {
                         />
                         <AdBanner dataAdSlot="2423907456" fixed />
                         <AdBannerMobile dataAdSlot="6603126932" fixed />
-                        <p className="p-6">
-                            “<em>Memórias Póstumas de Brás Cubas</em>”, de <strong>Machado de Assis</strong>.
-                            Fonte: <a href="https://www.projeto-adamastor.org/obra/exemplo" rel="noopener" className="text-[#7B66FF] underline decoration-[#7B66FF]/40 underline-offset-2 hover:decoration-[#7B66FF]">Projeto Adamastor</a>.
-                            Licença: <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.pt_BR" rel="license noopener" className="text-[#7B66FF] underline decoration-[#7B66FF]/40 underline-offset-2 hover:decoration-[#7B66FF]">CC BY-SA 4.0</a>.
-                            <span className="opacity-80 ml-2">Sem alterações. Mantidos os avisos editoriais originais.</span>
-                            <span>Alterações: nova capa criada pela equipe Livros Gratuitos; ajustes de formatação; revisões menores no texto.</span>
-                            <p className="mt-4">Solicitações de remoção: se você é autor(a), herdeiro(a), representante legal ou proprietário(a) do arquivo/EPUB e deseja a retirada desta obra, escreva para felipematheusdev@gmail.com</p>
-
-                        </p>
+                        <AutorInfo />
 
                     </div>
                 </main>
