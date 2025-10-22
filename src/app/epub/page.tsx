@@ -1,0 +1,216 @@
+"use client";
+import ModalEpubConfig from "@/components/Modals/ModalConfigEpub/ModalConfigEpub";
+import { useReaderConfig } from "@/hooks/useReaderConfig";
+import dynamic from "next/dynamic";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { HiChevronLeft, HiDotsVertical } from "react-icons/hi";
+import { MdMenuBook } from "react-icons/md";
+import type { IReactReaderStyle } from "react-reader";
+import { ReactReaderStyle } from "react-reader";
+
+const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
+
+type Props = {
+    initialUrl?: string;
+    bookId?: string;
+};
+
+interface PageData {
+    currentPage: number;
+    totalPages: number;
+}
+
+export default function EpubReaderPage({ initialUrl, bookId = "mock-book" }: Props) {
+    const defaultUrl =
+        initialUrl ||
+        "https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/epub%2Feu.epub?alt=media&token=a41db6b9-9ee1-4f68-b894-c2994bd6d8c5";
+
+    const [bookUrl, setBookUrl] = useState<string>(defaultUrl);
+    const [location, setLocation] = useState<string | number>(
+        typeof window !== "undefined" ? localStorage.getItem(`${bookId}:loc`) || 0 : 0
+    );
+    const [rendition, setRendition] = useState<any>(null);
+    const [toc, setToc] = useState<any[]>([]);
+    const [openToc, setOpenToc] = useState(false);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [isModalConfigOpen, setIsModalConfigOpen] = useState(false);
+
+    const [pageData, setPageData] = useState<PageData | null>(null);
+
+    const {
+        fontSizeEpub,
+    } = useReaderConfig();
+
+    const READER_STYLES: IReactReaderStyle = {
+        ...ReactReaderStyle,
+        container: {
+            ...ReactReaderStyle.container,
+            backgroundColor: "#faf2e7",
+        },
+        readerArea: {
+            ...ReactReaderStyle.readerArea,
+            backgroundColor: "#faf2e7",
+        },
+        titleArea: {
+            ...ReactReaderStyle.titleArea,
+            display: "none",
+        },
+        tocArea: {
+            ...ReactReaderStyle.tocArea,
+            display: "none",
+        },
+        tocBackground: {
+            ...ReactReaderStyle.tocBackground,
+            display: "none",
+        },
+    };
+
+    const onLocationChanged = useCallback(
+        (loc: string) => {
+            setLocation(loc);
+            if (typeof window !== "undefined") localStorage.setItem(`${bookId}:loc`, loc);
+
+            if (rendition && rendition.book.locations && typeof loc === "string") {
+                try {
+                    const currentPageNumber = rendition.book.locations.locationFromCfi(loc);
+                    const totalPages = rendition.book.locations.length();
+
+                    if (currentPageNumber !== null) {
+                        setPageData({
+                            currentPage: currentPageNumber + 1,
+                            totalPages: totalPages
+                        });
+                    }
+                } catch (e) {
+                    console.error("Erro ao calcular a localização da página:", e);
+                }
+            }
+        },
+        [bookId, rendition]
+    );
+
+    const onRendition = useCallback((r: any) => {
+        setRendition(r);
+        try {
+            r.themes.default({
+                body: {
+                    background: "#faf2e7",
+                    color: "#2b2117",
+                    lineHeight: "1.6"
+                },
+                a: { color: "#7a4d2a" },
+                "h1,h2,h3": { color: "#2b2117" }
+            });
+
+            r.themes.fontSize(`${fontSizeEpub}%`);
+            r.book.loaded.navigation.then((nav: any) => setToc(nav.toc || []));
+
+            r.book.ready.then(() => {
+                return r.book.locations.generate(1024);
+            }).then(() => {
+                if (typeof location === 'string' && r.book.locations) {
+                    const initialLoc = r.book.locations.locationFromCfi(location);
+                    const totalLoc = r.book.locations.length();
+                    if (initialLoc !== null) {
+                        setPageData({
+                            currentPage: initialLoc + 1,
+                            totalPages: totalLoc
+                        });
+                    }
+                }
+            }).catch((err: any) => {
+                console.error("Erro ao gerar as localizações:", err);
+            });
+
+        } catch { }
+    }, [fontSizeEpub, location]);
+
+    useEffect(() => {
+        if (rendition) {
+            try { rendition.themes.fontSize(`${fontSizeEpub}%`); } catch { }
+        }
+    }, [fontSizeEpub, rendition]);
+
+    const loadFromQuery = useCallback(() => {
+        if (typeof window === "undefined") return;
+        const urlParam = new URLSearchParams(window.location.search).get("url");
+        if (urlParam) setBookUrl(urlParam);
+    }, []);
+
+    useEffect(() => { loadFromQuery(); }, [loadFromQuery]);
+
+    const Toolbar = useMemo(() => (
+        <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-gray-800 backdrop-blur">
+            <div className="mx-auto flex max-w-5xl items-center gap-2 p-2 bg-gray-800">
+                <a href={`/`} className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center">
+                    <HiChevronLeft />
+                    <p className="hidden lg:block font-lexend text-sm font-normal">
+                        Voltar
+                    </p>
+                </a>
+                <button onClick={() => setOpenToc(v => !v)} className="rounded-full px-3 py-2 text-sm bg-gray-700 flex justify-center items-center gap-3 font-normal text-white font-lexend "><MdMenuBook color="#fff" /> Sumário</button>
+
+
+
+                <div className="ml-auto flex items-center gap-2">
+                    
+                    {pageData && (
+                        <div className="text-white text-sm font-lexend ml-4 opacity-80 font-normal">
+                            Página {pageData.currentPage} de {pageData.totalPages}
+                        </div>
+                    )}
+                    <button
+                        onClick={() => setIsModalConfigOpen(true)}
+                        className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+                    >
+                        <p className="hidden lg:block font-lexend text-sm font-normal">
+                            Configurações
+                        </p>
+                        <HiDotsVertical />
+                    </button>
+                </div>
+            </div>
+        </div>
+    ), [pageData]);
+
+    return (
+        <div ref={containerRef} className="flex min-h-screen w-full flex-col text-zinc-900 bg-sepia">
+            {Toolbar}
+            <div className="mx-auto grid w-full max-w-5xl grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)] bg-sepia">
+                <aside className={`border-r border-zinc-800/10 p-3 font-bold md:block ${openToc ? "block" : "hidden"}`}>
+                    <ol className="space-y-1 text-sm">
+                        {toc.map((item: any) => (
+                            <li key={item.id}>
+                                <button
+                                    onClick={() => {
+                                        try { rendition?.display(item.href); } catch { }
+                                        setOpenToc(false);
+                                    }}
+                                    className="w-full rounded-lg px-2 py-1 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                                >
+                                    {item.label}
+                                </button>
+                            </li>
+                        ))}
+                    </ol>
+                </aside>
+                <main className="min-h-[70vh]">
+                    <div className="h-[calc(100vh-56px)] w-full md:h-[calc(100vh-64px)]">
+                        {/* @ts-ignore */}
+                        <ReactReader
+                            url={bookUrl}
+                            location={location}
+                            locationChanged={onLocationChanged}
+                            getRendition={onRendition}
+                            epubOptions={{ flow: "paginated" }}
+                            showToc={false}
+                            readerStyles={READER_STYLES}
+                            loadingView={<></>}
+                        />
+                    </div>
+                </main>
+                <ModalEpubConfig isOpen={isModalConfigOpen} onRequestClose={() => { setIsModalConfigOpen(false) }} />
+            </div>
+        </div>
+    );
+}

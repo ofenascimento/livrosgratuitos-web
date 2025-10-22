@@ -1,12 +1,16 @@
 import { createContext, useState, useEffect } from "react";
 
 interface ReaderConfigType {
+  // txt
   fontFamily: string;
   setFontFamily: (e: string) => void;
   background: string;
   setBackground: (e: string) => void;
   fontSize: number;
   setFontSize: (e: number) => void;
+  //epub
+  fontSizeEpub: number;
+  setFontSizeEpub: (e: number) => void;
 }
 
 interface IReaderConfigProvider {
@@ -30,6 +34,10 @@ export function ReaderConfigProvider({ children }: IReaderConfigProvider) {
     isBrowser ? Number(localStorage.getItem("fontSize")) || 20 : 20
   );
 
+  const [fontSizeEpub, setFontSizeEpub] = useState<number>(
+    isBrowser ? Number(localStorage.getItem("fontSizeEpub")) || 100 : 100
+  );
+
   useEffect(() => {
     if (isBrowser) {
       localStorage.setItem("fontFamily", fontFamily);
@@ -48,6 +56,12 @@ export function ReaderConfigProvider({ children }: IReaderConfigProvider) {
     }
   }, [fontSize, isBrowser]);
 
+  useEffect(() => {
+    if (isBrowser) {
+      localStorage.setItem("fontSizeEpub", fontSizeEpub.toString());
+    }
+  }, [fontSizeEpub, isBrowser]);
+
   return (
     <ReaderConfigContext.Provider
       value={{
@@ -57,6 +71,8 @@ export function ReaderConfigProvider({ children }: IReaderConfigProvider) {
         setBackground,
         fontSize,
         setFontSize,
+        fontSizeEpub,
+        setFontSizeEpub,
       }}
     >
       {children}
