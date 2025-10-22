@@ -7,27 +7,38 @@ import { HiChevronLeft, HiDotsVertical } from "react-icons/hi";
 import { MdMenuBook } from "react-icons/md";
 import type { IReactReaderStyle } from "react-reader";
 import { ReactReaderStyle } from "react-reader";
+import { useSearchParams } from "next/navigation"; // 💡 Importação Adicionada
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
 
-type Props = {
-  initialUrl?: string;
-  bookId?: string;
-};
+// 🚨 Interface Props Removida (Causa do erro de compilação)
+// type Props = {
+//   initialUrl?: string;
+//   bookId?: string;
+// };
 
 interface PageData {
   currentPage: number;
   totalPages: number;
 }
 
-export default function EpubReaderPage({ initialUrl, bookId = "mock-book" }: Props) {
+// 💡 Componente não aceita mais props customizadas diretamente
+export default function EpubReaderPage() {
+    
+  // 💡 NOVO: Obtendo bookId e url dos parâmetros de busca da URL
+  const searchParams = useSearchParams();
+  const initialUrlFromQuery = searchParams.get("url");
+  // Se 'bookId' não estiver na URL, usa "mock-book" como fallback
+  const bookId = searchParams.get("bookId") || "mock-book"; 
+  
   const defaultUrl =
-    initialUrl ||
+    initialUrlFromQuery ||
     "https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/epub%2Feu.epub?alt=media&token=a41db6b9-9ee1-4f68-b894-c2994bd6d8c5";
 
   const [bookUrl] = useState<string>(defaultUrl);
 
   const [location, setLocation] = useState<string | number>(
+    // Usa o bookId obtido da URL para carregar/salvar no localStorage
     typeof window !== "undefined" ? localStorage.getItem(`${bookId}:loc`) || 0 : 0
   );
 
@@ -86,7 +97,7 @@ export default function EpubReaderPage({ initialUrl, bookId = "mock-book" }: Pro
         }
       }
     },
-    [bookId, rendition]
+    [bookId, rendition] // bookId está na dependência
   );
 
   const onRendition = useCallback(
