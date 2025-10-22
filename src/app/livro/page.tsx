@@ -246,7 +246,7 @@ function Livros() {
           </div>
         </div>
 
-        <div
+        {/* <div
           className=" fixed bottom-0  z-50 left-0 w-full p-4 bg-black md:hidden"
           id="fixed-mobile-buttons"
         >
@@ -280,7 +280,7 @@ function Livros() {
                 </div>
               </div>
             )}
-        </div>
+        </div> */}
         <AdBanner
           dataAdFormat=""
           dataFullWidthResponsive={false}
