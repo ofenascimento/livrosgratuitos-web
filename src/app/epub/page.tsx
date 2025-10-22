@@ -7,30 +7,22 @@ import { HiChevronLeft, HiDotsVertical } from "react-icons/hi";
 import { MdMenuBook } from "react-icons/md";
 import type { IReactReaderStyle } from "react-reader";
 import { ReactReaderStyle } from "react-reader";
-import { useSearchParams } from "next/navigation"; // 💡 Importação Adicionada
+import { useSearchParams } from "next/navigation";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
 
-// 🚨 Interface Props Removida (Causa do erro de compilação)
-// type Props = {
-//   initialUrl?: string;
-//   bookId?: string;
-// };
-
 interface PageData {
     currentPage: number;
     totalPages: number;
+    percentage: number; 
 }
 
-// 💡 Componente não aceita mais props customizadas diretamente
 export default function EpubReaderPage() {
 
-    // 💡 NOVO: Obtendo bookId e url dos parâmetros de busca da URL
     const searchParams = useSearchParams();
     const initialUrlFromQuery = searchParams.get("url");
-    // Se 'bookId' não estiver na URL, usa "mock-book" como fallback
     const bookId = searchParams.get("bookId") || "mock-book";
 
     const defaultUrl =
@@ -39,10 +31,9 @@ export default function EpubReaderPage() {
 
     const [bookUrl] = useState<string>(defaultUrl);
 
-    const [location, setLocation] = useState<string | number>(
-        // Usa o bookId obtido da URL para carregar/salvar no localStorage
-        typeof window !== "undefined" ? localStorage.getItem(`${bookId}:loc`) || 0 : 0
-    );
+    // 🌟 CORREÇÃO 1: Inicializa location com 0 no SSR para evitar erro de hidratação.
+    const [location, setLocation] = useState<string | number>(0);
+    const [isClient, setIsClient] = useState(false); // Estado para rastrear se estamos no cliente
 
     const [rendition, setRendition] = useState<any>(null);
     const [toc, setToc] = useState<any[]>([]);
@@ -78,6 +69,17 @@ export default function EpubReaderPage() {
         },
     };
 
+    // 🌟 CORREÇÃO 2: Usa useEffect para carregar o location real (do localStorage) APÓS a hidratação.
+    useEffect(() => {
+        setIsClient(true);
+        
+        if (typeof window !== "undefined") {
+            // Acessa o localStorage somente no cliente
+            const savedLocation = localStorage.getItem(`${bookId}:loc`) || 0;
+            setLocation(savedLocation);
+        }
+    }, [bookId]);
+
     const onLocationChanged = useCallback(
         (loc: string) => {
             setLocation(loc);
@@ -87,19 +89,21 @@ export default function EpubReaderPage() {
                 try {
                     const currentPageNumber = rendition.book.locations.locationFromCfi(loc);
                     const totalPages = rendition.book.locations.length();
+                    const percentageProgress = rendition.book.locations.percentageFromCfi(loc); 
 
                     if (currentPageNumber !== null) {
                         setPageData({
                             currentPage: currentPageNumber + 1,
                             totalPages: totalPages,
+                            percentage: percentageProgress,
                         });
                     }
                 } catch (e) {
-                    console.error("Erro ao calcular a localização da página:", e);
+                    console.error("Erro ao calcular a localização da página/porcentagem:", e);
                 }
             }
         },
-        [bookId, rendition] // bookId está na dependência
+        [bookId, rendition]
     );
 
     const onRendition = useCallback(
@@ -125,10 +129,13 @@ export default function EpubReaderPage() {
                         if (typeof location === "string" && r.book.locations) {
                             const initialLoc = r.book.locations.locationFromCfi(location);
                             const totalLoc = r.book.locations.length();
+                            const percentageProgress = r.book.locations.percentageFromCfi(location); 
+
                             if (initialLoc !== null) {
                                 setPageData({
                                     currentPage: initialLoc + 1,
                                     totalPages: totalLoc,
+                                    percentage: percentageProgress,
                                 });
                             }
                         }
@@ -154,41 +161,47 @@ export default function EpubReaderPage() {
     }, [fontSizeEpub, rendition]);
 
     const Toolbar = useMemo(
-        () => (
-            <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-gray-800 backdrop-blur">
-                <div className="mx-auto flex max-w-5xl items-center gap-2 p-2 bg-gray-800">
-                    <a
-                        href={`/`}
-                        className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
-                    >
-                        <HiChevronLeft />
-                        <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
-                    </a>
+        () => {
+            const progress = pageData ? (pageData.percentage * 100).toFixed(0) : '';
+            // Verifica se a porcentagem é um número válido antes de montar a string.
+            const percentageDisplay = pageData && !isNaN(pageData.percentage) ? ` | ${progress}%` : '';
 
-                    <button
-                        onClick={() => setOpenToc((v) => !v)}
-                        className="rounded-full px-3 py-2 text-sm bg-gray-700 flex justify-center items-center gap-3 font-normal text-white font-lexend "
-                    >
-                        <MdMenuBook /> Sumário
-                    </button>
-
-                    <div className="ml-auto flex items-center gap-2">
-                        {pageData && (
-                            <div className="text-white text-sm font-lexend ml-4 opacity-80 font-normal">
-                                Página {pageData.currentPage} de {pageData.totalPages}
-                            </div>
-                        )}
-                        <button
-                            onClick={() => setIsModalConfigOpen(true)}
-                            className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+            return (
+                <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-gray-800 backdrop-blur">
+                    <div className="mx-auto flex max-w-5xl items-center gap-2 p-2 bg-gray-800">
+                        <a
+                            href={`/`}
+                            className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
                         >
-                            <p className="hidden lg:block font-lexend text-sm font-normal">Configurações</p>
-                            <HiDotsVertical />
+                            <HiChevronLeft />
+                            <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
+                        </a>
+
+                        <button
+                            onClick={() => setOpenToc((v) => !v)}
+                            className="rounded-full px-3 py-2 text-sm bg-gray-700 flex justify-center items-center gap-3 font-normal text-white font-lexend "
+                        >
+                            <MdMenuBook /> Sumário
                         </button>
+
+                        <div className="ml-auto flex items-center gap-2">
+                            {pageData && (
+                                <div className="text-white text-sm font-lexend ml-4 opacity-80 font-normal">
+                                    {`Página ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
+                                </div>
+                            )}
+                            <button
+                                onClick={() => setIsModalConfigOpen(true)}
+                                className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+                            >
+                                <p className="hidden lg:block font-lexend text-sm font-normal">Configurações</p>
+                                <HiDotsVertical />
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        ),
+            );
+        },
         [pageData]
     );
 
@@ -234,17 +247,27 @@ export default function EpubReaderPage() {
                             customClassName="mt-4"
                         />
                         <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
-                        {/* @ts-ignore */}
-                        <ReactReader
-                            url={bookUrl}
-                            location={location}
-                            locationChanged={onLocationChanged}
-                            getRendition={onRendition}
-                            epubOptions={{ flow: "paginated" }}
-                            showToc={false}
-                            readerStyles={READER_STYLES}
-                            loadingView={<></>}
-                        />
+                        
+                        {/* 🌟 CORREÇÃO 3: Renderiza o leitor apenas no cliente */}
+                        {isClient ? (
+                            // @ts-ignore
+                            <ReactReader
+                                url={bookUrl}
+                                location={location}
+                                locationChanged={onLocationChanged}
+                                getRendition={onRendition}
+                                epubOptions={{ flow: "paginated" }}
+                                showToc={false}
+                                readerStyles={READER_STYLES}
+                                loadingView={<></>}
+                            />
+                        ) : (
+                             // Placeholder enquanto o livro carrega o estado do cliente
+                            <div className="h-full w-full flex items-center justify-center text-gray-500">
+                                Carregando livro...
+                            </div>
+                        )}
+                        
                         <AdBanner
                             dataAdFormat=""
                             dataFullWidthResponsive={false}
