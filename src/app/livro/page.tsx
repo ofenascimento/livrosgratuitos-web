@@ -318,7 +318,7 @@ function Livros() {
           isOpen={modalLoginIsOpen}
           onClose={() => setModalLoginIsOpen(false)}
         />
-        {isInstagramModalOpen && (
+        {/* {isInstagramModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
               <h2 className="text-xl font-bold text-gray-800">Abra no navegador</h2>
@@ -340,7 +340,7 @@ function Livros() {
 
             </div>
           </div>
-        )}
+        )} */}
 
       </CustomLayout>
     </>
