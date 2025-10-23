@@ -23,6 +23,7 @@ export const useFetchBook = (id: string) => {
         throw new Error(`Http error: ${response.status}`);
       }
       const data = await response.json();
+      console.log(data)
       setBook(data);
     } catch (error) {
       setError(

@@ -7,10 +7,12 @@ import { HiChevronLeft, HiDotsVertical } from "react-icons/hi";
 import { MdMenuBook } from "react-icons/md";
 import type { IReactReaderStyle } from "react-reader";
 import { ReactReaderStyle } from "react-reader";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import AutorInfo from "@/components/AutorInfo/AutorInfo";
+import { useFetchBook } from "@/hooks/useFetchBook";
+import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
 
@@ -22,15 +24,21 @@ interface PageData {
 
 export default function EpubReaderPage() {
 
+
     const searchParams = useSearchParams();
-    const initialUrlFromQuery = searchParams.get("url");
-    const bookId = searchParams.get("bookId") || "mock-book";
+    const bookId = searchParams.get("bookId");
+    const { book, isLoading, error } = useFetchBook(bookId ?? "");
 
-    const defaultUrl =
-        initialUrlFromQuery ||
-        "https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/epub%2Feu.epub?alt=media&token=a41db6b9-9ee1-4f68-b894-c2994bd6d8c5";
+    const router = useRouter();
 
-    const [bookUrl] = useState<string>(defaultUrl);
+    const [bookUrl, setBookUrl] = useState<string>("");
+
+    useEffect(() => {
+        if(error) {
+            router.push('/')
+        }
+        setBookUrl(book?.epub ?? "");
+    }, [book?.epub, isLoading, book]);
 
     // 🌟 CORREÇÃO 1: Inicializa location com 0 no SSR para evitar erro de hidratação.
     const [location, setLocation] = useState<string | number>(0);
@@ -70,12 +78,10 @@ export default function EpubReaderPage() {
         },
     };
 
-    // 🌟 CORREÇÃO 2: Usa useEffect para carregar o location real (do localStorage) APÓS a hidratação.
     useEffect(() => {
         setIsClient(true);
 
         if (typeof window !== "undefined") {
-            // Acessa o localStorage somente no cliente
             const savedLocation = localStorage.getItem(`${bookId}:loc`) || 0;
             setLocation(savedLocation);
         }
@@ -166,6 +172,9 @@ export default function EpubReaderPage() {
             const progress = pageData ? (pageData.percentage * 100).toFixed(0) : '';
             // Verifica se a porcentagem é um número válido antes de montar a string.
             const percentageDisplay = pageData && !isNaN(pageData.percentage) ? ` | ${progress}%` : '';
+
+            if (!book?.epub || isLoading)
+                return <FullScreenLoader label="Carregando EPUB" />;
 
             return (
                 <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-gray-800 backdrop-blur">
