@@ -13,6 +13,8 @@ import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import AutorInfo from "@/components/AutorInfo/AutorInfo";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
+import { addEpubProgress } from "@/hooks/addEpubProgress";
+import useAuth from "@/hooks/useAuth";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
 
@@ -29,20 +31,20 @@ export default function EpubReaderPage() {
     const bookId = searchParams.get("bookId");
     const { book, isLoading, error } = useFetchBook(bookId ?? "");
 
+    const isAuth = useAuth();
     const router = useRouter();
 
     const [bookUrl, setBookUrl] = useState<string>("");
 
     useEffect(() => {
-        if(error) {
+        if (error) {
             router.push('/')
         }
         setBookUrl(book?.epub ?? "");
     }, [book?.epub, isLoading, book]);
 
-    // 🌟 CORREÇÃO 1: Inicializa location com 0 no SSR para evitar erro de hidratação.
     const [location, setLocation] = useState<string | number>(0);
-    const [isClient, setIsClient] = useState(false); // Estado para rastrear se estamos no cliente
+    const [isClient, setIsClient] = useState(false);
 
     const [rendition, setRendition] = useState<any>(null);
     const [toc, setToc] = useState<any[]>([]);
@@ -78,12 +80,15 @@ export default function EpubReaderPage() {
         },
     };
 
+
+
     useEffect(() => {
         setIsClient(true);
 
         if (typeof window !== "undefined") {
             const savedLocation = localStorage.getItem(`${bookId}:loc`) || 0;
             setLocation(savedLocation);
+            console.log(savedLocation)
         }
     }, [bookId]);
 
@@ -162,15 +167,58 @@ export default function EpubReaderPage() {
             try {
                 rendition.themes.fontSize(`${fontSizeEpub}%`);
             } catch {
-                // noop
+
             }
         }
     }, [fontSizeEpub, rendition]);
 
+    useEffect(() => {
+        if (!bookId) return;
+        if (!isAuth) return;
+
+        const save = () => {
+            addEpubProgress(
+                bookId ?? "",
+                Math.max(0, Math.min(100, Math.round(((pageData?.percentage ?? 0) as number) * 100))),
+                typeof location === "string" ? location : undefined
+            );
+        };
+
+        const onBeforeUnload = (e: BeforeUnloadEvent) => {
+            save();
+            e.preventDefault();
+            e.returnValue = "";
+        };
+
+        const onPageHide = () => {
+            save();
+        };
+
+        const onVisibilityChange = () => {
+            if (document.visibilityState === "hidden") save();
+        };
+
+        const onPopState = () => { // voltar/avançar do histórico
+            save();
+        };
+
+        window.addEventListener("beforeunload", onBeforeUnload);
+        window.addEventListener("pagehide", onPageHide);
+        document.addEventListener("visibilitychange", onVisibilityChange);
+        window.addEventListener("popstate", onPopState);
+
+        return () => {
+            window.removeEventListener("beforeunload", onBeforeUnload);
+            window.removeEventListener("pagehide", onPageHide);
+            document.removeEventListener("visibilitychange", onVisibilityChange);
+            window.removeEventListener("popstate", onPopState);
+        };
+    }, [bookId, location]);
+
+
     const Toolbar = useMemo(
         () => {
             const progress = pageData ? (pageData.percentage * 100).toFixed(0) : '';
-            // Verifica se a porcentagem é um número válido antes de montar a string.
             const percentageDisplay = pageData && !isNaN(pageData.percentage) ? ` | ${progress}%` : '';
 
             if (!book?.epub || isLoading)
@@ -180,7 +228,25 @@ export default function EpubReaderPage() {
                 <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-gray-800 backdrop-blur">
                     <div className="mx-auto flex max-w-5xl items-center gap-2 p-2 bg-gray-800">
                         <a
-                            href={`/`}
+                            onClick={async () => {
+                                try {
+                                    if (isAuth) {
+                                        await addEpubProgress(
+                                            bookId ?? "",
+                                            Math.max(0, Math.min(100, Math.round(((pageData?.percentage ?? 0) as number) * 100))),
+                                            typeof location === "string" ? location : undefined
+                                        );
+                                    }
+
+
+                                } catch (e) {
+                                    console.error("Erro ao salvar progresso antes de voltar:", e);
+
+                                }
+
+                                router.push(`/livro?bookId=${bookId}`)
+
+                            }}
                             className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
                         >
                             <HiChevronLeft />

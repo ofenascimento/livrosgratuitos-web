@@ -32,7 +32,6 @@ export default function Leitor() {
   const [isProgressLoadingVisible, setIsProgressLoadingVisible] =
     useState(false);
   const searchParams = useSearchParams();
-  // const toParagraph = searchParams.get("p");
   const paragraphRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { title, urlBook, bookId } = useBook();
   const router = useRouter();
