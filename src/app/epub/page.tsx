@@ -140,12 +140,12 @@ export default function EpubReaderPage() {
                 if (!didCancel && data?.cfi && typeof data.cfi === "string") {
                     setLocation(data.cfi);
                 } else if (!didCancel && location === null) {
-                    setLocation(0); 
+                    setLocation(0);
                 }
             } catch (e) {
                 console.warn("[EPUB] Falha ao carregar CFI da API:", e);
                 if (!didCancel && location === null) {
-                    setLocation(0); 
+                    setLocation(0);
                 }
             }
         })();
@@ -212,8 +212,8 @@ export default function EpubReaderPage() {
                 .then(() => r.book.locations.generate(1024))
                 .then(() => {
                     setLocationsReady(true);
-                    
-                  
+
+
                 })
                 .catch((err: any) => {
                     console.error("Erro ao gerar as localizações:", err);
@@ -226,14 +226,14 @@ export default function EpubReaderPage() {
         if (rendition && locationsReady && typeof location === "string" && !initialCfiDisplayed) {
             try {
                 console.log("[CFI] Forçando display para:", location);
-                
+
                 rendition.display(location).then(() => {
-                   
-                    setInitialCfiDisplayed(true); 
+
+                    setInitialCfiDisplayed(true);
                 }).catch((e: any) => {
-                     console.warn("Falha no primeiro rendition.display:", e);
+                    console.warn("Falha no primeiro rendition.display:", e);
                 });
-                
+
             } catch (e) {
                 console.warn("Erro ao forçar display CFI:", e);
             }
@@ -406,7 +406,17 @@ export default function EpubReaderPage() {
                                 epubOptions={{ flow: "paginated" }}
                                 showToc={false}
                                 readerStyles={READER_STYLES}
-                                loadingView={<></>}
+                                loadingView={<><div className="flex items-center justify-center">
+                                    <div
+                                        className="w-10 h-10 border-4 border-main-500 border-t-transparent border-solid rounded-full animate-spin"
+                                        role="status"
+                                        aria-label="Loading"
+                                    >
+                                        <span className="sr-only">Carregando...</span>
+                                    </div>
+                                </div></>}
+                                errorView={<></>}
+
                             />
                         ) : (
                             <div className={`w-full h-full flex items-center justify-center ${backgroundClass}`}>
