@@ -3,7 +3,7 @@ import React from 'react'
 const AutorInfo = () => {
     return (
         <>
-            <div className="p-6">
+            <div className="p-6 bg-sepia pb-20">
                 “<em>Memórias Póstumas de Brás Cubas</em>”, de <strong>Machado de Assis</strong>.
                 Fonte: <a href="https://www.projeto-adamastor.org/obra/exemplo" rel="noopener" className="text-[#7B66FF] underline decoration-[#7B66FF]/40 underline-offset-2 hover:decoration-[#7B66FF]">Projeto Adamastor</a>.
                 Licença: <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.pt_BR" rel="license noopener" className="text-[#7B66FF] underline decoration-[#7B66FF]/40 underline-offset-2 hover:decoration-[#7B66FF]">CC BY-SA 4.0</a>.
