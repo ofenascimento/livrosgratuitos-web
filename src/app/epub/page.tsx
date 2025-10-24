@@ -35,7 +35,7 @@ export default function EpubReaderPage() {
     const router = useRouter();
 
     const [bookUrl, setBookUrl] = useState<string>("");
-    const [location, setLocation] = useState<string | number>(0);
+    const [location, setLocation] = useState<string | number | null>(null);
     const [rendition, setRendition] = useState<any>(null);
     const [toc, setToc] = useState<any[]>([]);
     const [openToc, setOpenToc] = useState(false);
@@ -43,7 +43,8 @@ export default function EpubReaderPage() {
     const [isModalConfigOpen, setIsModalConfigOpen] = useState(false);
     const [pageData, setPageData] = useState<PageData | null>(null);
     const [locationsReady, setLocationsReady] = useState(false);
-    const [isReaderConfigReady, setIsReaderConfigReady] = useState(false); 
+    const [isReaderConfigReady, setIsReaderConfigReady] = useState(false);
+    const [initialCfiDisplayed, setInitialCfiDisplayed] = useState(false);
 
     const { fontSizeEpub, background } = useReaderConfig();
 
@@ -51,7 +52,7 @@ export default function EpubReaderPage() {
     useEffect(() => { setMounted(true); }, []);
 
     const backgroundClass = useMemo(() => {
-        if (!mounted) return ""; 
+        if (!mounted) return "";
         switch (background) {
             case 'dark':
                 return 'bg-black text-white';
@@ -126,17 +127,26 @@ export default function EpubReaderPage() {
         let didCancel = false;
 
         (async () => {
-            if (!bookId || !isAuth) return;
+            if (!bookId || !isAuth) {
+                if (!didCancel && location === null) {
+                    setLocation(0);
+                }
+                return;
+            }
 
             try {
-                const response = await getEpubProgress(bookId);
-                const data = response.data;
-                
+                const data = await getEpubProgress(bookId);
+
                 if (!didCancel && data?.cfi && typeof data.cfi === "string") {
                     setLocation(data.cfi);
+                } else if (!didCancel && location === null) {
+                    setLocation(0); 
                 }
             } catch (e) {
                 console.warn("[EPUB] Falha ao carregar CFI da API:", e);
+                if (!didCancel && location === null) {
+                    setLocation(0); 
+                }
             }
         })();
 
@@ -157,7 +167,7 @@ export default function EpubReaderPage() {
     const applyThemeToRendition = useCallback((r: any, b: string, f: number) => {
         const isDark = b === 'dark';
         const isLight = b === 'light';
-        
+
         const bgColor = isDark ? "#000000" : isLight ? "#ffffff" : "#faf2e7";
         const textColor = isDark ? "#ffffff" : "#2b2117";
         const linkColor = isDark ? "#8cb4ff" : "#7a4d2a";
@@ -177,6 +187,7 @@ export default function EpubReaderPage() {
             r.themes.fontSize(`${f}%`);
             r.views().forEach((view: any) => view.pane && view.pane.render());
         } catch (e) {
+            console.warn("Erro ao aplicar tema:", e);
         }
     }, []);
 
@@ -189,26 +200,46 @@ export default function EpubReaderPage() {
 
             r.book.loaded.navigation.then((nav: any) => setToc(nav.toc || []));
 
+            r.on("relocated", (loc: any) => {
+                const cfi = loc?.start?.cfi;
+                if (cfi && typeof cfi === "string") {
+                    setLocation(cfi);
+                    if (r.book?.locations?.length()) computeFromCfi(r, cfi);
+                }
+            });
+
             r.book.ready
                 .then(() => r.book.locations.generate(1024))
                 .then(() => {
                     setLocationsReady(true);
-                    if (typeof location === "string") {
-                        computeFromCfi(r, location);
-                    }
+                    
+                  
                 })
                 .catch((err: any) => {
                     console.error("Erro ao gerar as localizações:", err);
                 });
         },
-        [location, computeFromCfi, background, fontSizeEpub, applyThemeToRendition] 
+        [location, computeFromCfi, background, fontSizeEpub, applyThemeToRendition]
     );
 
     useEffect(() => {
-        if (locationsReady && typeof location === "string" && rendition) {
-            computeFromCfi(rendition, location);
+        if (rendition && locationsReady && typeof location === "string" && !initialCfiDisplayed) {
+            try {
+                console.log("[CFI] Forçando display para:", location);
+                
+                rendition.display(location).then(() => {
+                   
+                    setInitialCfiDisplayed(true); 
+                }).catch((e: any) => {
+                     console.warn("Falha no primeiro rendition.display:", e);
+                });
+                
+            } catch (e) {
+                console.warn("Erro ao forçar display CFI:", e);
+            }
         }
-    }, [locationsReady, location, rendition, computeFromCfi]);
+    }, [locationsReady, location, rendition, initialCfiDisplayed]);
+
 
     useEffect(() => {
         if (rendition) {
@@ -264,8 +295,9 @@ export default function EpubReaderPage() {
             const progress = locationsReady && pageData ? Math.round(pageData.percentage * 100).toString() : '';
             const percentageDisplay = locationsReady && pageData ? ` | ${progress}%` : '';
 
-            if (!book?.epub || isLoading)
-                return <FullScreenLoader label="Carregando EPUB" />;
+            // Renderiza o loader enquanto a URL não está pronta OU o location ainda é null (aguardando API)
+            if (!bookUrl || isLoading || (location === null))
+                return <FullScreenLoader label={isLoading ? "Carregando EPUB" : "Aguardando progresso..."} />;
 
             return (
                 <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-gray-800 backdrop-blur">
@@ -318,7 +350,7 @@ export default function EpubReaderPage() {
                 </div>
             );
         },
-        [pageData, locationsReady, isAuth, isLoading, book?.epub, bookId, location, router]
+        [pageData, locationsReady, isAuth, isLoading, bookId, location, router, bookUrl]
     );
 
     return (
@@ -364,9 +396,9 @@ export default function EpubReaderPage() {
                         />
                         <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
 
-                        {isReaderConfigReady ? (
+                        {isReaderConfigReady && bookUrl && location !== null ? (
                             <ReactReader
-                                key={`reader-${background}`} 
+                                key={`reader-${background}`}
                                 url={bookUrl}
                                 location={location}
                                 locationChanged={onLocationChanged}
@@ -390,7 +422,7 @@ export default function EpubReaderPage() {
                         />
                         <AdBanner dataAdSlot="2423907456" fixed />
                         <AdBannerMobile dataAdSlot="6603126932" fixed />
-                        <AutorInfo title={book?.titulo ?? ''} autor={book?.autor ?? ''} license={book?.epubInfo?.license} licenseLink={book?.epubInfo?.licenseLink} modified={book?.epubInfo?.modified} font={book?.epubInfo?.font} fontLink={book?.epubInfo?.fontLink}  />
+                        <AutorInfo title={book?.titulo ?? ''} autor={book?.autor ?? ''} license={book?.epubInfo?.license} licenseLink={book?.epubInfo?.licenseLink} modified={book?.epubInfo?.modified} font={book?.epubInfo?.font} fontLink={book?.epubInfo?.fontLink} />
 
                     </div>
                 </main>

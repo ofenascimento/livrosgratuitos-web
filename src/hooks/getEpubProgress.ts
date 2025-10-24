@@ -6,7 +6,7 @@ export async function getEpubProgress(bookId: string) {
     const userId = await getUserIdFromToken();
     const url = `${urlApi}/users/${userId}/epub-progress/${bookId}`;
 
-    console.log(url)
+   
 
 
     const resp = await fetch(url, {
