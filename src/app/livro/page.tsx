@@ -50,11 +50,11 @@ function Livros() {
   };
 
 
-  useEffect(() => {
-    if (isInstagramWebView()) {
-      setIsInstagramModalOpen(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isInstagramWebView()) {
+  //     setIsInstagramModalOpen(true);
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -190,8 +190,39 @@ function Livros() {
                 href={`https://pdf.livrosgratuitos.com/livro?id=${book._id}`}
                 className="w-full"
               >
-                <div className="w-full bg-[#F72C5B] bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center">
+                <div className="w-full bg-[#F72C5B] bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
                   PDF
+                </div>
+
+              </Link>
+            )}
+            {book.epub && (
+              <Link
+                href={`https://livrosgratuitos.com/epub?bookId=${book._id}`}
+                className="w-full"
+              >
+                <div className="w-full bg-main-400 hover:bg-main-500 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
+                  EPUB
+                </div>
+
+              </Link>
+            )}
+            {book.txt && (
+              <Link
+                href={`/leitor`}
+                className="w-full"
+                onClick={() => {
+
+                  if (isInstagramWebView()) {
+                    setIsInstagramModalOpen(true);
+                  }
+                  !book.currentParagraph || book.currentParagraph === 0
+                    ? addBookToReadingBook(book._id)
+                    : null;
+                }}
+              >
+                <div className="w-full bg-orange-500 hover:bg-orange-600 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
+                  TXT
                 </div>
 
               </Link>
@@ -327,7 +358,7 @@ function Livros() {
           isOpen={modalLoginIsOpen}
           onClose={() => setModalLoginIsOpen(false)}
         />
-        {/* {isInstagramModalOpen && (
+        {isInstagramModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
               <h2 className="text-xl font-bold text-gray-800">Abra no navegador</h2>
@@ -349,7 +380,7 @@ function Livros() {
 
             </div>
           </div>
-        )} */}
+        )}
 
       </CustomLayout>
     </>
