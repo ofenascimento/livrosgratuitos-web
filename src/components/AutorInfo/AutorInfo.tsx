@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useReaderConfig } from "@/hooks/useReaderConfig";
 import { IAutorInfo } from "./types";
 
-const AutorInfo:React.FC<IAutorInfo> = ({ title, autor } ) => {
+const AutorInfo: React.FC<IAutorInfo> = ({ title, autor, modified, font, fontLink, license, licenseLink }) => {
     const { background } = useReaderConfig();
 
     const { containerClass, textClass, linkColor, linkDecoColor } = useMemo(() => {
@@ -30,35 +30,37 @@ const AutorInfo:React.FC<IAutorInfo> = ({ title, autor } ) => {
                 role="contentinfo"
             >
                 “<em>{title}</em>”, de <strong>{autor}</strong>.
-                {" "}
-                Fonte:{" "}
-                <a
-                    href="https://www.projeto-adamastor.org/obra/exemplo"
-                    rel="noopener"
-                    className="underline underline-offset-2 hover:[text-decoration-color:currentColor]"
-                    style={{ color: linkColor, textDecorationColor: linkDecoColor }}
-                >
-                    Projeto Adamastor
-                </a>
-                .
-                {" "}
-                Licença:{" "}
-                <a
-                    href="https://creativecommons.org/licenses/by-sa/4.0/deed.pt_BR"
-                    rel="license noopener"
-                    className="underline underline-offset-2 hover:[text-decoration-color:currentColor]"
-                    style={{ color: linkColor, textDecorationColor: linkDecoColor }}
-                >
-                    CC BY-SA 4.0
-                </a>
+                {
+                    font && <>
+                        {" "}
+                        Fonte:{" "}
+                        <a
+                            href={fontLink ?? ''}
+                            rel="noopener"
+                            className="underline underline-offset-2 hover:[text-decoration-color:currentColor]"
+                            style={{ color: linkColor, textDecorationColor: linkDecoColor }}
+                        >
+                            {font}
+                        </a>
+                    </>
+                }
+                {
+                    license && <>
+                        .
+                        {" "}
+                        Licença:{" "}
+                        <a
+                            href={license}
+                            rel="license noopener"
+                            className="underline underline-offset-2 hover:[text-decoration-color:currentColor]"
+                            style={{ color: linkColor, textDecorationColor: linkDecoColor }}
+                        >
+                            {license}
+                        </a></>
+                }
                 .
                 <span className="opacity-80 ml-2">
-                    Sem alterações. Mantidos os avisos editoriais originais.
-                </span>
-                <span>
-                    {" "}
-                    Alterações: nova capa criada pela equipe Livros Gratuitos; ajustes de
-                    formatação; revisões menores no texto.
+                    {modified ? `Alterações: ${modified}` : 'Sem alterações. Mantidos os avisos editoriais originais.'}
                 </span>
                 <p className="mt-4">
                     Solicitações de remoção: se você é autor(a), herdeiro(a),

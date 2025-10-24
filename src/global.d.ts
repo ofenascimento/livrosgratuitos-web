@@ -1,4 +1,11 @@
 declare global {
+  interface IEpubInfo {
+    font?: string;
+    fontLink?: string;
+    license?: string;
+    licenseLink?: string;
+    modified?: string; 
+  }
   interface IBook {
     capa: string;
     titulo: string;
@@ -14,6 +21,7 @@ declare global {
     progressPercentage?: number;
     urlHtml?: string;
     slug?: string;
+    epubInfo?: IEpubInfo;
   }
   interface IBooks {
     capa: string;

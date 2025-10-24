@@ -390,7 +390,7 @@ export default function EpubReaderPage() {
                         />
                         <AdBanner dataAdSlot="2423907456" fixed />
                         <AdBannerMobile dataAdSlot="6603126932" fixed />
-                        <AutorInfo title={book?.titulo ?? ''} autor={book?.autor ?? ''} />
+                        <AutorInfo title={book?.titulo ?? ''} autor={book?.autor ?? ''} license={book?.epubInfo?.license} licenseLink={book?.epubInfo?.licenseLink} modified={book?.epubInfo?.modified} font={book?.epubInfo?.font} fontLink={book?.epubInfo?.fontLink}  />
 
                     </div>
                 </main>
