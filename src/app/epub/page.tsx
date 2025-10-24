@@ -35,35 +35,52 @@ export default function EpubReaderPage() {
     const router = useRouter();
 
     const [bookUrl, setBookUrl] = useState<string>("");
-
-    useEffect(() => {
-        if (error) {
-            router.push('/')
-        }
-        setBookUrl(book?.epub ?? "");
-    }, [book?.epub, isLoading, book]);
-
     const [location, setLocation] = useState<string | number>(0);
-
     const [rendition, setRendition] = useState<any>(null);
     const [toc, setToc] = useState<any[]>([]);
     const [openToc, setOpenToc] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [isModalConfigOpen, setIsModalConfigOpen] = useState(false);
-
     const [pageData, setPageData] = useState<PageData | null>(null);
+    const [locationsReady, setLocationsReady] = useState(false);
+    const [isReaderConfigReady, setIsReaderConfigReady] = useState(false); 
 
-    const { fontSizeEpub } = useReaderConfig();
+    const { fontSizeEpub, background } = useReaderConfig();
+
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+
+    const backgroundClass = useMemo(() => {
+        if (!mounted) return ""; 
+        switch (background) {
+            case 'dark':
+                return 'bg-black text-white';
+            case 'light':
+                return 'bg-white text-zinc-900';
+            case 'sepia':
+                return 'bg-sepia text-zinc-900';
+            default:
+                return '';
+        }
+    }, [background, mounted]);
+
+    useEffect(() => {
+        setIsReaderConfigReady(true);
+    }, []);
+
+    const isDark = background === 'dark';
+    const isLight = background === 'light';
+    const isSepia = background === 'sepia';
 
     const READER_STYLES: IReactReaderStyle = {
         ...ReactReaderStyle,
         container: {
             ...ReactReaderStyle.container,
-            backgroundColor: "#faf2e7",
+            backgroundColor: isSepia ? "#faf2e7" : isDark ? "#000000" : "#ffffff",
         },
         readerArea: {
             ...ReactReaderStyle.readerArea,
-            backgroundColor: "#faf2e7",
+            backgroundColor: isSepia ? "#faf2e7" : isDark ? "#000000" : "#ffffff",
         },
         titleArea: {
             ...ReactReaderStyle.titleArea,
@@ -79,7 +96,12 @@ export default function EpubReaderPage() {
         },
     };
 
-    const [locationsReady, setLocationsReady] = useState(false);
+    useEffect(() => {
+        if (error) {
+            router.push('/')
+        }
+        setBookUrl(book?.epub ?? "");
+    }, [book?.epub, isLoading, book, router, error]);
 
     const computeFromCfi = useCallback((r: any, cfi: string) => {
         if (!r?.book?.locations || !r.book.locations.length()) return;
@@ -107,10 +129,11 @@ export default function EpubReaderPage() {
             if (!bookId || !isAuth) return;
 
             try {
-                const data = await getEpubProgress(bookId);
+                const response = await getEpubProgress(bookId);
+                const data = response.data;
+                
                 if (!didCancel && data?.cfi && typeof data.cfi === "string") {
                     setLocation(data.cfi);
-                    console.log("[EPUB] CFI inicial da API:", data.cfi);
                 }
             } catch (e) {
                 console.warn("[EPUB] Falha ao carregar CFI da API:", e);
@@ -131,39 +154,54 @@ export default function EpubReaderPage() {
         [rendition, locationsReady, computeFromCfi]
     );
 
+    const applyThemeToRendition = useCallback((r: any, b: string, f: number) => {
+        const isDark = b === 'dark';
+        const isLight = b === 'light';
+        
+        const bgColor = isDark ? "#000000" : isLight ? "#ffffff" : "#faf2e7";
+        const textColor = isDark ? "#ffffff" : "#2b2117";
+        const linkColor = isDark ? "#8cb4ff" : "#7a4d2a";
+
+        try {
+            r.themes.default({
+                body: {
+                    background: bgColor,
+                    color: textColor,
+                    lineHeight: "1.6",
+                    fontWeight: "600",
+                },
+                a: { color: linkColor },
+                "h1,h2,h3": { color: textColor },
+            });
+
+            r.themes.fontSize(`${f}%`);
+            r.views().forEach((view: any) => view.pane && view.pane.render());
+        } catch (e) {
+        }
+    }, []);
+
     const onRendition = useCallback(
         (r: any) => {
             setRendition(r);
             setLocationsReady(false);
-            try {
-                r.themes.default({
-                    body: {
-                        background: "#faf2e7",
-                        color: "#2b2117",
-                        lineHeight: "1.6",
-                    },
-                    a: { color: "#7a4d2a" },
-                    "h1,h2,h3": { color: "#2b2117" },
+
+            applyThemeToRendition(r, background, fontSizeEpub);
+
+            r.book.loaded.navigation.then((nav: any) => setToc(nav.toc || []));
+
+            r.book.ready
+                .then(() => r.book.locations.generate(1024))
+                .then(() => {
+                    setLocationsReady(true);
+                    if (typeof location === "string") {
+                        computeFromCfi(r, location);
+                    }
+                })
+                .catch((err: any) => {
+                    console.error("Erro ao gerar as localizações:", err);
                 });
-
-                r.themes.fontSize(`${fontSizeEpub}%`);
-                r.book.loaded.navigation.then((nav: any) => setToc(nav.toc || []));
-
-                r.book.ready
-                    .then(() => r.book.locations.generate(1024))
-                    .then(() => {
-                        setLocationsReady(true);
-                        if (typeof location === "string") {
-                            computeFromCfi(r, location);
-                        }
-                    })
-                    .catch((err: any) => {
-                        console.error("Erro ao gerar as localizações:", err);
-                    });
-            } catch {
-            }
         },
-        [fontSizeEpub, location, computeFromCfi]
+        [location, computeFromCfi, background, fontSizeEpub, applyThemeToRendition] 
     );
 
     useEffect(() => {
@@ -174,13 +212,9 @@ export default function EpubReaderPage() {
 
     useEffect(() => {
         if (rendition) {
-            try {
-                rendition.themes.fontSize(`${fontSizeEpub}%`);
-            } catch {
-
-            }
+            applyThemeToRendition(rendition, background, fontSizeEpub);
         }
-    }, [fontSizeEpub, rendition]);
+    }, [fontSizeEpub, background, rendition, applyThemeToRendition]);
 
     useEffect(() => {
         if (!bookId) return;
@@ -288,9 +322,9 @@ export default function EpubReaderPage() {
     );
 
     return (
-        <div ref={containerRef} className="flex min-h-screen w-full flex-col text-zinc-900 bg-sepia">
+        <div ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
             {Toolbar}
-            <div className="mx-auto grid w-full max-w-5xl grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)] bg-sepia">
+            <div className={`mx-auto grid w-full max-w-5xl grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)] ${backgroundClass}`} suppressHydrationWarning>
                 <aside
                     className={`border-r border-zinc-800/10 p-3 font-bold md:block ${openToc ? "block" : "hidden"
                         }`}
@@ -330,16 +364,23 @@ export default function EpubReaderPage() {
                         />
                         <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
 
-                        <ReactReader
-                            url={bookUrl}
-                            location={location}
-                            locationChanged={onLocationChanged}
-                            getRendition={onRendition}
-                            epubOptions={{ flow: "paginated" }}
-                            showToc={false}
-                            readerStyles={READER_STYLES}
-                            loadingView={<></>}
-                        />
+                        {isReaderConfigReady ? (
+                            <ReactReader
+                                key={`reader-${background}`} 
+                                url={bookUrl}
+                                location={location}
+                                locationChanged={onLocationChanged}
+                                getRendition={onRendition}
+                                epubOptions={{ flow: "paginated" }}
+                                showToc={false}
+                                readerStyles={READER_STYLES}
+                                loadingView={<></>}
+                            />
+                        ) : (
+                            <div className={`w-full h-full flex items-center justify-center ${backgroundClass}`}>
+                                <FullScreenLoader label="Ajustando tema..." />
+                            </div>
+                        )}
 
                         <AdBanner
                             dataAdFormat=""
@@ -349,7 +390,7 @@ export default function EpubReaderPage() {
                         />
                         <AdBanner dataAdSlot="2423907456" fixed />
                         <AdBannerMobile dataAdSlot="6603126932" fixed />
-                        <AutorInfo />
+                        <AutorInfo title={book?.titulo ?? ''} autor={book?.autor ?? ''} />
 
                     </div>
                 </main>

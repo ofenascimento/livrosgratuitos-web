@@ -81,7 +81,7 @@ const ModalEpubConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
                                 </button>
                             </div>
                         </div> */}
-                        {/* <div>
+                        <div>
                             <div className=" flex justify-between items-center font-raleway">
                                 <h1>Tema:</h1>{" "}
                                 <span className=" capitalize">
@@ -112,7 +112,7 @@ const ModalEpubConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
                                     style={{ backgroundColor: "#ffffff" }}
                                 ></button>
                             </div>
-                        </div> */}
+                        </div>
                         <div>
                             <div className=" flex justify-between items-center">
                                 <h1>Tamanho da fonte:</h1> <span>{`${fontSizeEpub}%`} </span>
