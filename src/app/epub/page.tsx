@@ -27,7 +27,6 @@ interface PageData {
 
 export default function EpubReaderPage() {
 
-
     const searchParams = useSearchParams();
     const bookId = searchParams.get("bookId");
     const { book, isLoading, error } = useFetchBook(bookId ?? "");
@@ -81,6 +80,27 @@ export default function EpubReaderPage() {
         },
     };
 
+    const [locationsReady, setLocationsReady] = useState(false);
+
+    const computeFromCfi = useCallback((r: any, cfi: string) => {
+        if (!r?.book?.locations || !r.book.locations.length()) return;
+        try {
+            const currentPageNumber = r.book.locations.locationFromCfi(cfi);
+            const totalPages = r.book.locations.length();
+            const percentageProgress = r.book.locations.percentageFromCfi(cfi);
+
+            if (currentPageNumber !== null) {
+                setPageData({
+                    currentPage: currentPageNumber + 1,
+                    totalPages,
+                    percentage: percentageProgress,
+                });
+            }
+        } catch (e) {
+            console.error("Erro ao calcular pageData:", e);
+        }
+    }, []);
+
     useEffect(() => {
         let didCancel = false;
 
@@ -107,36 +127,19 @@ export default function EpubReaderPage() {
         setIsClient(true);
     }, []);
 
-
     const onLocationChanged = useCallback(
         (loc: string) => {
             setLocation(loc);
-
-            if (rendition && rendition.book?.locations && typeof loc === "string") {
-                try {
-                    const currentPageNumber = rendition.book.locations.locationFromCfi(loc);
-                    const totalPages = rendition.book.locations.length();
-                    const percentageProgress = rendition.book.locations.percentageFromCfi(loc);
-
-                    if (currentPageNumber !== null) {
-                        setPageData({
-                            currentPage: currentPageNumber + 1,
-                            totalPages,
-                            percentage: percentageProgress,
-                        });
-                    }
-                } catch (e) {
-                    console.error("Erro ao calcular a localização da página/porcentagem:", e);
-                }
-            }
+            if (!locationsReady || typeof loc !== "string") return;
+            computeFromCfi(rendition, loc);
         },
-        [rendition]
+        [rendition, locationsReady, computeFromCfi]
     );
-
 
     const onRendition = useCallback(
         (r: any) => {
             setRendition(r);
+            setLocationsReady(false); 
             try {
                 r.themes.default({
                     body: {
@@ -154,18 +157,9 @@ export default function EpubReaderPage() {
                 r.book.ready
                     .then(() => r.book.locations.generate(1024))
                     .then(() => {
-                        if (typeof location === "string" && r.book.locations) {
-                            const initialLoc = r.book.locations.locationFromCfi(location);
-                            const totalLoc = r.book.locations.length();
-                            const percentageProgress = r.book.locations.percentageFromCfi(location);
-
-                            if (initialLoc !== null) {
-                                setPageData({
-                                    currentPage: initialLoc + 1,
-                                    totalPages: totalLoc,
-                                    percentage: percentageProgress,
-                                });
-                            }
+                        setLocationsReady(true); 
+                        if (typeof location === "string") {
+                            computeFromCfi(r, location); 
                         }
                     })
                     .catch((err: any) => {
@@ -174,8 +168,14 @@ export default function EpubReaderPage() {
             } catch {
             }
         },
-        [fontSizeEpub, location]
+        [fontSizeEpub, location, computeFromCfi]
     );
+
+    useEffect(() => {
+        if (locationsReady && typeof location === "string" && rendition) {
+            computeFromCfi(rendition, location);
+        }
+    }, [locationsReady, location, rendition, computeFromCfi]);
 
     useEffect(() => {
         if (rendition) {
@@ -228,16 +228,12 @@ export default function EpubReaderPage() {
             document.removeEventListener("visibilitychange", onVisibilityChange);
             window.removeEventListener("popstate", onPopState);
         };
-    }, [bookId, location]);
-
-
-
-
+    }, [bookId, location, pageData?.percentage, isAuth]);
 
     const Toolbar = useMemo(
         () => {
-            const progress = pageData ? (pageData.percentage * 100).toFixed(0) : '';
-            const percentageDisplay = pageData && !isNaN(pageData.percentage) ? ` | ${progress}%` : '';
+            const progress = locationsReady && pageData ? Math.round(pageData.percentage * 100).toString() : '';
+            const percentageDisplay = locationsReady && pageData ? ` | ${progress}%` : '';
 
             if (!book?.epub || isLoading)
                 return <FullScreenLoader label="Carregando EPUB" />;
@@ -255,11 +251,8 @@ export default function EpubReaderPage() {
                                             typeof location === "string" ? location : undefined
                                         );
                                     }
-
-
                                 } catch (e) {
                                     console.error("Erro ao salvar progresso antes de voltar:", e);
-
                                 }
 
                                 router.push(`/livro?bookId=${bookId}`)
@@ -279,7 +272,7 @@ export default function EpubReaderPage() {
                         </button>
 
                         <div className="ml-auto flex items-center gap-2">
-                            {pageData && (
+                            {locationsReady && pageData && (
                                 <div className="text-white text-sm font-lexend ml-4 opacity-80 font-normal">
                                     {`Página ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
                                 </div>
@@ -296,7 +289,7 @@ export default function EpubReaderPage() {
                 </div>
             );
         },
-        [pageData]
+        [pageData, locationsReady, isAuth, isLoading, book?.epub, bookId, location, router]
     );
 
     return (
@@ -340,11 +333,9 @@ export default function EpubReaderPage() {
                             dataAdSlot="3946512730"
                             customClassName="mt-4"
                         />
-                        <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
+                    <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
 
-                        {/* 🌟 CORREÇÃO 3: Renderiza o leitor apenas no cliente */}
                         {isClient ? (
-                            // @ts-ignore
                             <ReactReader
                                 url={bookUrl}
                                 location={location}
@@ -356,7 +347,6 @@ export default function EpubReaderPage() {
                                 loadingView={<></>}
                             />
                         ) : (
-                            // Placeholder enquanto o livro carrega o estado do cliente
                             <div className="h-full w-full flex items-center justify-center text-gray-500">
                                 Carregando livro...
                             </div>
