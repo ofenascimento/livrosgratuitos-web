@@ -185,17 +185,6 @@ function Livros() {
             <p className="mt-2 text-white font-lexend font-light">
               {book.descricao}
             </p>
-            {book.pdf && (
-              <Link
-                href={`https://pdf.livrosgratuitos.com/livro?id=${book._id}`}
-                className="w-full"
-              >
-                <div className="w-full bg-[#F72C5B] bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
-                  PDF
-                </div>
-
-              </Link>
-            )}
             {book.epub && (
               <Link
                 href={`https://livrosgratuitos.com/epub?bookId=${book._id}`}
@@ -203,6 +192,17 @@ function Livros() {
               >
                 <div className="w-full bg-main-400 hover:bg-main-500 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
                   EPUB
+                </div>
+
+              </Link>
+            )}
+            {book.pdf && (
+              <Link
+                href={`https://pdf.livrosgratuitos.com/livro?id=${book._id}`}
+                className="w-full"
+              >
+                <div className="w-full bg-[#F72C5B] bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
+                  PDF
                 </div>
 
               </Link>
