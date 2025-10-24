@@ -44,7 +44,6 @@ export default function EpubReaderPage() {
     }, [book?.epub, isLoading, book]);
 
     const [location, setLocation] = useState<string | number>(0);
-    const [isClient, setIsClient] = useState(false);
 
     const [rendition, setRendition] = useState<any>(null);
     const [toc, setToc] = useState<any[]>([]);
@@ -123,10 +122,6 @@ export default function EpubReaderPage() {
         };
     }, [bookId, isAuth]);
 
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-
     const onLocationChanged = useCallback(
         (loc: string) => {
             setLocation(loc);
@@ -139,7 +134,7 @@ export default function EpubReaderPage() {
     const onRendition = useCallback(
         (r: any) => {
             setRendition(r);
-            setLocationsReady(false); 
+            setLocationsReady(false);
             try {
                 r.themes.default({
                     body: {
@@ -157,9 +152,9 @@ export default function EpubReaderPage() {
                 r.book.ready
                     .then(() => r.book.locations.generate(1024))
                     .then(() => {
-                        setLocationsReady(true); 
+                        setLocationsReady(true);
                         if (typeof location === "string") {
-                            computeFromCfi(r, location); 
+                            computeFromCfi(r, location);
                         }
                     })
                     .catch((err: any) => {
@@ -333,24 +328,18 @@ export default function EpubReaderPage() {
                             dataAdSlot="3946512730"
                             customClassName="mt-4"
                         />
-                    <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
+                        <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
 
-                        {isClient ? (
-                            <ReactReader
-                                url={bookUrl}
-                                location={location}
-                                locationChanged={onLocationChanged}
-                                getRendition={onRendition}
-                                epubOptions={{ flow: "paginated" }}
-                                showToc={false}
-                                readerStyles={READER_STYLES}
-                                loadingView={<></>}
-                            />
-                        ) : (
-                            <div className="h-full w-full flex items-center justify-center text-gray-500">
-                                Carregando livro...
-                            </div>
-                        )}
+                        <ReactReader
+                            url={bookUrl}
+                            location={location}
+                            locationChanged={onLocationChanged}
+                            getRendition={onRendition}
+                            epubOptions={{ flow: "paginated" }}
+                            showToc={false}
+                            readerStyles={READER_STYLES}
+                            loadingView={<></>}
+                        />
 
                         <AdBanner
                             dataAdFormat=""
