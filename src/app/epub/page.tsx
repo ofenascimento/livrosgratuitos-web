@@ -14,6 +14,7 @@ import AutorInfo from "@/components/AutorInfo/AutorInfo";
 import { useFetchBook } from "@/hooks/useFetchBook";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import { addEpubProgress } from "@/hooks/addEpubProgress";
+import { getEpubProgress } from "@/hooks/getEpubProgress";
 import useAuth from "@/hooks/useAuth";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
@@ -80,22 +81,36 @@ export default function EpubReaderPage() {
         },
     };
 
+    useEffect(() => {
+        let didCancel = false;
 
+        (async () => {
+            if (!bookId || !isAuth) return;
+
+            try {
+                const data = await getEpubProgress(bookId);
+                if (!didCancel && data?.cfi && typeof data.cfi === "string") {
+                    setLocation(data.cfi);
+                    console.log("[EPUB] CFI inicial da API:", data.cfi);
+                }
+            } catch (e) {
+                console.warn("[EPUB] Falha ao carregar CFI da API:", e);
+            }
+        })();
+
+        return () => {
+            didCancel = true;
+        };
+    }, [bookId, isAuth]);
 
     useEffect(() => {
         setIsClient(true);
+    }, []);
 
-        if (typeof window !== "undefined") {
-            const savedLocation = localStorage.getItem(`${bookId}:loc`) || 0;
-            setLocation(savedLocation);
-            console.log(savedLocation)
-        }
-    }, [bookId]);
 
     const onLocationChanged = useCallback(
         (loc: string) => {
             setLocation(loc);
-            if (typeof window !== "undefined") localStorage.setItem(`${bookId}:loc`, loc);
 
             if (rendition && rendition.book?.locations && typeof loc === "string") {
                 try {
@@ -106,7 +121,7 @@ export default function EpubReaderPage() {
                     if (currentPageNumber !== null) {
                         setPageData({
                             currentPage: currentPageNumber + 1,
-                            totalPages: totalPages,
+                            totalPages,
                             percentage: percentageProgress,
                         });
                     }
@@ -115,8 +130,9 @@ export default function EpubReaderPage() {
                 }
             }
         },
-        [bookId, rendition]
+        [rendition]
     );
+
 
     const onRendition = useCallback(
         (r: any) => {
@@ -156,7 +172,6 @@ export default function EpubReaderPage() {
                         console.error("Erro ao gerar as localizações:", err);
                     });
             } catch {
-                // noop
             }
         },
         [fontSizeEpub, location]
@@ -198,7 +213,7 @@ export default function EpubReaderPage() {
             if (document.visibilityState === "hidden") save();
         };
 
-        const onPopState = () => { // voltar/avançar do histórico
+        const onPopState = () => {
             save();
         };
 
@@ -214,6 +229,9 @@ export default function EpubReaderPage() {
             window.removeEventListener("popstate", onPopState);
         };
     }, [bookId, location]);
+
+
+
 
 
     const Toolbar = useMemo(
