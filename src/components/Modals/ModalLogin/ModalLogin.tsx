@@ -105,6 +105,7 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           }}
           className="border-2 bg-dark-background border-gray-600 p-2 m-2 rounded-lg text-white font-lexend font-light"
           placeholder="Digite seu email"
+          autoCapitalize="off"
         />
         <input
           type="password"
@@ -114,6 +115,7 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           }}
           className="border-2 bg-dark-background border-gray-600 p-2 m-2 rounded-lg text-white font-lexend font-light"
           placeholder="Digite sua senha"
+          autoCapitalize="off"
         />
         <button
           onClick={handleLogin}
