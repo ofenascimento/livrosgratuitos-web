@@ -387,55 +387,71 @@ export default function EpubReaderPage() {
                 </aside>
 
                 <main className="min-h-[70vh]">
-                    <div className="h-[calc(100vh-56px)] w-full md:h-[calc(100vh-64px)]">
-                        <AdBanner
-                            dataAdFormat=""
-                            dataFullWidthResponsive={false}
-                            dataAdSlot="3946512730"
-                            customClassName="mt-4"
-                        />
-                        <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
+                    {/* Anúncios FORA do contêiner de leitura estável */}
+                    <AdBanner
+                        dataAdFormat=""
+                        dataFullWidthResponsive={false}
+                        dataAdSlot="3946512730"
+                        customClassName="mt-4"
+                    />
+                    <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
 
+                    {/* Contêiner estável do reader */}
+                    <div
+                        className="w-full h-[calc(100svh-56px)] md:h-[calc(100svh-64px)] overscroll-contain touch-pan-y"
+                    >
                         {isReaderConfigReady && bookUrl && location !== null ? (
                             <ReactReader
-                                key={`reader-${background}`}
+                                key={`reader-${bookId ?? 'local'}`} // ✅ não remonta ao trocar tema
                                 url={bookUrl}
                                 location={location}
                                 locationChanged={onLocationChanged}
                                 getRendition={onRendition}
-                                epubOptions={{ flow: "paginated" }}
+                                epubOptions={{ flow: "paginated", spread: "none" }} // ✅ evita spreads dinâmicos
                                 showToc={false}
                                 readerStyles={READER_STYLES}
-                                loadingView={<><div className="flex items-center justify-center">
-                                    <div
-                                        className="w-10 h-10 border-4 border-main-500 border-t-transparent border-solid rounded-full animate-spin"
-                                        role="status"
-                                        aria-label="Loading"
-                                    >
-                                        <span className="sr-only">Carregando...</span>
-                                    </div>
-                                </div></>}
+                                loadingView={
+                                    <>
+                                        <div className="flex items-center justify-center">
+                                            <div
+                                                className="w-10 h-10 border-4 border-main-500 border-t-transparent border-solid rounded-full animate-spin"
+                                                role="status"
+                                                aria-label="Loading"
+                                            >
+                                                <span className="sr-only">Carregando...</span>
+                                            </div>
+                                        </div>
+                                    </>
+                                }
                                 errorView={<></>}
-
                             />
                         ) : (
                             <div className={`w-full h-full flex items-center justify-center ${backgroundClass}`}>
                                 <FullScreenLoader label="Ajustando tema..." />
                             </div>
                         )}
-
-                        <AdBanner
-                            dataAdFormat=""
-                            dataFullWidthResponsive={false}
-                            dataAdSlot="2423907456"
-                            customClassName="mb-4"
-                        />
-                        <AdBanner dataAdSlot="2423907456" fixed />
-                        <AdBannerMobile dataAdSlot="6603126932" fixed />
-                        <AutorInfo title={book?.titulo ?? ''} autor={book?.autor ?? ''} license={book?.epubInfo?.license} licenseLink={book?.epubInfo?.licenseLink} modified={book?.epubInfo?.modified} font={book?.epubInfo?.font} fontLink={book?.epubInfo?.fontLink} />
-
                     </div>
+
+                    {/* Anúncios abaixo (também fora do contêiner do reader) */}
+                    <AdBanner
+                        dataAdFormat=""
+                        dataFullWidthResponsive={false}
+                        dataAdSlot="2423907456"
+                        customClassName="mb-4"
+                    />
+                    <AdBanner dataAdSlot="2423907456" fixed />
+                    <AdBannerMobile dataAdSlot="6603126932" fixed />
+                    <AutorInfo
+                        title={book?.titulo ?? ''}
+                        autor={book?.autor ?? ''}
+                        license={book?.epubInfo?.license}
+                        licenseLink={book?.epubInfo?.licenseLink}
+                        modified={book?.epubInfo?.modified}
+                        font={book?.epubInfo?.font}
+                        fontLink={book?.epubInfo?.fontLink}
+                    />
                 </main>
+
 
                 <ModalEpubConfig
                     isOpen={isModalConfigOpen}
