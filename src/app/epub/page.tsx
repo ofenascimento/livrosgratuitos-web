@@ -346,9 +346,10 @@ export default function EpubReaderPage() {
   }, [pageData, locationsReady, isAuth, isLoading, book?.epub, bookId, location, router]);
 
   return (
-    <div ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
+    <div style={{minHeight: '200vh'}} ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
       {Toolbar}
-      <div className={`mx-auto grid w-full max-w-5xl grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)] ${backgroundClass}`} suppressHydrationWarning>
+      <div className={`mx-auto grid w-full max-w-5xl grid-cols-1 ${toc.length > 5 && 'md:grid-cols-[260px_minmax(0,1fr)]'}  ${backgroundClass}`} suppressHydrationWarning>
+        {toc.length > 5 && 
         <aside className={`border-r border-zinc-800/10 p-3 font-bold md:block ${openToc ? "block" : "hidden"}`}>
           <ol className="space-y-1 text-sm">
             {toc.map((item: any) => (
@@ -358,7 +359,7 @@ export default function EpubReaderPage() {
                     try {
                       containerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
                       rendition?.display(item.href);
-                    } catch {}
+                    } catch { }
                     setOpenToc(false);
                   }}
                   className="w-full rounded-lg px-2 py-1 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
@@ -368,7 +369,8 @@ export default function EpubReaderPage() {
               </li>
             ))}
           </ol>
-        </aside>
+        </aside>}
+
 
         <main className="min-h-[70vh]">
           <div
