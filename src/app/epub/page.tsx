@@ -318,13 +318,13 @@ export default function EpubReaderPage() {
             <HiChevronLeft />
             <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
           </a>
-
-          <button
+          {toc.length > 5 && <button
             onClick={() => setOpenToc((v) => !v)}
             className="rounded-full px-3 py-2 text-sm bg-gray-700 flex justify-center items-center gap-3 font-normal text-white font-lexend "
           >
             <MdMenuBook /> Sumário
-          </button>
+          </button>}
+
 
           <div className="ml-auto flex items-center gap-2">
             {locationsReady && pageData && (
@@ -346,30 +346,30 @@ export default function EpubReaderPage() {
   }, [pageData, locationsReady, isAuth, isLoading, book?.epub, bookId, location, router]);
 
   return (
-    <div style={{minHeight: '200vh'}} ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
+    <div style={{ minHeight: '200vh' }} ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
       {Toolbar}
       <div className={`mx-auto grid w-full max-w-5xl grid-cols-1 ${toc.length > 5 && 'md:grid-cols-[260px_minmax(0,1fr)]'}  ${backgroundClass}`} suppressHydrationWarning>
-        {toc.length > 5 && 
-        <aside className={`border-r border-zinc-800/10 p-3 font-bold md:block ${openToc ? "block" : "hidden"}`}>
-          <ol className="space-y-1 text-sm">
-            {toc.map((item: any) => (
-              <li key={item.id}>
-                <button
-                  onClick={() => {
-                    try {
-                      containerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-                      rendition?.display(item.href);
-                    } catch { }
-                    setOpenToc(false);
-                  }}
-                  className="w-full rounded-lg px-2 py-1 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-          </ol>
-        </aside>}
+        {toc.length > 5 &&
+          <aside className={`border-r border-zinc-800/10 p-3 font-bold md:block ${openToc ? "block" : "hidden"}`}>
+            <ol className="space-y-1 text-sm">
+              {toc.map((item: any) => (
+                <li key={item.id}>
+                  <button
+                    onClick={() => {
+                      try {
+                        containerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        rendition?.display(item.href);
+                      } catch { }
+                      setOpenToc(false);
+                    }}
+                    className="w-full rounded-lg px-2 py-1 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </aside>}
 
 
         <main className="min-h-[70vh]">
