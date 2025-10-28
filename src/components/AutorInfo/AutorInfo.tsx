@@ -95,9 +95,7 @@ const AutorInfo: React.FC<IAutorInfo> = ({
               Alterações: {modified}
             </span>
           ) : (
-            <span className="opacity-80 ml-2 block mt-2 text-sm">
-              Sem alterações no texto base.
-            </span>
+            <></>
           )}
         </p>
 
