@@ -185,13 +185,44 @@ function Livros() {
                         <p className="mt-2 text-white font-lexend font-light">
                             {book.descricao}
                         </p>
+                        {book.epub && (
+                            <Link
+                                href={`https://livrosgratuitos.com/epub?bookId=${book._id}`}
+                                className="w-full"
+                            >
+                                <div className="w-full bg-main-400 hover:bg-main-500 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
+                                    EPUB
+                                </div>
+
+                            </Link>
+                        )}
                         {book.pdf && (
                             <Link
                                 href={`https://pdf.livrosgratuitos.com/livro?id=${book._id}`}
                                 className="w-full"
                             >
-                                <div className="w-full bg-[#F72C5B] bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center">
-                                    Ver PDF
+                                <div className="w-full bg-[#F72C5B] bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
+                                    PDF
+                                </div>
+
+                            </Link>
+                        )}
+                        {book.txt && (
+                            <Link
+                                href={`/leitor`}
+                                className="w-full"
+                                onClick={() => {
+
+                                    if (isInstagramWebView()) {
+                                        setIsInstagramModalOpen(true);
+                                    }
+                                    !book.currentParagraph || book.currentParagraph === 0
+                                        ? addBookToReadingBook(book._id)
+                                        : null;
+                                }}
+                            >
+                                <div className="w-full bg-orange-500 hover:bg-orange-600 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
+                                    TXT
                                 </div>
 
                             </Link>
@@ -200,6 +231,31 @@ function Livros() {
                             className="flex-col gap-2 mt-2 lg:mt-4 w-full justify-center items-center hidden md:flex"
                             id="desktop-buttons"
                         >
+                            {book.epub && (
+                                <Link
+                                    href={`https://livrosgratuitos.com/epub?bookId=${book._id}`}
+                                    className="md:w-2/4"
+                                >
+                                    <div className="w-full bg-main-400 hover:bg-main-500 bg-main hidden md:block px-4 py-2 rounded-full  text-center font-bold">
+                                        EPUB
+                                    </div>
+
+                                </Link>
+                            )}
+
+
+                            {book.pdf && (
+                                <Link
+                                    href={`https://pdf.livrosgratuitos.com/livro?id=${book._id}`}
+                                    className="md:w-2/4"
+                                >
+                                    <div className="w-full bg-[#F72C5B] bg-main hidden md:block px-4 py-2 rounded-full text-center font-bold">
+                                        PDF
+                                    </div>
+
+                                </Link>
+                            )}
+
                             {book.txt !== "" && (
                                 <Link
                                     href={`/leitor`}
@@ -210,38 +266,22 @@ function Livros() {
                                             : null;
                                     }}
                                 >
-                                    <div className="bg-main-400 hover:bg-main-500 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-light">
-                                        {book.currentParagraph &&
-                                            book.currentParagraph !== 0 &&
-                                            book.progressPercentage !== undefined &&
-                                            book.progressPercentage > 0
-                                            ? "Continuar leitura"
-                                            : "Ler online"}
+                                    <div className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-bold">
+                                        TXT
                                     </div>
                                 </Link>
                             )}
-                            {book.progressPercentage !== undefined &&
-                                book.progressPercentage > 0 &&
-                                book.currentParagraph !== 0 && (
-                                    <div className="md:w-2/4">
-                                        <ProgressBar progress={book.progressPercentage ?? 0} />
-                                        <div className="w-full text-center mt-2 font-lexend font-light">
-                                            Progresso: {book.progressPercentage}%
-                                        </div>
-                                    </div>
-                                )}
 
-                            {book.pdf && (
-                                <Link
-                                    href={`https://pdf.livrosgratuitos.com/livro?id=${book._id}`}
-                                    className="md:w-2/4"
-                                >
-                                    <div className="w-full bg-[#F72C5B] bg-main hidden md:block px-4 py-2 rounded-full  text-center">
-                                        Ver PDF
-                                    </div>
-
-                                </Link>
-                            )}
+                            {/* {book.progressPercentage !== undefined &&
+                book.progressPercentage > 0 &&
+                book.currentParagraph !== 0 && (
+                  <div className="md:w-2/4">
+                    <ProgressBar progress={book.progressPercentage ?? 0} />
+                    <div className="w-full text-center mt-2 font-lexend font-light">
+                      Progresso: {book.progressPercentage}%
+                    </div>
+                  </div>
+                )} */}
                         </div>
                     </div>
                 </div>
