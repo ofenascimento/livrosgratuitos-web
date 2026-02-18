@@ -1,12 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import useFetchBooks from "@/hooks/useFetchBooks";
-import Loader from "@/components/Loader/Loader";
-import Link from "next/link";
 import CardBookSkeleton from "../Skeleton/CardBookSkeleton";
 import Card from "../Card/Card";
 import Title from "../Title/Title";
-import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { IBookList } from "./types";
 
@@ -17,7 +14,7 @@ export default function BookList({ options, label }: IBookList) {
 
   useEffect(() => {
     if (books.length > 0 && !isLoading) {
-      const imagePromises = books.map((book) => {
+      const imagePromises = books.map((book: any) => {
         return new Promise((resolve) => {
           const img = new Image();
           img.src = book.capa;
@@ -90,7 +87,7 @@ export default function BookList({ options, label }: IBookList) {
           className="overflow-x-auto w-full py-4 scrollbar-hide"
         >
           <div className="flex gap-4">
-            {books.map((item, index) => (
+            {books.map((item: any, index: any) => (
               <Card
                 key={index}
                 id={item._id}

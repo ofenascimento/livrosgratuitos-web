@@ -21,7 +21,8 @@
     "react-modal": "^3.16.1",
     "react-reader": "^2.0.15",
     "react-spinners": "^0.13.8",
-    "sass": "^1.77.5"
+    "sass": "^1.77.5",
+    "swr": "^2.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",

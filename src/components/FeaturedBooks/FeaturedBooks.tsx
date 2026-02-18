@@ -22,21 +22,65 @@ const FeaturedBooks: React.FC = () => {
                     textDecorationLine: "underline",
                 }}>Coleção Machado de Assis</h1>
                 <p className='mt-4 lg:mt-3 font-lexend font-light'>Explorando Machado de Assis: Um mergulho nas obras icônicas do mestre da literatura brasileira. Descubra contos intrigantes como 'Dom Casmurro' e 'Memórias Póstumas de Brás Cubas', que desafiam convenções e exploram as complexidades da condição humana.</p>
-                <div className='flex gap-2 py-5 overflow-x-auto scrollbar-hide'>
-                    <Link href='/livro?bookId=65eeabf7822f5ccbb5d70831' className='cursor-pointer flex-shrink-0'>
-                        <Image src='/featured-books/2.png' width={160} height={160} alt='' className='rounded-md' />
+                <div className="flex gap-2 py-5 overflow-x-auto scrollbar-hide">
+                    <Link href="/livro?bookId=65eeabf7822f5ccbb5d70831" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/2.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 2"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
                     </Link>
-                    <Link href='/livro?bookId=65eeac38822f5ccbb5d70837' className='cursor-pointer flex-shrink-0'>
-                        <Image src='/featured-books/3.png' width={160} height={160} alt='' className='rounded-md' />
+
+                    <Link href="/livro?bookId=65eeac38822f5ccbb5d70837" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/3.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 3"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
                     </Link>
-                    <Link href='/livro?bookId=65f42c3a032f702921e340ab' className='cursor-pointer flex-shrink-0'>
-                        <Image src='/featured-books/4.png'width={160} height={160} alt='' className='rounded-md' />
+
+                    <Link href="/livro?bookId=65f42c3a032f702921e340ab" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/4.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 4"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
                     </Link>
-                    <Link href='/livro?bookId=65f4183b032f702921e3395c' className='cursor-pointer flex-shrink-0'>
-                        <Image src='/featured-books/5.png'width={160} height={160} alt='' className='rounded-md' />
+
+                    <Link href="/livro?bookId=65f4183b032f702921e3395c" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/5.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 5"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
                     </Link>
-                    <Link href='/livro?bookId=65f4183b032f702921e3395c' className='cursor-pointer flex-shrink-0'>
-                        <Image src='/featured-books/6.png'width={160} height={160} alt='' className='rounded-md' />
+
+                    <Link href="/livro?bookId=65f4183b032f702921e3395c" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/6.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 6"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
                     </Link>
                 </div>
             </div>
