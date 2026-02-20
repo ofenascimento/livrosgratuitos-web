@@ -82,6 +82,50 @@ const FeaturedBooks: React.FC = () => {
                             className="rounded-md"
                         />
                     </Link>
+                    <Link href="/a-mao-e-a-luva" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/7.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 6"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
+                    </Link>
+                    <Link href="/livro?bookId=67906c16dd3d3c0fe7089781" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/8.png?v=1"
+                            width={160}
+                            height={160}
+                            alt="Livro 6"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
+                    </Link>
+                    <Link href="/ressurreicao" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/9.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 6"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
+                    </Link>
+                     <Link href="/iaia-garcia" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/10.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 6"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
+                    </Link>
                 </div>
             </div>
         </div>
