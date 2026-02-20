@@ -115,9 +115,20 @@ const FeaturedBooks: React.FC = () => {
                             className="rounded-md"
                         />
                     </Link>
-                     <Link href="/iaia-garcia" className="cursor-pointer flex-shrink-0">
+                    <Link href="/iaia-garcia" className="cursor-pointer flex-shrink-0">
                         <Image
                             src="/featured-books/10.png"
+                            width={160}
+                            height={160}
+                            alt="Livro 6"
+                            loading="lazy"
+                            sizes="160px"
+                            className="rounded-md"
+                        />
+                    </Link>
+                    <Link href="/memorial-de-aires" className="cursor-pointer flex-shrink-0">
+                        <Image
+                            src="/featured-books/11.png"
                             width={160}
                             height={160}
                             alt="Livro 6"

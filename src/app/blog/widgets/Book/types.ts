@@ -1,5 +1,6 @@
 export interface IBookWidget {
     imageSrc: string;
-    urlBook: string;
+    urlBook?: string;
     pdfBook: string;
+    urlEpub?: string;
 }
