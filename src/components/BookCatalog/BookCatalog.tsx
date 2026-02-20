@@ -116,6 +116,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
               capa={item.capa}
               titulo={item.titulo}
               autor={item.autor}
+              slug={item.slug}
             />
           ))}
         </div>
