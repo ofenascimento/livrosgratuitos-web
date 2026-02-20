@@ -194,6 +194,18 @@ export default function EpubReaderPage() {
         },
         a: { color: linkColor },
         "h1,h2,h3": { color: textColor },
+        "a:hover": {
+          color: textColor,
+          textDecoration: "none",
+        },
+
+        "a:focus": {
+          outline: "none",
+        },
+
+        "a:active": {
+          color: textColor,
+        },
       });
 
       r.themes.fontSize(`${f}%`);
