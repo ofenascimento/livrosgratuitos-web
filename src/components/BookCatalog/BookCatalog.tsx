@@ -24,7 +24,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
     }
 
     if (books && books.length > 0 && !isLoading) {
-      const imagePromises = books.map((book) => {
+      const imagePromises = books.map((book: any) => {
         return new Promise((resolve) => {
           const img = new window.Image();
           img.src = book.capa;
@@ -109,7 +109,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
           }
         />
         <div className="w-full flex flex-wrap gap-4 items-center justify-center mt-2">
-          {books.map((item, index) => (
+          {books.map((item: any, index: any) => (
             <Card
               key={index}
               id={item._id}
