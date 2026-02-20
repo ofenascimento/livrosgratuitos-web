@@ -207,7 +207,7 @@ function Livros() {
 
               </Link>
             )}
-            {book.txt && (
+            {book.txt !== "" && (
               <Link
                 href={`/leitor`}
                 className="w-full"
