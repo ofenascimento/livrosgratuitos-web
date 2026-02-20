@@ -71,7 +71,7 @@ const FeaturedBooks: React.FC = () => {
                         />
                     </Link>
 
-                    <Link href="/livro?bookId=65f4183b032f702921e3395c" className="cursor-pointer flex-shrink-0">
+                    <Link href="/livro?bookId=65f423de032f702921e33d86" className="cursor-pointer flex-shrink-0">
                         <Image
                             src="/featured-books/6.png"
                             width={160}
