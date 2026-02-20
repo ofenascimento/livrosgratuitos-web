@@ -207,7 +207,7 @@ function Livros() {
 
               </Link>
             )}
-            {book.txt !== "" && (
+            {book.txt && (
               <Link
                 href={`/leitor`}
                 className="w-full"
@@ -256,7 +256,7 @@ function Livros() {
                 </Link>
               )}
 
-              {book.txt !== "" && (
+              {book.txt && (
                 <Link
                   href={`/leitor`}
                   className="w-full flex justify-center items-center"
