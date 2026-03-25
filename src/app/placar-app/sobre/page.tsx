@@ -1,23 +1,31 @@
-export default function TermsPage() {
+export default function AboutPage() {
   const updatedAt = "25 de março de 2026";
+
+  const features = [
+    "Placar simples",
+    "Placar de vôlei",
+    "Placar de basquete",
+    "Placar de futebol",
+    "Modo para 4 times",
+    "Sorteador de times",
+    "Salvamento de registros no dispositivo",
+  ];
 
   return (
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
       <section className="mx-auto max-w-4xl px-6 py-16 sm:px-10 lg:px-12">
         <div className="mb-10">
-          <span className="mb-4 inline-flex rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-300">
-            Termos de Uso
+          <span className="mb-4 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-300">
+            Sobre o App
           </span>
 
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Termos de Uso do aplicativo
+            Um app de placar simples, rápido e prático
           </h1>
 
           <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-400 sm:text-lg">
-            Estes Termos de Uso regulam o acesso e uso do aplicativo de placar,
-            que oferece funções como placar simples, vôlei, basquete, futebol,
-            placar para 4 times, sorteio de times e salvamento local de
-            registros.
+            Este aplicativo foi criado para facilitar o acompanhamento de partidas
+            e ajudar no controle de placares de forma prática, direta e fácil de usar.
           </p>
 
           <p className="mt-4 text-sm text-zinc-500">
@@ -27,123 +35,69 @@ export default function TermsPage() {
 
         <div className="space-y-6">
           <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              1. Aceitação dos termos
-            </h2>
+            <h2 className="text-xl font-semibold text-white">O que é o app</h2>
             <p className="mt-3 leading-7 text-zinc-300">
-              Ao acessar ou utilizar o app, você concorda com estes Termos de
-              Uso. Caso não concorde, recomendamos que não utilize o aplicativo.
+              O app é uma ferramenta para marcar pontos, acompanhar partidas e
+              salvar registros diretamente no dispositivo. Ele foi pensado para
+              quem quer abrir o aplicativo e usar sem complicação.
             </p>
           </section>
 
           <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              2. Funcionalidades do app
-            </h2>
-            <p className="mt-3 leading-7 text-zinc-300">
-              O aplicativo foi desenvolvido para auxiliar usuários no controle e
-              registro de placares e partidas esportivas, incluindo diferentes
-              modos e formatos de jogo.
-            </p>
-            <ul className="mt-4 list-disc space-y-2 pl-5 text-zinc-300">
-              <li>Placar simples</li>
-              <li>Placar de vôlei</li>
-              <li>Placar de basquete</li>
-              <li>Placar de futebol</li>
-              <li>Modo com 4 times</li>
-              <li>Sorteador de times</li>
-              <li>Salvamento de registros no dispositivo</li>
-            </ul>
+            <h2 className="text-xl font-semibold text-white">Principais recursos</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {features.map((feature) => (
+                <div
+                  key={feature}
+                  className="rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-300"
+                >
+                  {feature}
+                </div>
+              ))}
+            </div>
           </section>
 
           <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              3. Responsabilidade do usuário
-            </h2>
+            <h2 className="text-xl font-semibold text-white">Como funciona</h2>
             <p className="mt-3 leading-7 text-zinc-300">
-              O usuário é responsável pelo uso adequado do app e pelas
-              informações registradas localmente no dispositivo. O app não se
-              responsabiliza por perdas de dados causadas por remoção do app,
-              limpeza do armazenamento, falhas no dispositivo ou ações de
-              terceiros.
+              O usuário pode utilizar os diferentes modos de placar disponíveis,
+              registrar partidas e consultar resultados salvos localmente no
+              aparelho. O app busca oferecer rapidez no uso e uma interface clara
+              para momentos de jogo, treino ou organização de times.
             </p>
           </section>
 
           <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              4. Disponibilidade
-            </h2>
+            <h2 className="text-xl font-semibold text-white">Armazenamento de registros</h2>
             <p className="mt-3 leading-7 text-zinc-300">
-              Buscamos manter o aplicativo disponível e funcional, mas não
-              garantimos funcionamento ininterrupto, livre de erros ou totalmente
-              compatível com todos os dispositivos e versões de sistema.
+              Os registros e preferências do aplicativo são armazenados localmente
+              no dispositivo, permitindo que o usuário mantenha seu histórico de
+              partidas e configurações de uso sem depender de uma conta.
             </p>
           </section>
 
           <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              5. Publicidade no app
-            </h2>
+            <h2 className="text-xl font-semibold text-white">Anúncios</h2>
             <p className="mt-3 leading-7 text-zinc-300">
-              O aplicativo pode exibir anúncios por meio do Google AdMob. A
-              exibição de publicidade ajuda na manutenção e evolução do produto.
+              O app pode exibir anúncios por meio do Google AdMob para ajudar na
+              manutenção e evolução do produto.
             </p>
           </section>
 
           <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              6. Recursos premium futuros
-            </h2>
+            <h2 className="text-xl font-semibold text-white">Recursos futuros</h2>
             <p className="mt-3 leading-7 text-zinc-300">
-              O app poderá oferecer, futuramente, recursos premium ou planos
-              pagos. Quando isso acontecer, condições específicas de assinatura,
-              cobrança, renovação, cancelamento e benefícios poderão ser
-              adicionadas ou complementadas nestes Termos.
+              No futuro, o aplicativo poderá contar com recursos premium,
+              melhorias de personalização e novas funções para deixar a experiência
+              ainda mais completa.
             </p>
           </section>
 
-          <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              7. Propriedade intelectual
-            </h2>
+          <section className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6">
+            <h2 className="text-xl font-semibold text-white">Contato</h2>
             <p className="mt-3 leading-7 text-zinc-300">
-              O app, sua identidade visual, textos, estrutura, funcionalidades e
-              demais elementos relacionados pertencem aos seus respectivos
-              titulares e não podem ser copiados, reproduzidos ou explorados sem
-              autorização, exceto nos limites permitidos por lei.
-            </p>
-          </section>
-
-          <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              8. Limitação de responsabilidade
-            </h2>
-            <p className="mt-3 leading-7 text-zinc-300">
-              O aplicativo é fornecido no estado em que se encontra. Na máxima
-              medida permitida por lei, não nos responsabilizamos por danos
-              indiretos, perda de dados, interrupções ou prejuízos decorrentes
-              do uso ou da impossibilidade de uso do app.
-            </p>
-          </section>
-
-          <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6 shadow-xl shadow-black/10">
-            <h2 className="text-xl font-semibold text-white">
-              9. Alterações nos termos
-            </h2>
-            <p className="mt-3 leading-7 text-zinc-300">
-              Estes Termos de Uso podem ser modificados a qualquer momento para
-              refletir melhorias, mudanças legais ou novos recursos do produto.
-              O uso continuado do app após atualizações representa aceitação da
-              versão vigente.
-            </p>
-          </section>
-
-          <section className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-6">
-            <h2 className="text-xl font-semibold text-white">10. Contato</h2>
-            <p className="mt-3 leading-7 text-zinc-300">
-              Em caso de dúvidas, solicitações ou questões relacionadas a estes
-              Termos de Uso, utilize o canal de contato oficial informado no seu
-              site ou na página pública do aplicativo.
+              Para dúvidas, sugestões ou suporte, utilize o canal oficial
+              informado no seu site ou na página pública do aplicativo.
             </p>
           </section>
         </div>
