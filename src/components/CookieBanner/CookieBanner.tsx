@@ -1,45 +1,38 @@
 "use client";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
-import Link from "next/link";
 
 const CookieBanner = () => {
-  const { consent, accept } = useCookieConsent();
+    const { consent, accept } = useCookieConsent();
 
-  if (consent === undefined) return null;
-  if (consent !== null) return null;
+    if (consent === undefined) return null;
+    if (consent !== null) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-      <div style={{ backgroundColor: "#0a0a0a", borderColor: "#7650ED" }} className="w-full max-w-lg rounded-2xl px-8 py-8 flex flex-col items-center gap-5 border">
+    return (
+        <div className="fixed bottom-4 left-4 right-4 z-50 md:left-8 md:right-8 lg:left-16 lg:right-16">
+            <div className="bg-dark-background border-2 border-gray-600 rounded-2xl px-6 py-4 flex items-center justify-between gap-6 flex-wrap shadow-lg">
 
-        <a href="/">
-          <img src="/logo.png" style={{ width: "auto", height: "50px" }} alt="" />
-        </a>
+                <div className="flex items-center gap-4 flex-1 min-w-[280px]">
+                    <img className="hidden md:block" src="/logo.png" style={{ height: "32px", width: "auto" }} alt="" />
+                    <p className="text-white text-xs leading-relaxed m-0">
+                        Usamos cookies e tecnologias semelhantes para melhorar sua experiência,
+                        personalizar anúncios e recomendar conteúdo de seu interesse. Ao utilizar
+                        nossos serviços, você concorda com nossa{" "}
+                        <a href="/politica-de-privacidade" className="text-purple-400 underline">
+                            Política de Privacidade
+                        </a>
+                        .
+                    </p>
+                </div>
 
-        <div className="text-center flex flex-col gap-1.5">
-          <p style={{ color: "#ffffff" }} className="text-base font-semibold">
-            Usamos cookies
-          </p>
-          <p style={{ color: "#9ca3af" }} className="text-sm leading-relaxed max-w-sm">
-            Usamos cookies e tecnologias semelhantes para melhorar sua experiência,
-            personalizar anúncios e recomendar conteúdo. Ao continuar navegando,
-            você concorda com nossa{" "}
-            <Link target="_blank" href="politica-de-privacidade" className="text-purple-400 cursor-pointer hover:underline">
-              Política de Privacidade
-            </Link>
-            .
-          </p>
+                <button
+                    onClick={accept}
+                    className=" bg-main-400 hover:bg-main-500 active:scale-95 transition-all text-white rounded-lg px-7 py-2.5 text-sm font-semibold whitespace-nowrap flex-shrink-0 w-full md:w-auto"
+                >
+                    Entendi e aceito
+                </button>
+            </div>
         </div>
-
-        <button
-          onClick={accept}
-          className="w-full max-w-xs py-3 bg-purple-500 hover:bg-purple-600 active:scale-95 transition-all text-white rounded-xl text-sm font-semibold"
-        >
-          Entendi e aceito
-        </button>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default CookieBanner;
