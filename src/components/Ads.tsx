@@ -1,14 +1,17 @@
-// components/GoogleAdsense.tsx
+"use client";
 import Script from "next/script";
+import { useCookieConsent } from "@/hooks/useCookieConsent";
 
 type Props = {
   pId?: string;
 };
 
 const GoogleAdsense: React.FC<Props> = ({ pId = "2529229033686497" }) => {
-  if (process.env.NODE_ENV !== "production") {
-    return null;
-  }
+  const { consent } = useCookieConsent();
+
+  if (process.env.NODE_ENV !== "production") return null;
+  if (consent !== "accepted") return null;
+
   return (
     <Script
       async

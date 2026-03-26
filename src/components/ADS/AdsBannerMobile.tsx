@@ -1,6 +1,6 @@
 "use client";
-
 import React, { useEffect, useRef, useState } from "react";
+import { useCookieConsent } from "@/hooks/useCookieConsent";
 
 type AdBannerTypes = {
   dataAdSlot: string;
@@ -12,16 +12,17 @@ type AdBannerTypes = {
 
 const AdBannerMobile = ({
   dataAdSlot,
-  dataAdFormat,
-  dataFullWidthResponsive,
   fixed,
-  customClassName
+  customClassName,
 }: AdBannerTypes) => {
+  const { consent } = useCookieConsent();
   const insRef = useRef<HTMLModElement>(null);
   const [adUnfilled, setAdUnfilled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (consent !== "accepted") return;
+
     try {
       ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
     } catch (error: any) {
@@ -32,11 +33,7 @@ const AdBannerMobile = ({
       const adsbygoogleStatus = insRef.current?.getAttribute("data-adsbygoogle-status");
       if (adsbygoogleStatus === "done") {
         const adStatus = insRef.current?.getAttribute("data-ad-status");
-        if (adStatus === "unfilled") {
-          setAdUnfilled(true);
-        } else {
-          setAdUnfilled(false);
-        }
+        setAdUnfilled(adStatus === "unfilled");
         setIsLoading(false);
       }
     });
@@ -48,16 +45,17 @@ const AdBannerMobile = ({
       });
     }
 
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+    return () => observer.disconnect();
+  }, [consent]);
+
+  if (consent !== "accepted") return null;
 
   return (
     !adUnfilled && (
       <div
-        className={`${customClassName || ""} w-full justify-center items-center flex md:hidden ${fixed ? "fixed bottom-0 left-0 z-50" : ""
-          }`}
+        className={`${customClassName || ""} w-full justify-center items-center flex md:hidden ${
+          fixed ? "fixed bottom-0 left-0 z-50" : ""
+        }`}
       >
         <ins
           ref={insRef}

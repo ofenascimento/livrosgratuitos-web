@@ -1,6 +1,5 @@
-"use client";
+// app/layout.tsx
 import type { Metadata } from "next";
-import { usePathname } from "next/navigation"; // ✅ Importa o hook correto
 import {
   Poppins,
   Inter,
@@ -17,6 +16,8 @@ import { metadata } from "./metadata";
 import { BookProvider } from "@/context/BookContext";
 import { ReaderConfigProvider } from "@/context/ReaderConfiContext";
 import GoogleAdsense from "@/components/Ads";
+import CookieBanner from "@/components/CookieBanner/CookieBanner";
+import Providers from "./providers";
 
 const poppins = Poppins({
   weight: ["400", "500", "700"],
@@ -95,13 +96,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-
-  const isTestPage = pathname.includes("/teste");
-
   return (
     <html lang="en">
       <head>
+        {/* ✅ Consent Mode ANTES de qualquer script do Google */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                ad_storage: 'denied',
+                analytics_storage: 'denied',
+                personalization_storage: 'denied',
+                wait_for_update: 500
+              });
+            `,
+          }}
+        />
         <meta
           name="description"
           content={metadata.description ?? "Livros Gratuitos"}
@@ -117,28 +129,29 @@ export default function RootLayout({
         <title>{String(metadata.title)}</title>
       </head>
 
-      <body className={isTestPage ? "" : `
-          ${poppins.variable} 
-          ${inter.variable} 
-          ${raleway.variable} 
-          ${lora.variable} 
-          ${merriweather.variable} 
-          ${lexend.variable} 
-          ${darkerGrotesque.variable} 
+      <body
+        className={`
+          ${poppins.variable}
+          ${inter.variable}
+          ${raleway.variable}
+          ${lora.variable}
+          ${merriweather.variable}
+          ${lexend.variable}
+          ${darkerGrotesque.variable}
           ${nunito.variable}
           ${redHat.variable}
-          font-raleway 
-          bg-black 
-          bg-blured 
+          font-raleway
+          bg-black
+          bg-blured
         `}
       >
-        <ReaderConfigProvider>
-          <BookProvider>
-            {children}
-          </BookProvider>
-        </ReaderConfigProvider>
+        <Providers>
+          {children}
+        </Providers>
+
+        {/* ✅ AdSense dentro do body */}
+        <GoogleAdsense />
       </body>
-      <GoogleAdsense />
     </html>
   );
 }
