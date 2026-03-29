@@ -160,10 +160,10 @@ export default function LivroPage() {
   const isInitializing = bookLoading || loading;
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-slate-100 font-lexend">
-
-      {/* HEADER */}
-      <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
+    <div
+      className="flex flex-col bg-slate-100 font-lexend"
+      style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}
+    >      <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
         <div className="flex items-center gap-3">
           <a href="/">
             <img
