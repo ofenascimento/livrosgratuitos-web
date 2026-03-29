@@ -109,6 +109,11 @@ export default function EpubReaderPage() {
     titleArea: { ...ReactReaderStyle.titleArea, display: "none" },
     tocArea: { ...ReactReaderStyle.tocArea, display: "none" },
     tocBackground: { ...ReactReaderStyle.tocBackground, display: "none" },
+    arrow: {
+      ...ReactReaderStyle.arrow,
+      color: isDark ? "#ffffff" : "#000000",
+      opacity: 1,
+    },
   };
 
   useEffect(() => {

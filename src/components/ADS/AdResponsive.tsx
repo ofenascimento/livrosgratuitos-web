@@ -66,7 +66,7 @@ const AdResponsive = ({ dataAdSlot, customClassName }: AdResponsiveProps) => {
         data-full-width-responsive="true"
       >
         {isLoading && (
-          <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/40 text-sm font-medium select-none">
+          <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold select-none">
             Anúncio
           </p>
         )}
