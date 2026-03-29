@@ -6,6 +6,7 @@ import { useFetchBook } from '@/hooks/useFetchBook';
 import AdBanner from '@/components/ADS/AdBanner';
 import AdBannerMobile from '@/components/ADS/AdsBannerMobile';
 import AdResponsive from '@/components/ADS/AdResponsive';
+import useIsMobile from '@/hooks/isMobile';
 
 const FALLBACK_PDF =
   'https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Fo-pequeno-principe.pdf?alt=media&token=cb7b8f63-e9ac-4154-bc40-2fad4bbec002';
@@ -40,7 +41,12 @@ export default function LivroPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
 
-  // Carrega PDF.js via CDN
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (isMobile) setScale(0.6);
+  }, [isMobile]);
+
   useEffect(() => {
     if (window.pdfjsLib) { setPdfReady(true); return; }
     const script = document.createElement('script');
@@ -85,19 +91,24 @@ export default function LivroPage() {
   }, [pdfReady, pdfUrl, bookLoading]);
 
   const generateThumbnails = async (pdf: any) => {
-    const thumbs: string[] = [];
-    for (let i = 1; i <= pdf.numPages; i++) {
+    const total = pdf.numPages;
+    const thumbs = new Array(total).fill('');
+    setThumbnails(new Array(total).fill(''));
+
+    const promises = Array.from({ length: total }, async (_, i) => {
       try {
-        const page = await pdf.getPage(i);
+        const page = await pdf.getPage(i + 1);
         const viewport = page.getViewport({ scale: 0.3 });
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
         await page.render({ canvasContext: canvas.getContext('2d')!, viewport }).promise;
-        thumbs.push(canvas.toDataURL());
+        thumbs[i] = canvas.toDataURL();
         setThumbnails([...thumbs]);
-      } catch { break; }
-    }
+      } catch { }
+    });
+
+    await Promise.all(promises);
   };
 
   const renderPage = useCallback(async (pageNum: number, sc: number) => {
@@ -163,7 +174,7 @@ export default function LivroPage() {
                 {book?.titulo ?? 'O Pequeno Príncipe'}
               </h1>
               <span className="text-gray-400 text-sm hidden md:block">·</span>
-              <span className="text-gray-400 text-sm hidden md:block italic">
+              <span className="text-gray-400 text-sm hidden md:block">
                 {book?.autor ?? 'Antoine de Saint-Exupéry'}
               </span>
             </>
@@ -171,7 +182,6 @@ export default function LivroPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Zoom */}
           <div className="flex items-center gap-1 border-r border-slate-200 pr-3 mr-1">
             <button
               onClick={() => setScale(s => Math.max(s - 0.2, 0.4))}
@@ -210,32 +220,30 @@ export default function LivroPage() {
 
       {/* BODY */}
       <div className="flex flex-1 overflow-hidden">
-
-        {/* SIDEBAR */}
         <aside
-          className={`${sidebarOpen ? 'w-48' : 'w-0'} transition-all duration-300 overflow-hidden bg-[#ECEAFF] shrink-0 hidden md:block`}
+          className={`${sidebarOpen ? 'w-48' : 'w-0'} transition-all duration-300 overflow-hidden bg-[#ECEAFF] shrink-0 hidden md:flex flex-col`}
           style={{ scrollbarWidth: 'thin' }}
         >
-          <div className="h-full overflow-y-auto flex flex-col items-center py-3 gap-2">
+          <div className="flex-1 overflow-y-auto flex flex-col items-center py-3 gap-2">
             {thumbnails.map((src, i) => (
-              <div key={i} className="flex flex-col items-center">
+              <div key={i} className="flex flex-col items-center shrink-0">
                 <div
                   onClick={() => goTo(i + 1)}
                   className={`border-2 rounded cursor-pointer transition ${currentPage === i + 1 ? 'border-indigo-500' : 'border-transparent hover:border-indigo-300'
                     }`}
                 >
-                  <img src={src} alt={`Página ${i + 1}`} className="w-28 block" />
+                  {src ? (
+                    <img src={src} alt={`Página ${i + 1}`} className="w-28 block" />
+                  ) : (
+                    <div className="w-28 bg-slate-200 animate-pulse" style={{ height: 160 }} />
+                  )}
                 </div>
                 <span className="text-xs text-slate-500 mt-0.5">{i + 1}</span>
               </div>
             ))}
-            {thumbnails.length < numPages && !loading && (
-              <p className="text-xs text-indigo-400 py-2 animate-pulse">Gerando...</p>
-            )}
           </div>
         </aside>
 
-        {/* TOGGLE SIDEBAR */}
         <button
           onClick={() => setSidebarOpen(o => !o)}
           className="hidden md:flex items-center justify-center w-5 bg-[#dddaf5] hover:bg-[#ccc9ef] transition cursor-pointer shrink-0"
@@ -248,7 +256,6 @@ export default function LivroPage() {
           </svg>
         </button>
 
-        {/* MAIN */}
         <main className="flex-1 overflow-auto bg-slate-100">
           <div id="top" />
           <AdBanner
@@ -310,9 +317,15 @@ export default function LivroPage() {
         </main>
       </div>
 
-      {/* CONTROLES FLUTUANTES */}
       {!isInitializing && !error && (
-        <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50 pointer-events-none">
+        <div
+          className="fixed bottom-6 z-50 pointer-events-none flex justify-center"
+          style={{
+            left: sidebarOpen && !isMobile ? '12rem' : '0', // 12rem = w-48 da sidebar + toggle (w-5)
+            right: 0,
+            transition: 'left 0.3s',
+          }}
+        >
           <div className="pointer-events-auto flex items-center gap-2 bg-slate-900 text-white rounded-full px-4 py-2 shadow-xl">
             <button
               onClick={() => goTo(currentPage - 1)}
