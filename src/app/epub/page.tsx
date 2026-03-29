@@ -18,6 +18,7 @@ import { getEpubProgress } from "@/hooks/getEpubProgress";
 import useAuth from "@/hooks/useAuth";
 import ModalToc from "@/components/Modals/TocModal/TocModal";
 import ModalInfo from "@/components/Modals/ModalInfo/ModalInfo";
+import AdResponsive from "@/components/ADS/AdResponsive";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
 
@@ -450,7 +451,7 @@ export default function EpubReaderPage() {
               dataAdSlot="2423907456"
               customClassName="mb-4"
             />
-            <AdBanner dataAdSlot="2423907456" fixed />
+            <AdResponsive dataAdSlot="1435361044" />
             <AdBannerMobile dataAdSlot="6603126932" fixed />
 
           </div>
