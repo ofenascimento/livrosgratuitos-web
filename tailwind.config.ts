@@ -31,6 +31,7 @@ const config: Config = {
       },
       colors: {
         main: {
+          50: "#f5f3ff",
           100: "#aa9ef6",
           200: "#9984f3",
           300: "#8769f0",
@@ -53,7 +54,8 @@ const config: Config = {
         lexend: ["var(--font-lexend)"],
         darker: ["var(--font-darker-grotesque)"],
         nunito: ["var(--font-nunito)"],
-        redRat: ["var(--font-redhat)"]
+        redRat: ["var(--font-redhat)"],
+        dmSans: ["var(--font-dm-sans)"]
       },
       width: {
         "9/10": "90%",

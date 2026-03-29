@@ -10,6 +10,8 @@ import {
   Darker_Grotesque,
   Nunito,
   Red_Hat_Display,
+  DM_Sans,
+
 } from "next/font/google";
 import "./globals.css";
 import { metadata } from "./metadata";
@@ -25,6 +27,14 @@ const poppins = Poppins({
   display: "swap",
   subsets: ["latin"],
   variable: "--font-poppins",
+});
+
+const dmSans = DM_Sans({
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
 });
 
 const inter = Inter({
@@ -140,6 +150,7 @@ export default function RootLayout({
           ${darkerGrotesque.variable}
           ${nunito.variable}
           ${redHat.variable}
+          ${dmSans.variable}
           font-raleway
           bg-black
           bg-blured
