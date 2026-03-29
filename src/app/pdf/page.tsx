@@ -33,13 +33,19 @@ export default function LivroPage() {
 
   const [numPages, setNumPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [scale, setScale] = useState(1.2);
+  const [scale, setScale] = useState(1);
   const [loading, setLoading] = useState(true);
   const [pageLoading, setPageLoading] = useState(false);
   const [error, setError] = useState('');
   const [pdfReady, setPdfReady] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
+
+  const [inputPage, setInputPage] = useState('1');
+
+  useEffect(() => {
+    setInputPage(String(currentPage));
+  }, [currentPage]);
 
   const isMobile = useIsMobile();
 
@@ -159,11 +165,12 @@ export default function LivroPage() {
       {/* HEADER */}
       <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
         <div className="flex items-center gap-3">
-          <a href="/" className="bg-slate-100 p-2 rounded-lg flex items-center justify-center">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-            </svg>
+          <a href="/">
+            <img
+              src="/logo.png"
+              style={{ width: "auto", height: "30px" }}
+              alt=""
+            />
           </a>
 
           {bookLoading ? (
@@ -282,7 +289,7 @@ export default function LivroPage() {
               </div>
             ) : (
               <div
-                className="flex justify-center p-6 pb-28"
+                className="flex justify-center p-6 pb-6"
                 onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
                 onTouchEnd={(e) => {
                   const dx = e.changedTouches[0].clientX - touchX.current;
@@ -340,10 +347,23 @@ export default function LivroPage() {
             <div className="flex items-center gap-1.5 text-sm px-1">
               <input
                 type="number"
-                value={currentPage}
+                value={inputPage}
                 min={1}
                 max={numPages}
-                onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) goTo(v); }}
+                onChange={(e) => setInputPage(e.target.value)}
+                onBlur={() => {
+                  const v = parseInt(inputPage);
+                  if (!isNaN(v)) goTo(v);
+                  else setInputPage(String(currentPage));
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const v = parseInt(inputPage);
+                    if (!isNaN(v)) goTo(v);
+                    else setInputPage(String(currentPage));
+                    (e.target as HTMLInputElement).blur();
+                  }
+                }}
                 className="w-9 text-center bg-slate-700 rounded-md py-0.5 text-white text-sm outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <span className="text-slate-400">de</span>
