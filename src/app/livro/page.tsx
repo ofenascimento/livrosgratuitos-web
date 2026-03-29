@@ -199,7 +199,7 @@ function Livros() {
             )}
             {book.pdf && (
               <Link
-                href={`https://pdf.livrosgratuitos.com/livro?id=${book._id}`}
+                href={`https://livrosgratuitos.com/pdf?id=${book._id}`}
                 className="w-full"
               >
                 <div className="w-full bg-[#F72C5B] bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
@@ -247,7 +247,7 @@ function Livros() {
 
               {book.pdf && (
                 <Link
-                  href={`https://pdf.livrosgratuitos.com/livro?id=${book._id}`}
+                  href={`https://livrosgratuitos.com/pdf?id=${book._id}`}
                   className="md:w-2/4"
                 >
                   <div className="w-full bg-[#F72C5B] bg-main hidden md:block px-4 py-2 rounded-full text-center font-bold">
