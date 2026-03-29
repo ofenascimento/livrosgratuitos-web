@@ -123,10 +123,21 @@ export default function LivroPage() {
     setPageLoading(true);
     try {
       const page = await pdfRef.current.getPage(pageNum);
-      const viewport = page.getViewport({ scale: sc });
+
+      const dpr = window.devicePixelRatio || 1; // 👈 pega o pixel ratio
+
+      const viewport = page.getViewport({ scale: sc * dpr }); // 👈 escala multiplicada
+
       const canvas = canvasRef.current;
+
+      // Dimensões físicas (pixels reais da tela)
       canvas.width = viewport.width;
       canvas.height = viewport.height;
+
+      // Dimensões CSS (o que ocupa no layout)
+      canvas.style.width = `${viewport.width / dpr}px`;   // 👈
+      canvas.style.height = `${viewport.height / dpr}px`; // 👈
+
       const task = page.render({ canvasContext: canvas.getContext('2d')!, viewport });
       renderTaskRef.current = task;
       await task.promise;
