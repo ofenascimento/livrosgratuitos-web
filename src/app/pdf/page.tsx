@@ -163,7 +163,8 @@ export default function LivroPage() {
     <div
       className="flex flex-col bg-slate-100 font-lexend"
       style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}
-    >      <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
+    >
+      <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
         <div className="flex items-center gap-3">
           <a href="/">
             <img

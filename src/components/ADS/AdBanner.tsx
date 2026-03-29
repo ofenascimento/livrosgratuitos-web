@@ -61,7 +61,7 @@ const AdBanner = ({
   const height = responsive ? "auto" : vertical ? 728 : square ? 250 : 90;
 
   return (
-    !adUnfilled && (
+    (!adUnfilled || vertical) && (
       <div
         ref={containerRef}
         className={`
@@ -73,12 +73,12 @@ const AdBanner = ({
       >
         <ins
           ref={insRef}
-          className={`adsbygoogle rounded-lg bg-slate-700 relative ${isLoading ? "animate-pulse" : ""}`}
+          className={`adsbygoogle rounded-lg ${!vertical ? "bg-gray-900" : "bg-transparent"} relative ${isLoading && !vertical ? "animate-pulse" : ""}`}
           style={{ display: "inline-block", width, height }}
           data-ad-client="ca-pub-2529229033686497"
           data-ad-slot={dataAdSlot}
         >
-          {isLoading && (
+          {(isLoading && !vertical) && (
             <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold">
               Anúncio
             </p>
