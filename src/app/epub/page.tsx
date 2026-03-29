@@ -16,6 +16,7 @@ import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import { addEpubProgress } from "@/hooks/addEpubProgress";
 import { getEpubProgress } from "@/hooks/getEpubProgress";
 import useAuth from "@/hooks/useAuth";
+import ModalToc from "@/components/Modals/TocModal/TocModal";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
 
@@ -362,39 +363,25 @@ export default function EpubReaderPage() {
     );
   }, [pageData, locationsReady, isAuth, isLoading, book?.epub, bookId, location, router]);
 
+
   return (
     <div style={{ minHeight: '200vh' }} ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
       {Toolbar}
-      <div className={`mx-auto grid w-full max-w-5xl grid-cols-1 ${toc.length > 5 && 'md:grid-cols-[260px_minmax(0,1fr)]'}  ${backgroundClass}`} suppressHydrationWarning>
-        {toc.length > 5 &&
-          <aside className={`border-r border-zinc-800/10 p-3 font-bold md:block ${openToc ? "block" : "hidden"}`}>
-            <ol className="space-y-1 text-sm">
-              {toc.map((item: any) => (
-                <li key={item.id}>
-                  <button
-                    onClick={() => {
-                      try {
-                        containerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-                        rendition?.display(item.href);
-                      } catch { }
-                      setOpenToc(false);
-                    }}
-                    className="w-full rounded-lg px-2 py-1 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ol>
-          </aside>}
+      <ModalToc
+        isOpen={openToc}
+        onRequestClose={() => setOpenToc(false)}
+        toc={toc}
+        onSelectItem={(href) => {
+          try { rendition?.display(href); } catch { }
+        }}
+      />
+      <div className={`mx-auto grid w-full max-w-5xl grid-cols-1  ${backgroundClass}`} suppressHydrationWarning>
+
 
 
         <main className="min-h-[70vh]">
-          <div
-            className="w-full overscroll-contain touch-pan-y"
-            // ✅ Altura estável: usa --vh (corrige IG webview) e desconta a barra (56px/64px)
-            style={{ height: "calc(var(--vh, 1vh) * 100 - 56px)" }}
-          >
+          <div className="w-full overscroll-contain touch-pan-y">
+
             <AdBanner
               dataAdFormat=""
               dataFullWidthResponsive={false}
@@ -404,17 +391,17 @@ export default function EpubReaderPage() {
             <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
 
             {isReaderConfigReady && bookUrl && location !== null ? (
-              <ReactReader
-                key={`reader-${bookId ?? "local"}`} // ✅ não remonta ao trocar tema
-                url={bookUrl}
-                location={location}
-                locationChanged={onLocationChanged}
-                getRendition={onRendition}
-                epubOptions={{ flow: "paginated", spread: "none" }} // ✅ evita spreads dinâmicos
-                showToc={false}
-                readerStyles={READER_STYLES}
-                loadingView={
-                  <>
+              <div style={{ height: "calc(var(--vh, 1vh) * 100 - 56px)" }}>
+                <ReactReader
+                  key={`reader-${bookId ?? "local"}`}
+                  url={bookUrl}
+                  location={location}
+                  locationChanged={onLocationChanged}
+                  getRendition={onRendition}
+                  epubOptions={{ flow: "paginated", spread: "none" }}
+                  showToc={false}
+                  readerStyles={READER_STYLES}
+                  loadingView={
                     <div className="flex items-center justify-center">
                       <div
                         className="w-10 h-10 border-4 border-main-500 border-t-transparent border-solid rounded-full animate-spin"
@@ -424,12 +411,15 @@ export default function EpubReaderPage() {
                         <span className="sr-only">Carregando...</span>
                       </div>
                     </div>
-                  </>
-                }
-                errorView={<></>}
-              />
+                  }
+                  errorView={<></>}
+                />
+              </div>
             ) : (
-              <div className={`w-full h-full flex items-center justify-center ${backgroundClass}`}>
+              <div
+                className={`w-full flex items-center justify-center ${backgroundClass}`}
+                style={{ height: "calc(var(--vh, 1vh) * 100 - 56px)" }}
+              >
                 <FullScreenLoader label="Ajustando tema..." />
               </div>
             )}
