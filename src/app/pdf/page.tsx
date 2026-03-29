@@ -1,8 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useFetchBook } from '@/hooks/useFetchBook';
+import AdBanner from '@/components/ADS/AdBanner';
+import AdBannerMobile from '@/components/ADS/AdsBannerMobile';
+import AdResponsive from '@/components/ADS/AdResponsive';
 
-const PDF_URL =
+const FALLBACK_PDF =
   'https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Fo-pequeno-principe.pdf?alt=media&token=cb7b8f63-e9ac-4154-bc40-2fad4bbec002';
 
 const PDFJS_VERSION = '3.11.174';
@@ -14,6 +19,12 @@ declare global {
 }
 
 export default function LivroPage() {
+  const searchParams = useSearchParams();
+  const bookId = searchParams.get('id') ?? '';
+  const { book, isLoading: bookLoading } = useFetchBook(bookId);
+
+  const pdfUrl = book?.pdf || FALLBACK_PDF;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pdfRef = useRef<any>(null);
   const renderTaskRef = useRef<any>(null);
@@ -42,40 +53,53 @@ export default function LivroPage() {
     document.head.appendChild(script);
   }, []);
 
-  // Carrega o PDF
+  // Carrega o PDF só depois que o book foi resolvido e pdfjs está pronto
   useEffect(() => {
-    if (!pdfReady) return;
+    if (!pdfReady || bookLoading) return;
+
+    let cancelled = false;
+
     (async () => {
       try {
         setLoading(true);
-        const pdf = await window.pdfjsLib.getDocument(PDF_URL).promise;
+        setThumbnails([]);
+        setCurrentPage(1);
+        pdfRef.current = null;
+
+        const pdf = await window.pdfjsLib.getDocument(pdfUrl).promise;
+        if (cancelled) return;
+
         pdfRef.current = pdf;
         setNumPages(pdf.numPages);
         setLoading(false);
         generateThumbnails(pdf);
       } catch {
-        setError('Não foi possível carregar o livro.');
-        setLoading(false);
+        if (!cancelled) {
+          setError('Não foi possível carregar o livro.');
+          setLoading(false);
+        }
       }
     })();
-  }, [pdfReady]);
 
-  // Gera thumbnails para a sidebar
+    return () => { cancelled = true; };
+  }, [pdfReady, pdfUrl, bookLoading]);
+
   const generateThumbnails = async (pdf: any) => {
     const thumbs: string[] = [];
     for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 0.3 });
-      const canvas = document.createElement('canvas');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      await page.render({ canvasContext: canvas.getContext('2d')!, viewport }).promise;
-      thumbs.push(canvas.toDataURL());
-      setThumbnails([...thumbs]);
+      try {
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: 0.3 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: canvas.getContext('2d')!, viewport }).promise;
+        thumbs.push(canvas.toDataURL());
+        setThumbnails([...thumbs]);
+      } catch { break; }
     }
   };
 
-  // Renderiza página no canvas principal
   const renderPage = useCallback(async (pageNum: number, sc: number) => {
     if (!pdfRef.current || !canvasRef.current) return;
     renderTaskRef.current?.cancel();
@@ -106,18 +130,20 @@ export default function LivroPage() {
   };
 
   const handleDownload = async () => {
-    const res = await fetch(PDF_URL);
+    const res = await fetch(pdfUrl);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'o-pequeno-principe.pdf';
+    a.download = book ? `${book.titulo}.pdf` : 'livro.pdf';
     a.click();
     URL.revokeObjectURL(url);
   };
 
+  const isInitializing = bookLoading || loading;
+
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-slate-100">
+    <div className="h-screen flex flex-col overflow-hidden bg-slate-100 font-lexend">
 
       {/* HEADER */}
       <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
@@ -128,11 +154,20 @@ export default function LivroPage() {
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
             </svg>
           </a>
-          <h1 className="font-normal font-raleway text-gray-800 text-lg hidden md:block">
-            O Pequeno Príncipe
-          </h1>
-          <span className="text-gray-400 text-sm hidden md:block">·</span>
-          <span className="text-gray-400 text-sm hidden md:block italic">Antoine de Saint-Exupéry</span>
+
+          {bookLoading ? (
+            <div className="h-4 w-40 bg-slate-200 rounded animate-pulse hidden md:block" />
+          ) : (
+            <>
+              <h1 className="font-normal text-gray-800 text-lg hidden md:block">
+                {book?.titulo ?? 'O Pequeno Príncipe'}
+              </h1>
+              <span className="text-gray-400 text-sm hidden md:block">·</span>
+              <span className="text-gray-400 text-sm hidden md:block italic">
+                {book?.autor ?? 'Antoine de Saint-Exupéry'}
+              </span>
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -141,17 +176,15 @@ export default function LivroPage() {
             <button
               onClick={() => setScale(s => Math.max(s - 0.2, 0.4))}
               className="p-2 rounded-full hover:bg-slate-100 text-slate-600 transition cursor-pointer"
-              title="Diminuir zoom"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="8" y1="11" x2="14" y2="11" />
               </svg>
             </button>
-            <span className="text-sm text-slate-500 w-10 text-center font-sans">{Math.round(scale * 100)}%</span>
+            <span className="text-sm text-slate-500 w-10 text-center">{Math.round(scale * 100)}%</span>
             <button
               onClick={() => setScale(s => Math.min(s + 0.2, 3))}
               className="p-2 rounded-full hover:bg-slate-100 text-slate-600 transition cursor-pointer"
-              title="Aumentar zoom"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -163,7 +196,8 @@ export default function LivroPage() {
           {/* Download */}
           <button
             onClick={handleDownload}
-            className="flex items-center gap-2 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1.5 rounded-full text-sm font-medium transition cursor-pointer"
+            disabled={isInitializing}
+            className="flex items-center gap-2 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1.5 rounded-full text-sm font-medium transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <span className="hidden md:block">Download</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -196,7 +230,7 @@ export default function LivroPage() {
               </div>
             ))}
             {thumbnails.length < numPages && !loading && (
-              <p className="text-xs text-indigo-400 py-2 animate-pulse">Carregando...</p>
+              <p className="text-xs text-indigo-400 py-2 animate-pulse">Gerando...</p>
             )}
           </div>
         </aside>
@@ -214,80 +248,107 @@ export default function LivroPage() {
           </svg>
         </button>
 
-        {/* MAIN CONTENT */}
+        {/* MAIN */}
         <main className="flex-1 overflow-auto bg-slate-100">
           <div id="top" />
-
-          {error ? (
-            <div className="flex items-center justify-center h-full text-red-500 italic">{error}</div>
-          ) : loading ? (
-            <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-400">
-              <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
-              <span className="text-sm">Carregando PDF…</span>
-            </div>
-          ) : (
-            <div
-              className="flex justify-center p-6 pb-28"
-              onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
-              onTouchEnd={(e) => {
-                const dx = e.changedTouches[0].clientX - touchX.current;
-                if (Math.abs(dx) > 50) goTo(currentPage + (dx < 0 ? 1 : -1));
-              }}
-            >
-              <div className="relative inline-block shadow-2xl">
-                <canvas ref={canvasRef} className="block" />
-                {pageLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm">
-                    <div className="w-8 h-8 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
-                  </div>
-                )}
+          <AdBanner
+            dataAdFormat=""
+            dataFullWidthResponsive={false}
+            dataAdSlot="3946512730"
+            customClassName="mt-4"
+          />
+          <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
+          <div className=' flex justify-center items-center gap-3'>
+            <AdBanner
+              dataAdSlot="9774541568"
+              vertical={true}
+              customClassName="mt-2"
+            />
+            {error ? (
+              <div className="flex items-center justify-center h-full text-red-500 italic">{error}</div>
+            ) : isInitializing ? (
+              <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-400">
+                <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
+                <span className="text-sm">
+                  {bookLoading ? 'Buscando livro…' : 'Carregando PDF…'}
+                </span>
               </div>
-            </div>
-          )}
-
-          {/* CONTROLES FLUTUANTES */}
-          {/* CONTROLES FLUTUANTES */}
-          {!loading && !error && (
-            <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50 pointer-events-none">
-              <div className="pointer-events-auto flex items-center gap-2 bg-slate-900 text-white rounded-full px-4 py-2 shadow-xl">
-                <button
-                  onClick={() => goTo(currentPage - 1)}
-                  disabled={currentPage <= 1}
-                  className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </button>
-
-                <div className="flex items-center gap-1.5 text-sm px-1">
-                  <input
-                    type="number"
-                    value={currentPage}
-                    min={1}
-                    max={numPages}
-                    onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) goTo(v); }}
-                    className="w-9 text-center bg-slate-700 rounded-md py-0.5 text-white text-sm outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <span className="text-slate-400">de</span>
-                  <span>{numPages}</span>
+            ) : (
+              <div
+                className="flex justify-center p-6 pb-28"
+                onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+                onTouchEnd={(e) => {
+                  const dx = e.changedTouches[0].clientX - touchX.current;
+                  if (Math.abs(dx) > 50) goTo(currentPage + (dx < 0 ? 1 : -1));
+                }}
+              >
+                <div className="relative inline-block shadow-2xl">
+                  <canvas ref={canvasRef} className="block" />
+                  {pageLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm">
+                      <div className="w-8 h-8 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
+                    </div>
+                  )}
                 </div>
-
-                <button
-                  onClick={() => goTo(currentPage + 1)}
-                  disabled={currentPage >= numPages}
-                  className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </button>
               </div>
-            </div>
-          )}
-        </main>
+            )}
+            <AdBanner
+              dataAdSlot="3432494495"
+              vertical={true}
+              customClassName="mt-2"
+            />
+          </div>
 
+
+          <AdBanner
+            dataAdFormat=""
+            dataFullWidthResponsive={false}
+            dataAdSlot="2423907456"
+            customClassName="mb-4"
+          />
+          <AdResponsive dataAdSlot="1435361044" />
+        </main>
       </div>
+
+      {/* CONTROLES FLUTUANTES */}
+      {!isInitializing && !error && (
+        <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50 pointer-events-none">
+          <div className="pointer-events-auto flex items-center gap-2 bg-slate-900 text-white rounded-full px-4 py-2 shadow-xl">
+            <button
+              onClick={() => goTo(currentPage - 1)}
+              disabled={currentPage <= 1}
+              className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+
+            <div className="flex items-center gap-1.5 text-sm px-1">
+              <input
+                type="number"
+                value={currentPage}
+                min={1}
+                max={numPages}
+                onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) goTo(v); }}
+                className="w-9 text-center bg-slate-700 rounded-md py-0.5 text-white text-sm outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <span className="text-slate-400">de</span>
+              <span>{numPages}</span>
+            </div>
+
+            <button
+              onClick={() => goTo(currentPage + 1)}
+              disabled={currentPage >= numPages}
+              className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
