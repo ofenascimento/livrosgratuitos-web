@@ -1,5 +1,6 @@
 "use client";
 import AdBanner from "@/components/ADS/AdBanner";
+import AdResponsive from "@/components/ADS/AdResponsive";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import BookList from "@/components/BookList/BookList";
 import CustomLayout from "@/components/CustomLayout/CustomLayout";
@@ -90,12 +91,7 @@ function Livros() {
             <CustomLayout>
                 <Metadata seoTitle={book.titulo} seoDescription={book.descricao} />
                 <Navbar />
-                <AdBanner
-                    dataAdFormat=""
-                    dataFullWidthResponsive={false}
-                    dataAdSlot="3946512730"
-                    customClassName="mt-4"
-                />
+                <AdResponsive dataAdSlot="1435361044" />
                 <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
                 <div className=" text-white flex-col md:flex-row flex mt-6 md:mt-4 mb-6 ">
                     <div className="w-full md:w-[30%] flex justify-center items-center">
