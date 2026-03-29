@@ -1,144 +1,293 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import AdBanner from "@/components/ADS/AdBanner";
-import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
-import Footer from "@/components/Footer/Footer";
-import Navbar from "@/components/Navbar/Navbar";
-import { MdFullscreenExit } from "react-icons/md";
-import { FaReadme } from "react-icons/fa";
-import { FaCircleChevronLeft } from "react-icons/fa6";
-import { useBook } from "@/hooks/useBook";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import useIsMobile from "@/hooks/isMobile";
+'use client';
 
-const PdfPage = () => {
-  const { title, setTitle, urlBook, urlPdfBook } = useBook();
+import { useEffect, useRef, useState, useCallback } from 'react';
 
+const PDF_URL =
+  'https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Fo-pequeno-principe.pdf?alt=media&token=cb7b8f63-e9ac-4154-bc40-2fad4bbec002';
 
+const PDFJS_VERSION = '3.11.174';
+const WORKER_SRC = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
+const PDFJS_SRC = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.min.js`;
 
-  const pdfUrl =
-    "https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Flira-dos-vinte-anos.pdf?alt=media&token=f1fdf453-a0ec-42b5-90ea-74de165a17d0";
+declare global {
+  interface Window { pdfjsLib: any; }
+}
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+export default function LivroPage() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pdfRef = useRef<any>(null);
+  const renderTaskRef = useRef<any>(null);
+  const touchX = useRef(0);
 
-  const router = useRouter();
-  const isMobile = useIsMobile()
+  const [numPages, setNumPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [scale, setScale] = useState(1.2);
+  const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [pdfReady, setPdfReady] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [thumbnails, setThumbnails] = useState<string[]>([]);
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  // Carrega PDF.js via CDN
+  useEffect(() => {
+    if (window.pdfjsLib) { setPdfReady(true); return; }
+    const script = document.createElement('script');
+    script.src = PDFJS_SRC;
+    script.onload = () => {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = WORKER_SRC;
+      setPdfReady(true);
+    };
+    script.onerror = () => setError('Falha ao carregar PDF.js.');
+    document.head.appendChild(script);
+  }, []);
+
+  // Carrega o PDF
+  useEffect(() => {
+    if (!pdfReady) return;
+    (async () => {
+      try {
+        setLoading(true);
+        const pdf = await window.pdfjsLib.getDocument(PDF_URL).promise;
+        pdfRef.current = pdf;
+        setNumPages(pdf.numPages);
+        setLoading(false);
+        generateThumbnails(pdf);
+      } catch {
+        setError('Não foi possível carregar o livro.');
+        setLoading(false);
+      }
+    })();
+  }, [pdfReady]);
+
+  // Gera thumbnails para a sidebar
+  const generateThumbnails = async (pdf: any) => {
+    const thumbs: string[] = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 0.3 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d')!, viewport }).promise;
+      thumbs.push(canvas.toDataURL());
+      setThumbnails([...thumbs]);
+    }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  // Renderiza página no canvas principal
+  const renderPage = useCallback(async (pageNum: number, sc: number) => {
+    if (!pdfRef.current || !canvasRef.current) return;
+    renderTaskRef.current?.cancel();
+    setPageLoading(true);
+    try {
+      const page = await pdfRef.current.getPage(pageNum);
+      const viewport = page.getViewport({ scale: sc });
+      const canvas = canvasRef.current;
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const task = page.render({ canvasContext: canvas.getContext('2d')!, viewport });
+      renderTaskRef.current = task;
+      await task.promise;
+    } catch (e: any) {
+      if (e?.name === 'RenderingCancelledException') return;
+    } finally {
+      setPageLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    if (title === "notitle") {
-      router.push("/");
-      return;
-    }
-  
-    if (isMobile && title.length > 20) {
-      setTitle(`${title.slice(0, 20).trim()}...`);
-    }
-  }, [title, isMobile, router, setTitle]);
-  
+    if (!loading && pdfRef.current) renderPage(currentPage, scale);
+  }, [currentPage, scale, loading, renderPage]);
 
-  if (title === "notitle") return null;
+  const goTo = (p: number) => {
+    setCurrentPage(Math.max(1, Math.min(p, numPages)));
+    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleDownload = async () => {
+    const res = await fetch(PDF_URL);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'o-pequeno-principe.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
-    <>
-      <Navbar />
-      <AdBanner
-        dataAdFormat=""
-        dataFullWidthResponsive={false}
-        dataAdSlot="3946512730"
-        customClassName="mt-4"
-      />
-      <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4 mb-2" />
-      <div className="min-h-96 flex items-center justify-center mt-4">
-        <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="p-4 bg-main-500 text-white flex items-center justify-between">
-            <span className="font-bold text-lg">{title}</span>
-            <div className="flex justify-center items-center gap-2">
-              <button
-                onClick={openModal}
-                className="bg-white text-main-500 px-2 md:px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
-              >
-                <p className="font-lexend font-normal hidden md:block">Tela cheia</p>
-                <MdFullscreenExit size={20} />
-              </button>
-              {urlBook && (
-                <div className="flex gap-4">
-                  <Link
-                    href={"/leitor"}
-                    onClick={openModal}
-                    className="bg-white text-main-500 px-2 md:px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
-                  >
-                    <>
-                    <p className="font-lexend font-normal hidden md:block">Ler online</p>
-                      <FaReadme size={20} />
-                    </>
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-          <iframe
-            id="pdf-iframe"
-            src={urlPdfBook}
-            className="w-full h-[80vh]"
-            frameBorder="0"
-            title="Lira dos Vinte Anos PDF"
-          />
+    <div className="h-screen flex flex-col overflow-hidden bg-slate-100">
+
+      {/* HEADER */}
+      <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
+        <div className="flex items-center gap-3">
+          <a href="/" className="bg-slate-100 p-2 rounded-lg flex items-center justify-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+          </a>
+          <h1 className="font-normal font-raleway text-gray-800 text-lg hidden md:block">
+            O Pequeno Príncipe
+          </h1>
+          <span className="text-gray-400 text-sm hidden md:block">·</span>
+          <span className="text-gray-400 text-sm hidden md:block italic">Antoine de Saint-Exupéry</span>
         </div>
+
+        <div className="flex items-center gap-2">
+          {/* Zoom */}
+          <div className="flex items-center gap-1 border-r border-slate-200 pr-3 mr-1">
+            <button
+              onClick={() => setScale(s => Math.max(s - 0.2, 0.4))}
+              className="p-2 rounded-full hover:bg-slate-100 text-slate-600 transition cursor-pointer"
+              title="Diminuir zoom"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="8" y1="11" x2="14" y2="11" />
+              </svg>
+            </button>
+            <span className="text-sm text-slate-500 w-10 text-center font-sans">{Math.round(scale * 100)}%</span>
+            <button
+              onClick={() => setScale(s => Math.min(s + 0.2, 3))}
+              className="p-2 rounded-full hover:bg-slate-100 text-slate-600 transition cursor-pointer"
+              title="Aumentar zoom"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                <line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Download */}
+          <button
+            onClick={handleDownload}
+            className="flex items-center gap-2 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1.5 rounded-full text-sm font-medium transition cursor-pointer"
+          >
+            <span className="hidden md:block">Download</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      {/* BODY */}
+      <div className="flex flex-1 overflow-hidden">
+
+        {/* SIDEBAR */}
+        <aside
+          className={`${sidebarOpen ? 'w-48' : 'w-0'} transition-all duration-300 overflow-hidden bg-[#ECEAFF] shrink-0 hidden md:block`}
+          style={{ scrollbarWidth: 'thin' }}
+        >
+          <div className="h-full overflow-y-auto flex flex-col items-center py-3 gap-2">
+            {thumbnails.map((src, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div
+                  onClick={() => goTo(i + 1)}
+                  className={`border-2 rounded cursor-pointer transition ${currentPage === i + 1 ? 'border-indigo-500' : 'border-transparent hover:border-indigo-300'
+                    }`}
+                >
+                  <img src={src} alt={`Página ${i + 1}`} className="w-28 block" />
+                </div>
+                <span className="text-xs text-slate-500 mt-0.5">{i + 1}</span>
+              </div>
+            ))}
+            {thumbnails.length < numPages && !loading && (
+              <p className="text-xs text-indigo-400 py-2 animate-pulse">Carregando...</p>
+            )}
+          </div>
+        </aside>
+
+        {/* TOGGLE SIDEBAR */}
+        <button
+          onClick={() => setSidebarOpen(o => !o)}
+          className="hidden md:flex items-center justify-center w-5 bg-[#dddaf5] hover:bg-[#ccc9ef] transition cursor-pointer shrink-0"
+        >
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.5">
+            {sidebarOpen
+              ? <polyline points="15 18 9 12 15 6" />
+              : <polyline points="9 18 15 12 9 6" />
+            }
+          </svg>
+        </button>
+
+        {/* MAIN CONTENT */}
+        <main className="flex-1 overflow-auto bg-slate-100">
+          <div id="top" />
+
+          {error ? (
+            <div className="flex items-center justify-center h-full text-red-500 italic">{error}</div>
+          ) : loading ? (
+            <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-400">
+              <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
+              <span className="text-sm">Carregando PDF…</span>
+            </div>
+          ) : (
+            <div
+              className="flex justify-center p-6 pb-28"
+              onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
+              onTouchEnd={(e) => {
+                const dx = e.changedTouches[0].clientX - touchX.current;
+                if (Math.abs(dx) > 50) goTo(currentPage + (dx < 0 ? 1 : -1));
+              }}
+            >
+              <div className="relative inline-block shadow-2xl">
+                <canvas ref={canvasRef} className="block" />
+                {pageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm">
+                    <div className="w-8 h-8 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* CONTROLES FLUTUANTES */}
+          {/* CONTROLES FLUTUANTES */}
+          {!loading && !error && (
+            <div className="fixed bottom-6 left-0 right-0 flex justify-center z-50 pointer-events-none">
+              <div className="pointer-events-auto flex items-center gap-2 bg-slate-900 text-white rounded-full px-4 py-2 shadow-xl">
+                <button
+                  onClick={() => goTo(currentPage - 1)}
+                  disabled={currentPage <= 1}
+                  className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+
+                <div className="flex items-center gap-1.5 text-sm px-1">
+                  <input
+                    type="number"
+                    value={currentPage}
+                    min={1}
+                    max={numPages}
+                    onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) goTo(v); }}
+                    className="w-9 text-center bg-slate-700 rounded-md py-0.5 text-white text-sm outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span className="text-slate-400">de</span>
+                  <span>{numPages}</span>
+                </div>
+
+                <button
+                  onClick={() => goTo(currentPage + 1)}
+                  disabled={currentPage >= numPages}
+                  className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+        </main>
+
       </div>
-      <Footer />
-
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-100 flex items-center justify-center z-50">
-          <div className="relative w-full h-full">
-            <div className="bg-main-500 flex justify-between items-center p-2">
-              <button
-                onClick={closeModal}
-                className="text-black px-4 py-2 rounded-md flex justify-center items-center gap-2"
-              >
-                <FaCircleChevronLeft color="#fff" size={34} />
-                <p className="text-white font-lexend font-normal hidden md:block">Voltar</p>
-              </button>
-              <span className="font-bold text-lg text-white">
-                {title}
-              </span>
-              {urlBook && (
-                <div className="flex gap-4">
-                  <Link
-                    href={"/leitor"}
-                    onClick={openModal}
-                    className="bg-white text-main-500 px-4 py-2 rounded-full hover:bg-gray-100 transition font-lexend font-normal flex justify-center gap-2 items-center"
-                  >
-                    <>
-                      Ler online
-                      <FaReadme size={20} />
-                    </>
-                  </Link>
-                </div>
-              )}
-              {!urlBook && <div className="px-4 opacity-0"></div>}
-            </div>
-            <iframe
-              src={urlPdfBook}
-              className="w-full h-full"
-              frameBorder="0"
-              title="Lira dos Vinte Anos PDF"
-            />
-          </div>
-          <AdBanner dataAdSlot="2423907456" fixed />
-          <AdBannerMobile dataAdSlot="6603126932" fixed />
-        </div>
-      )}
-    </>
+    </div>
   );
-};
-
-export default PdfPage;
+}
