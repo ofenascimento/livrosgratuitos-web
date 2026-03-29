@@ -73,7 +73,7 @@ const AdBanner = ({
       >
         <ins
           ref={insRef}
-          className={`adsbygoogle rounded-lg ${!vertical ? "bg-gray-900" : "bg-transparent"} relative ${isLoading && !vertical ? "animate-pulse" : ""}`}
+          className={`adsbygoogle rounded-lg ${!vertical ? "bg-slate-700" : "bg-transparent"} relative ${isLoading && !vertical ? "animate-pulse" : ""}`}
           style={{ display: "inline-block", width, height }}
           data-ad-client="ca-pub-2529229033686497"
           data-ad-slot={dataAdSlot}
