@@ -4,7 +4,7 @@ import { useReaderConfig } from "@/hooks/useReaderConfig";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HiChevronLeft, HiDotsVertical } from "react-icons/hi";
-import { MdMenuBook } from "react-icons/md";
+import { MdInfoOutline, MdMenuBook } from "react-icons/md";
 import type { IReactReaderStyle } from "react-reader";
 import { ReactReaderStyle } from "react-reader";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -17,6 +17,7 @@ import { addEpubProgress } from "@/hooks/addEpubProgress";
 import { getEpubProgress } from "@/hooks/getEpubProgress";
 import useAuth from "@/hooks/useAuth";
 import ModalToc from "@/components/Modals/TocModal/TocModal";
+import ModalInfo from "@/components/Modals/ModalInfo/ModalInfo";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
 
@@ -69,6 +70,7 @@ export default function EpubReaderPage() {
   const [locationsReady, setLocationsReady] = useState(false);
   const [isReaderConfigReady, setIsReaderConfigReady] = useState(false);
   const [initialCfiDisplayed, setInitialCfiDisplayed] = useState(false);
+  const [isAutorInfoOpen, setIsAutorInfoOpen] = useState(false);
 
   const { fontSizeEpub, background } = useReaderConfig();
 
@@ -351,6 +353,13 @@ export default function EpubReaderPage() {
               </div>
             )}
             <button
+              onClick={() => setIsAutorInfoOpen(true)}
+              className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+            >
+              <p className="hidden lg:block font-lexend text-sm font-normal">Informações</p>
+              <MdInfoOutline />
+            </button>
+            <button
               onClick={() => setIsModalConfigOpen(true)}
               className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
             >
@@ -374,6 +383,17 @@ export default function EpubReaderPage() {
         onSelectItem={(href) => {
           try { rendition?.display(href); } catch { }
         }}
+      />
+      <ModalInfo
+        isOpen={isAutorInfoOpen}
+        onRequestClose={() => setIsAutorInfoOpen(false)}
+        title={book?.titulo ?? ""}
+        autor={book?.autor ?? ""}
+        license={book?.epubInfo?.license}
+        licenseLink={book?.epubInfo?.licenseLink}
+        modified={book?.epubInfo?.modified}
+        font={book?.epubInfo?.font}
+        fontLink={book?.epubInfo?.fontLink}
       />
       <div className={`mx-auto grid w-full max-w-5xl grid-cols-1  ${backgroundClass}`} suppressHydrationWarning>
 
@@ -432,15 +452,7 @@ export default function EpubReaderPage() {
             />
             <AdBanner dataAdSlot="2423907456" fixed />
             <AdBannerMobile dataAdSlot="6603126932" fixed />
-            <AutorInfo
-              title={book?.titulo ?? ""}
-              autor={book?.autor ?? ""}
-              license={book?.epubInfo?.license}
-              licenseLink={book?.epubInfo?.licenseLink}
-              modified={book?.epubInfo?.modified}
-              font={book?.epubInfo?.font}
-              fontLink={book?.epubInfo?.fontLink}
-            />
+
           </div>
         </main>
 
