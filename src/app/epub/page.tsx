@@ -452,6 +452,7 @@ export default function EpubReaderPage() {
               customClassName="mb-4"
             />
             <AdResponsive dataAdSlot="1435361044" />
+            <AdBanner dataAdSlot="2423907456" fixed />
             <AdBannerMobile dataAdSlot="6603126932" fixed />
 
           </div>
