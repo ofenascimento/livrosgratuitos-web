@@ -47,7 +47,7 @@ const AdResponsive = ({ dataAdSlot, customClassName }: AdResponsiveProps) => {
   return (
     <div
       className={`
-        w-full flex justify-center items-center
+        w-full py-3 flex justify-center items-center
         transition-all duration-500 overflow-hidden
         ${isLoading ? "min-h-[90px]" : ""}
         ${customClassName || ""}

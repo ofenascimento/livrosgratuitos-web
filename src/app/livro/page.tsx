@@ -91,7 +91,12 @@ function Livros() {
       <CustomLayout>
         <Metadata seoTitle={book.titulo} seoDescription={book.descricao} />
         <Navbar />
-        <AdResponsive dataAdSlot="1435361044" />
+        <AdBanner
+          dataAdFormat=""
+          dataFullWidthResponsive={false}
+          dataAdSlot="3946512730"
+          customClassName="mt-4"
+        />
         <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
         <div className=" text-white flex-col md:flex-row flex mt-6 md:mt-4 mb-6 ">
           <div className="w-full md:w-[30%] flex justify-center items-center">
@@ -317,12 +322,7 @@ function Livros() {
               </div>
             )}
         </div> */}
-        <AdBanner
-          dataAdFormat=""
-          dataFullWidthResponsive={false}
-          dataAdSlot="2423907456"
-          customClassName="mb-4"
-        />
+        <AdResponsive dataAdSlot="1435361044" />
         <BookList
           options={{ q: "9", sort: "true" }}
           label={

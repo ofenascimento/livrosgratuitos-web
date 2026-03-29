@@ -9,6 +9,7 @@ import FeaturedBooks from "@/components/FeaturedBooks/FeaturedBooks";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import CustomLayout from "@/components/CustomLayout/CustomLayout";
+import AdResponsive from "@/components/ADS/AdResponsive";
 
 export default function Home() {
   return (
@@ -60,11 +61,7 @@ export default function Home() {
             </>
           }
         />
-        <AdBanner
-          dataAdFormat="auto"
-          dataAdSlot="3946512730"
-          customClassName="my-2"
-        />
+        <AdResponsive dataAdSlot="1435361044" />
         <ImageSlider auto />
         <BookList
           options={{ q: "9", sort: "true" }}
