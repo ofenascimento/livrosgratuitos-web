@@ -177,8 +177,18 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
             className="flex flex-col bg-slate-100 font-lexend"
             style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}
         >
-            <Metadata seoTitle={book ? book?.titulo + " PDF" : "Livros Gratuitos PDF"} seoDescription={book ? book?.descricao + " PDF" : "Livros Gratuitos PDF"} />
-            <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
+            <Metadata
+                seoTitle={
+                    book
+                        ? `${book.titulo} - ${book.autor} PDF Grátis`
+                        : "Livros Gratuitos PDF Grátis"
+                }
+                seoDescription={
+                    book
+                        ? `${book.descricao} PDF Grátis`
+                        : "Livros Gratuitos PDF Grátis"
+                }
+            />            <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
                 <div className="flex items-center gap-3">
                     <a href="/">
                         <img

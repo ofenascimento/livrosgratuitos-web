@@ -234,11 +234,11 @@ function Livros() {
                         >
                             {book.epub && (
                                 <Link
-                                    href={`https://livrosgratuitos.com/epub?bookId=${book._id}`}
+                                    href={`https://livrosgratuitos.com/epub/${book.slug}`}
                                     className="md:w-2/4"
                                 >
                                     <div className="w-full bg-main-400 hover:bg-main-500 bg-main hidden md:block px-4 py-2 rounded-full  text-center font-bold">
-                                        EPUB
+                                        Ler EPUB
                                     </div>
 
                                 </Link>
@@ -251,7 +251,7 @@ function Livros() {
                                     className="md:w-2/4"
                                 >
                                     <div className="w-full bg-[#F72C5B] bg-main hidden md:block px-4 py-2 rounded-full text-center font-bold">
-                                        PDF
+                                        Ler PDF
                                     </div>
 
                                 </Link>
@@ -268,7 +268,7 @@ function Livros() {
                                     }}
                                 >
                                     <div className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-bold">
-                                        TXT
+                                        Ler TXT
                                     </div>
                                 </Link>
                             )}
