@@ -89,7 +89,7 @@ function Livros() {
     return (
         <>
             <CustomLayout>
-                <Metadata seoTitle={book.titulo} seoDescription={book.descricao} />
+                <Metadata seoTitle={`${book.titulo} - ${book.autor}`} seoDescription={book.descricao} />
                 <Navbar />
                 <AdBanner
                     dataAdFormat=""
