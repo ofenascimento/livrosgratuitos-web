@@ -247,7 +247,7 @@ function Livros() {
 
                             {book.pdf && (
                                 <Link
-                                    href={`https://livrosgratuitos.com/pdf?id=${book._id}`}
+                                    href={`https://livrosgratuitos.com/pdf/${book.slug}`}
                                     className="md:w-2/4"
                                 >
                                     <div className="w-full bg-[#F72C5B] bg-main hidden md:block px-4 py-2 rounded-full text-center font-bold">
