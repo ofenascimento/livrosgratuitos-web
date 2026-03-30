@@ -338,10 +338,10 @@ export default function UploadReaderPage() {
 
             pdfDoc.removePage(pageNum - 1);
 
+            // deletePage
             const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
+            const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
             const newUrl = URL.createObjectURL(blob);
-
             const newPdf = await window.pdfjsLib.getDocument(newUrl).promise;
             pdfRef.current = newPdf;
             pdfUrlRef.current = newUrl;
@@ -383,7 +383,7 @@ export default function UploadReaderPage() {
             pdfDoc.insertPage(pageNum, copiedPage);
 
             const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
+            const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
             const newUrl = URL.createObjectURL(blob);
 
             const newPdf = await window.pdfjsLib.getDocument(newUrl).promise;
@@ -586,7 +586,7 @@ export default function UploadReaderPage() {
             }
 
             const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
+            const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
