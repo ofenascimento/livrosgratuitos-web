@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import useIsMobile from '@/hooks/isMobile';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { IoCopyOutline } from 'react-icons/io5';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 
 const PDFJS_VERSION = '3.11.174';
 const WORKER_SRC = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
@@ -325,6 +327,89 @@ export default function UploadReaderPage() {
         return null;
     };
 
+    const [deletingPage, setDeletingPage] = useState<number | null>(null);
+
+    const deletePage = useCallback(async (pageNum: number) => {
+        if (!pdfRef.current || !pdfUrlRef.current) return;
+        setDeletingPage(pageNum);
+        try {
+            const existingBytes = await fetch(pdfUrlRef.current).then(r => r.arrayBuffer());
+            const pdfDoc = await PDFDocument.load(existingBytes);
+
+            pdfDoc.removePage(pageNum - 1);
+
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
+            const newUrl = URL.createObjectURL(blob);
+
+            const newPdf = await window.pdfjsLib.getDocument(newUrl).promise;
+            pdfRef.current = newPdf;
+            pdfUrlRef.current = newUrl;
+
+            const newTotal = newPdf.numPages;
+            setNumPages(newTotal);
+            setThumbnails(new Array(newTotal).fill(''));
+            setAnnotations(prev =>
+                prev
+                    .filter(a => a.page !== pageNum)
+                    .map(a => a.page > pageNum ? { ...a, page: a.page - 1 } : a)
+            );
+            pageSizesRef.current = Object.fromEntries(
+                Object.entries(pageSizesRef.current)
+                    .filter(([k]) => Number(k) !== pageNum)
+                    .map(([k, v]) => [Number(k) > pageNum ? Number(k) - 1 : Number(k), v])
+            );
+
+            const nextPage = pageNum > newTotal ? newTotal : pageNum;
+            setCurrentPage(nextPage);
+            generateThumbnails(newPdf);
+        } catch (e) {
+            console.error('Erro ao excluir página:', e);
+        } finally {
+            setDeletingPage(null);
+        }
+    }, []);
+
+    const duplicatePage = useCallback(async (pageNum: number) => {
+        if (!pdfRef.current || !pdfUrlRef.current) return;
+        try {
+            const existingBytes = await fetch(pdfUrlRef.current).then(r => r.arrayBuffer());
+            const pdfDoc = await PDFDocument.load(existingBytes);
+
+            // copia a página
+            const [copiedPage] = await pdfDoc.copyPages(pdfDoc, [pageNum - 1]);
+
+            // insere logo após a página original
+            pdfDoc.insertPage(pageNum, copiedPage);
+
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' });
+            const newUrl = URL.createObjectURL(blob);
+
+            const newPdf = await window.pdfjsLib.getDocument(newUrl).promise;
+            pdfRef.current = newPdf;
+            pdfUrlRef.current = newUrl;
+
+            const newTotal = newPdf.numPages;
+            setNumPages(newTotal);
+            setThumbnails(new Array(newTotal).fill(''));
+
+            // anotações das páginas após a duplicada sobem um índice
+            setAnnotations(prev =>
+                prev.map(a => a.page > pageNum ? { ...a, page: a.page + 1 } : a)
+            );
+            pageSizesRef.current = Object.fromEntries(
+                Object.entries(pageSizesRef.current).map(([k, v]) =>
+                    [Number(k) > pageNum ? Number(k) + 1 : Number(k), v]
+                )
+            );
+
+            generateThumbnails(newPdf);
+        } catch (e) {
+            console.error('Erro ao duplicar página:', e);
+        }
+    }, []);
+
     const onMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const pos = getPos(e);
         if (activeTool === 'draw') {
@@ -634,14 +719,61 @@ export default function UploadReaderPage() {
                 {/* SIDEBAR */}
                 <aside className={`${sidebarOpen ? 'w-48' : 'w-0'} transition-all duration-300 overflow-hidden bg-[#ECEAFF] shrink-0 hidden md:flex flex-col`} style={{ scrollbarWidth: 'thin' }}>
                     <div className="flex-1 overflow-y-auto flex flex-col items-center py-3 gap-2">
-                        {thumbnails.map((src, i) => (
-                            <div key={i} className="flex flex-col items-center shrink-0">
-                                <div onClick={() => goTo(i + 1)} className={`border-2 rounded cursor-pointer transition ${currentPage === i + 1 ? 'border-main-500' : 'border-transparent hover:border-main-300'}`}>
-                                    {src ? <img src={src} alt={`Página ${i + 1}`} className="w-28 block" /> : <div className="w-28 bg-slate-200 animate-pulse" style={{ height: 160 }} />}
+                        {thumbnails.map((src, i) => {
+                            const pageNum = i + 1;
+                            const isDeleting = deletingPage === pageNum;
+                            return (
+                                <div key={i} className="flex flex-col items-center shrink-0 group relative pb-4">
+                                    <div
+                                        onClick={() => !isDeleting && goTo(pageNum)}
+                                        className={`border-2 rounded cursor-pointer transition relative ${currentPage === pageNum ? 'border-main-500' : 'border-transparent hover:border-main-300'}`}
+                                    >
+                                        {src
+                                            ? <img src={src} alt={`Página ${pageNum}`} className="w-28 block" />
+                                            : <div className="w-28 bg-slate-200 animate-pulse" style={{ height: 160 }} />
+                                        }
+
+                                        {isDeleting && (
+                                            <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded">
+                                                <div className="w-5 h-5 border-2 border-slate-300 border-t-main-400 rounded-full animate-spin" />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <span className="text-xs text-slate-500 mt-1">{pageNum}</span>
+
+                                    {/* btn flutuante — sai abaixo do número, centralizado */}
+                                    {!isDeleting && numPages > 1 && (
+                                        <div className="absolute bottom-9 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-2.5 py-1.5">
+                                            {/* Excluir */}
+                                            <button
+                                                onClick={() => {
+                                                    duplicatePage(pageNum);
+                                                }}
+                                                title="Copiar página"
+                                                className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-slate-100 text-black transition cursor-pointer"
+                                            >
+                                                <IoCopyOutline size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    deletePage(pageNum)
+                                                }}
+                                                title="Excluir página"
+                                                className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-red-50 text-black transition cursor-pointer"
+                                            >
+                                                <RiDeleteBin6Line size={16} />
+                                            </button>
+
+
+
+                                            {/* Copiar */}
+
+                                        </div>
+                                    )}
                                 </div>
-                                <span className="text-xs text-slate-500 mt-0.5">{i + 1}</span>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </aside>
 
