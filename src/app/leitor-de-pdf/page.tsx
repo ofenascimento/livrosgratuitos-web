@@ -5,6 +5,7 @@ import useIsMobile from '@/hooks/isMobile';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { IoCopyOutline } from 'react-icons/io5';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import Metadata from '@/components/Metadata';
 
 const PDFJS_VERSION = '3.11.174';
 const WORKER_SRC = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
@@ -647,71 +648,77 @@ export default function UploadReaderPage() {
 
     if (!hasFile && !loading) {
         return (
-            <div className="min-h-screen bg-white flex flex-col font-dmSans" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
-                <nav className="px-6 md:px-12 py-5 flex items-center justify-between border-b border-slate-100">
-                    <a href="/"><img src="/logo.png" style={{ height: 50, width: 'auto' }} alt="logo" /></a>
-                    <button onClick={() => landingInputRef.current?.click()} className="bg-main-500 hover:bg-main-600 text-white text-sm font-medium rounded-full px-5 py-2 transition cursor-pointer">Abrir PDF</button>
-                </nav>
-                <section className="flex flex-col items-center text-center px-6 pt-6 pb-16">
-                    <span className="inline-flex items-center gap-1.5 bg-main-50 text-main-500 text-xs font-medium rounded-full px-3 py-1 mb-6 border border-main-100 tracking-wide">Ler PDF ONLINE</span>
-                    <h1 className="font-redRat text-5xl md:text-7xl font-bold text-black leading-[1.08] tracking-tight max-w-3xl">
-                        Leia PDFs com<br /><span className="text-main-500">total liberdade</span>
-                    </h1>
-                    <p className="mt-5 text-black text-base md:text-lg max-w-lg leading-relaxed">Faça upload do seu arquivo e leia direto no navegador. Rápido, privado e sem complicação.</p>
-                    <div onClick={() => landingInputRef.current?.click()} className={`mt-10 w-full max-w-xl rounded-3xl border-2 border-dashed cursor-pointer transition-all duration-200 ${isDragging ? 'border-main-500 bg-main-50 scale-[1.015]' : 'border-slate-200 bg-slate-50 hover:border-main-300 hover:bg-main-50/50'}`}>
-                        <div className="flex flex-col items-center gap-4 py-14 px-6">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${isDragging ? 'bg-main-100 text-main-500 scale-110' : 'bg-white text-main-400 shadow-sm border border-slate-100'}`}>
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" /></svg>
-                            </div>
-                            <div>
-                                <p className="font-medium text-black">{isDragging ? 'Solte o arquivo aqui' : 'Arraste seu PDF aqui'}</p>
-                                <p className="text-black text-sm mt-1">ou clique para selecionar do dispositivo</p>
-                            </div>
-                            <button onClick={(e) => { e.stopPropagation(); landingInputRef.current?.click(); }} className="bg-main-500 hover:bg-main-600 text-white rounded-full px-6 py-2.5 text-sm font-medium transition cursor-pointer shadow-md shadow-main-100">Selecionar arquivo</button>
-                            {error && <p className="text-red-500 text-sm">{error}</p>}
-                        </div>
-                    </div>
-                    <input ref={landingInputRef} type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
-                    <p className="mt-4 text-black text-xs flex items-center gap-1.5">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-                        Seu arquivo permanece no seu dispositivo
-                    </p>
-                </section>
-                <section className="px-6 md:px-12 py-16 bg-slate-50 border-y border-slate-100">
-                    <div className="max-w-3xl mx-auto">
-                        <p className="text-xs font-semibold text-main-500 tracking-widest uppercase mb-3 text-center">Como funciona</p>
-                        <h2 className="font-redRat text-3xl md:text-4xl font-bold text-black text-center mb-12">Três passos. Simples assim.</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {steps.map((s) => (
-                                <div key={s.num} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-                                    <span className="font-redRat text-4xl font-bold text-main-100 leading-none block mb-3">{s.num}</span>
-                                    <p className="font-redRat font-semibold text-black text-base mb-1">{s.title}</p>
-                                    <p className="text-black text-sm leading-relaxed">{s.desc}</p>
+            <>
+                <Metadata
+                    seoTitle="Ler e Editar PDF Online Grátis | Sem Cadastro e Sem Instalar"
+                    seoDescription="Leia, edite, anote e destaque textos em qualquer PDF direto no navegador. Sem cadastro, sem instalação e 100% privado. Seu arquivo fica no seu dispositivo."
+                />
+                <div className="min-h-screen bg-white flex flex-col font-dmSans" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
+                    <nav className="px-6 md:px-12 py-5 flex items-center justify-between border-b border-slate-100">
+                        <a href="/"><img src="/logo.png" style={{ height: 50, width: 'auto' }} alt="logo" /></a>
+                        <button onClick={() => landingInputRef.current?.click()} className="bg-main-500 hover:bg-main-600 text-white text-sm font-medium rounded-full px-5 py-2 transition cursor-pointer">Abrir PDF</button>
+                    </nav>
+                    <section className="flex flex-col items-center text-center px-6 pt-6 pb-16">
+                        <span className="inline-flex items-center gap-1.5 bg-main-50 text-main-500 text-xs font-medium rounded-full px-3 py-1 mb-6 border border-main-100 tracking-wide">Ler PDF ONLINE</span>
+                        <h1 className="font-redRat text-5xl md:text-7xl font-bold text-black leading-[1.08] tracking-tight max-w-3xl">
+                            Leia PDFs com<br /><span className="text-main-500">total liberdade</span>
+                        </h1>
+                        <p className="mt-5 text-black text-base md:text-lg max-w-lg leading-relaxed">Faça upload do seu arquivo e leia direto no navegador. Rápido, privado e sem complicação.</p>
+                        <div onClick={() => landingInputRef.current?.click()} className={`mt-10 w-full max-w-xl rounded-3xl border-2 border-dashed cursor-pointer transition-all duration-200 ${isDragging ? 'border-main-500 bg-main-50 scale-[1.015]' : 'border-slate-200 bg-slate-50 hover:border-main-300 hover:bg-main-50/50'}`}>
+                            <div className="flex flex-col items-center gap-4 py-14 px-6">
+                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 ${isDragging ? 'bg-main-100 text-main-500 scale-110' : 'bg-white text-main-400 shadow-sm border border-slate-100'}`}>
+                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" /></svg>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-                <section className="px-6 md:px-12 py-16">
-                    <div className="max-w-4xl mx-auto">
-                        <p className="text-xs font-semibold text-main-500 tracking-widest uppercase mb-3 text-center">Recursos</p>
-                        <h2 className="font-redRat text-3xl md:text-4xl font-bold text-black text-center mb-12">Tudo que você precisa para ler</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            {features.map((f) => (
-                                <div key={f.title} className="rounded-2xl border border-slate-100 p-6 hover:border-main-100 hover:shadow-sm transition-all">
-                                    <div className="w-10 h-10 rounded-xl bg-main-50 text-main-400 flex items-center justify-center mb-4">{f.icon}</div>
-                                    <p className="font-redRat font-semibold text-black mb-1">{f.title}</p>
-                                    <p className="text-black text-sm leading-relaxed">{f.desc}</p>
+                                <div>
+                                    <p className="font-medium text-black">{isDragging ? 'Solte o arquivo aqui' : 'Arraste seu PDF aqui'}</p>
+                                    <p className="text-black text-sm mt-1">ou clique para selecionar do dispositivo</p>
                                 </div>
-                            ))}
+                                <button onClick={(e) => { e.stopPropagation(); landingInputRef.current?.click(); }} className="bg-main-500 hover:bg-main-600 text-white rounded-full px-6 py-2.5 text-sm font-medium transition cursor-pointer shadow-md shadow-main-100">Selecionar arquivo</button>
+                                {error && <p className="text-red-500 text-sm">{error}</p>}
+                            </div>
                         </div>
-                    </div>
-                </section>
-                <footer className="px-6 py-6 border-t border-slate-100 flex items-center justify-between">
-                    <a href="/"><img src="/logo.png" style={{ height: 22, width: 'auto' }} alt="logo" /></a>
-                    <p className="text-black text-xs">© {new Date().getFullYear()} · Leitor PDF Online</p>
-                </footer>
-            </div>
+                        <input ref={landingInputRef} type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
+                        <p className="mt-4 text-black text-xs flex items-center gap-1.5">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                            Seu arquivo permanece no seu dispositivo
+                        </p>
+                    </section>
+                    <section className="px-6 md:px-12 py-16 bg-slate-50 border-y border-slate-100">
+                        <div className="max-w-3xl mx-auto">
+                            <p className="text-xs font-semibold text-main-500 tracking-widest uppercase mb-3 text-center">Como funciona</p>
+                            <h2 className="font-redRat text-3xl md:text-4xl font-bold text-black text-center mb-12">Três passos. Simples assim.</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {steps.map((s) => (
+                                    <div key={s.num} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                                        <span className="font-redRat text-4xl font-bold text-main-100 leading-none block mb-3">{s.num}</span>
+                                        <p className="font-redRat font-semibold text-black text-base mb-1">{s.title}</p>
+                                        <p className="text-black text-sm leading-relaxed">{s.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                    <section className="px-6 md:px-12 py-16">
+                        <div className="max-w-4xl mx-auto">
+                            <p className="text-xs font-semibold text-main-500 tracking-widest uppercase mb-3 text-center">Recursos</p>
+                            <h2 className="font-redRat text-3xl md:text-4xl font-bold text-black text-center mb-12">Tudo que você precisa para ler</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                {features.map((f) => (
+                                    <div key={f.title} className="rounded-2xl border border-slate-100 p-6 hover:border-main-100 hover:shadow-sm transition-all">
+                                        <div className="w-10 h-10 rounded-xl bg-main-50 text-main-400 flex items-center justify-center mb-4">{f.icon}</div>
+                                        <p className="font-redRat font-semibold text-black mb-1">{f.title}</p>
+                                        <p className="text-black text-sm leading-relaxed">{f.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                    <footer className="px-6 py-6 border-t border-slate-100 flex items-center justify-between">
+                        <a href="/"><img src="/logo.png" style={{ height: 22, width: 'auto' }} alt="logo" /></a>
+                        <p className="text-black text-xs">© {new Date().getFullYear()} · Leitor PDF Online</p>
+                    </footer>
+                </div>
+            </>
         );
     }
 
@@ -725,320 +732,322 @@ export default function UploadReaderPage() {
     }
 
     return (
-        <div className="flex flex-col bg-slate-100 font-dmSans" style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}>
+        <>
+            <div className="flex flex-col bg-slate-100 font-dmSans" style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}>
 
-            {/* HEADER */}
-            <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
-                <div className="flex items-center gap-3">
-                    <a href="/"><img src="/logo.png" style={{ width: 'auto', height: '28px' }} alt="" /></a>
-                    <h1 className="font-redRat font-semibold text-black text-base hidden md:block truncate max-w-xs">{fileName}</h1>
-                    <span className="text-gray-300 hidden md:block">·</span>
-                    <span className="text-black text-sm hidden md:block">{numPages} páginas</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 border-r border-slate-200 pr-3 mr-1">
-                        <button onClick={() => setScale(s => Math.max(s - 0.2, 0.4))} className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition cursor-pointer">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="8" y1="11" x2="14" y2="11" /></svg>
-                        </button>
-                        <span className="text-sm text-black w-10 text-center">{Math.round(scale * 100)}%</span>
-                        <button onClick={() => setScale(s => Math.min(s + 0.2, 3))} className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition cursor-pointer">
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" /></svg>
+                {/* HEADER */}
+                <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
+                    <div className="flex items-center gap-3">
+                        <a href="/"><img src="/logo.png" style={{ width: 'auto', height: '28px' }} alt="" /></a>
+                        <h1 className="font-redRat font-semibold text-black text-base hidden md:block truncate max-w-xs">{fileName}</h1>
+                        <span className="text-gray-300 hidden md:block">·</span>
+                        <span className="text-black text-sm hidden md:block">{numPages} páginas</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 border-r border-slate-200 pr-3 mr-1">
+                            <button onClick={() => setScale(s => Math.max(s - 0.2, 0.4))} className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition cursor-pointer">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="8" y1="11" x2="14" y2="11" /></svg>
+                            </button>
+                            <span className="text-sm text-black w-10 text-center">{Math.round(scale * 100)}%</span>
+                            <button onClick={() => setScale(s => Math.min(s + 0.2, 3))} className="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition cursor-pointer">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" /></svg>
+                            </button>
+                        </div>
+                        <input ref={fileInputRef} type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
+                        <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1.5 rounded-full text-sm font-medium transition cursor-pointer">
+                            <span className="hidden md:block">Trocar PDF</span>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                         </button>
                     </div>
-                    <input ref={fileInputRef} type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
-                    <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1.5 rounded-full text-sm font-medium transition cursor-pointer">
-                        <span className="hidden md:block">Trocar PDF</span>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
-                    </button>
-                </div>
-            </header>
+                </header>
 
-            <div className="flex flex-1 overflow-hidden">
-                {/* SIDEBAR */}
-                <aside className={`${sidebarOpen ? 'w-48' : 'w-0'} transition-all duration-300 overflow-hidden bg-[#ECEAFF] shrink-0 hidden md:flex flex-col`} style={{ scrollbarWidth: 'thin' }}>
-                    <div className="flex-1 overflow-y-auto flex flex-col items-center py-3 gap-2">
-                        {thumbnails.map((src, i) => {
-                            const pageNum = i + 1;
-                            const isDeleting = deletingPage === pageNum;
-                            return (
-                                <div key={i} className="flex flex-col items-center shrink-0 group relative pb-4">
-                                    <div
-                                        onClick={() => !isDeleting && goTo(pageNum)}
-                                        className={`border-2 rounded cursor-pointer transition relative ${currentPage === pageNum ? 'border-main-500' : 'border-transparent hover:border-main-300'}`}
-                                    >
-                                        {src
-                                            ? <img src={src} alt={`Página ${pageNum}`} className="w-28 block" />
-                                            : <div className="w-28 bg-slate-200 animate-pulse" style={{ height: 160 }} />
-                                        }
-                                        {isDeleting && (
-                                            <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded">
-                                                <div className="w-5 h-5 border-2 border-slate-300 border-t-main-400 rounded-full animate-spin" />
+                <div className="flex flex-1 overflow-hidden">
+                    {/* SIDEBAR */}
+                    <aside className={`${sidebarOpen ? 'w-48' : 'w-0'} transition-all duration-300 overflow-hidden bg-[#ECEAFF] shrink-0 hidden md:flex flex-col`} style={{ scrollbarWidth: 'thin' }}>
+                        <div className="flex-1 overflow-y-auto flex flex-col items-center py-3 gap-2">
+                            {thumbnails.map((src, i) => {
+                                const pageNum = i + 1;
+                                const isDeleting = deletingPage === pageNum;
+                                return (
+                                    <div key={i} className="flex flex-col items-center shrink-0 group relative pb-4">
+                                        <div
+                                            onClick={() => !isDeleting && goTo(pageNum)}
+                                            className={`border-2 rounded cursor-pointer transition relative ${currentPage === pageNum ? 'border-main-500' : 'border-transparent hover:border-main-300'}`}
+                                        >
+                                            {src
+                                                ? <img src={src} alt={`Página ${pageNum}`} className="w-28 block" />
+                                                : <div className="w-28 bg-slate-200 animate-pulse" style={{ height: 160 }} />
+                                            }
+                                            {isDeleting && (
+                                                <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded">
+                                                    <div className="w-5 h-5 border-2 border-slate-300 border-t-main-400 rounded-full animate-spin" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <span className="text-xs text-slate-500 mt-1">{pageNum}</span>
+                                        {!isDeleting && numPages > 1 && (
+                                            <div className="absolute bottom-9 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-2.5 py-1.5">
+                                                <button onClick={() => duplicatePage(pageNum)} title="Copiar página" className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-slate-100 text-black transition cursor-pointer">
+                                                    <IoCopyOutline size={16} />
+                                                </button>
+                                                <button onClick={() => deletePage(pageNum)} title="Excluir página" className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-red-50 text-black transition cursor-pointer">
+                                                    <RiDeleteBin6Line size={16} />
+                                                </button>
                                             </div>
                                         )}
                                     </div>
-                                    <span className="text-xs text-slate-500 mt-1">{pageNum}</span>
-                                    {!isDeleting && numPages > 1 && (
-                                        <div className="absolute bottom-9 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-2.5 py-1.5">
-                                            <button onClick={() => duplicatePage(pageNum)} title="Copiar página" className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-slate-100 text-black transition cursor-pointer">
-                                                <IoCopyOutline size={16} />
-                                            </button>
-                                            <button onClick={() => deletePage(pageNum)} title="Excluir página" className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-red-50 text-black transition cursor-pointer">
-                                                <RiDeleteBin6Line size={16} />
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </aside>
-
-                <button onClick={() => setSidebarOpen(o => !o)} className="hidden md:flex items-center justify-center w-5 bg-[#dddaf5] hover:bg-[#ccc9ef] transition cursor-pointer shrink-0">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.5">
-                        {sidebarOpen ? <polyline points="15 18 9 12 15 6" /> : <polyline points="9 18 15 12 9 6" />}
-                    </svg>
-                </button>
-
-                {/* MAIN */}
-                <main className="flex-1 overflow-auto bg-slate-100 flex flex-col">
-                    <div id="top" />
-
-                    {/* TOOLBAR */}
-                    <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-slate-100 flex-wrap shrink-0">
-                        <div className="flex items-center gap-1 border-r border-slate-200 pr-3 mr-1">
-                            <button onClick={() => toggleTool('draw')} title="Desenhar"
-                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'draw' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-                                <span className="font-redRat font-semibold text-sm hidden md:block">Desenhar</span>
-                            </button>
-                            <button onClick={() => toggleTool('text')} title="Adicionar texto"
-                                className={`border p-2 rounded-lg flex justify-center gap-2 items-center transition cursor-pointer ${activeTool === 'text' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></svg>
-                                <span className="font-redRat font-semibold text-sm hidden md:block">Texto</span>
-                            </button>
-                            <button onClick={() => toggleTool('edit')} title="Editar texto"
-                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'edit' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                </svg>
-                                <span className="font-redRat font-semibold text-sm hidden md:block">Editar</span>
-                            </button>
-                            <button onClick={() => toggleTool('highlight')} title="Realçar"
-                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'highlight' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                                </svg>
-                                <span className="font-redRat font-semibold text-sm hidden md:block">Realçar</span>
-                            </button>
+                                );
+                            })}
                         </div>
+                    </aside>
 
-                        {activeTool === 'draw' && (
-                            <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
-                                <div className="flex gap-1">
-                                    {COLORS.map(c => (
-                                        <button key={c} onClick={() => setPenColor(c)} className="rounded-full border-2 transition cursor-pointer" style={{ width: 18, height: 18, background: c, borderColor: penColor === c ? '#0f172a' : 'transparent' }} />
-                                    ))}
-                                </div>
-                                <div className="flex gap-1 items-center ml-1">
-                                    {BRUSH_SIZES.map(s => (
-                                        <button key={s} onClick={() => setPenSize(s)} className={`rounded-full transition cursor-pointer ${penSize === s ? 'bg-main-500' : 'bg-slate-200 hover:bg-slate-300'}`} style={{ width: s + 10, height: s + 10 }}>
-                                            <span className="sr-only">{s}px</span>
-                                        </button>
-                                    ))}
-                                </div>
-                                <span className="text-xs text-slate-400 hidden md:block">Clique e arraste para desenhar</span>
-                            </div>
-                        )}
+                    <button onClick={() => setSidebarOpen(o => !o)} className="hidden md:flex items-center justify-center w-5 bg-[#dddaf5] hover:bg-[#ccc9ef] transition cursor-pointer shrink-0">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.5">
+                            {sidebarOpen ? <polyline points="15 18 9 12 15 6" /> : <polyline points="9 18 15 12 9 6" />}
+                        </svg>
+                    </button>
 
-                        {activeTool === 'text' && (
-                            <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
-                                <div className="flex gap-1">
-                                    {COLORS.map(c => (
-                                        <button key={c} onClick={() => setTextColor(c)} className="rounded-full border-2 transition cursor-pointer" style={{ width: 18, height: 18, background: c, borderColor: textColor === c ? '#0f172a' : 'transparent' }} />
-                                    ))}
-                                </div>
-                                <select value={fontSize} onChange={e => setFontSize(Number(e.target.value))} className="text-xs border border-slate-200 rounded-lg px-2 py-1 text-black bg-white cursor-pointer outline-none">
-                                    {[10, 12, 14, 16, 20, 24, 32].map(s => <option key={s} value={s}>{s}px</option>)}
-                                </select>
-                                <span className="text-xs text-slate-400 hidden md:block">Clique na página para inserir texto</span>
-                            </div>
-                        )}
+                    {/* MAIN */}
+                    <main className="flex-1 overflow-auto bg-slate-100 flex flex-col">
+                        <div id="top" />
 
-                        {activeTool === 'edit' && (
-                            <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
-                                <div className="flex gap-1">
-                                    {COLORS.map(c => (
-                                        <button key={c} onClick={() => setEditColor(c)} className="rounded-full border-2 transition cursor-pointer" style={{ width: 18, height: 18, background: c, borderColor: editColor === c ? '#0f172a' : 'transparent' }} />
-                                    ))}
-                                </div>
-                                <select value={editFontSize} onChange={e => setEditFontSize(Number(e.target.value))} className="text-xs border border-slate-200 rounded-lg px-2 py-1 text-black bg-white cursor-pointer outline-none">
-                                    {[8, 10, 12, 14, 16, 20, 24, 32].map(s => <option key={s} value={s}>{s}px</option>)}
-                                </select>
-                                <span className="text-xs text-slate-400 hidden md:block">Clique sobre o texto para editar</span>
-                            </div>
-                        )}
-
-                        {activeTool === 'highlight' && (
-                            <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
-                                <div className="flex gap-1">
-                                    {HIGHLIGHT_COLORS.map(c => (
-                                        <button key={c} onClick={() => setHighlightColor(c)}
-                                            className="rounded-sm border-2 transition cursor-pointer"
-                                            style={{ width: 22, height: 14, background: c, borderColor: highlightColor === c ? '#0f172a' : 'transparent' }}
-                                        />
-                                    ))}
-                                </div>
-                                <span className="text-xs text-slate-400 hidden md:block">Clique e arraste para realçar</span>
-                            </div>
-                        )}
-
-                        {annotations.some(a => a.page === currentPage) && (
-                            <div className="flex items-center gap-1 ml-auto">
-                                <button onClick={undoLast} title="Desfazer" className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition cursor-pointer">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" /></svg>
+                        {/* TOOLBAR */}
+                        <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-slate-100 flex-wrap shrink-0">
+                            <div className="flex items-center gap-1 border-r border-slate-200 pr-3 mr-1">
+                                <button onClick={() => toggleTool('draw')} title="Desenhar"
+                                    className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'draw' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                                    <span className="font-redRat font-semibold text-sm hidden md:block">Desenhar</span>
                                 </button>
-                                <button onClick={clearPage} title="Limpar página" className="p-2 rounded-lg hover:bg-red-50 text-red-400 transition cursor-pointer">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4h6v2" /></svg>
+                                <button onClick={() => toggleTool('text')} title="Adicionar texto"
+                                    className={`border p-2 rounded-lg flex justify-center gap-2 items-center transition cursor-pointer ${activeTool === 'text' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></svg>
+                                    <span className="font-redRat font-semibold text-sm hidden md:block">Texto</span>
+                                </button>
+                                <button onClick={() => toggleTool('edit')} title="Editar texto"
+                                    className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'edit' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                    <span className="font-redRat font-semibold text-sm hidden md:block">Editar</span>
+                                </button>
+                                <button onClick={() => toggleTool('highlight')} title="Realçar"
+                                    className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'highlight' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                    </svg>
+                                    <span className="font-redRat font-semibold text-sm hidden md:block">Realçar</span>
                                 </button>
                             </div>
-                        )}
-                    </div>
 
-                    {/* CANVAS AREA */}
-                    <div
-                        className="flex justify-center p-6 pb-24 flex-1 overflow-auto"
-                        onTouchStart={(e) => { if (activeTool === 'none') touchX.current = e.touches[0].clientX; }}
-                        onTouchEnd={(e) => { if (activeTool === 'none') { const dx = e.changedTouches[0].clientX - touchX.current; if (Math.abs(dx) > 50) goTo(currentPage + (dx < 0 ? 1 : -1)); } }}
-                    >
-                        <div className="relative inline-block shadow-2xl" style={{ alignSelf: 'flex-start' }}>
-                            {highlightPreview && activeTool === 'highlight' && (
-                                <div
-                                    className="absolute pointer-events-none z-10"
-                                    style={{
-                                        left: highlightPreview.x,
-                                        top: highlightPreview.y,
-                                        width: highlightPreview.w,
-                                        height: highlightPreview.h,
-                                        background: highlightColor,
-                                        opacity: 0.35,
-                                    }}
-                                />
-                            )}
-
-                            <canvas ref={canvasRef} className="block" />
-
-                            <canvas
-                                ref={drawCanvasRef}
-                                className="absolute inset-0"
-                                style={{
-                                    cursor: activeTool === 'draw' || activeTool === 'highlight' ? 'crosshair' : activeTool === 'text' ? 'text' : activeTool === 'edit' ? 'pointer' : 'default',
-                                    pointerEvents: activeTool === 'none' ? 'none' : 'all',
-                                }}
-                                onMouseDown={onMouseDown}
-                                onMouseMove={onMouseMove}
-                                onMouseUp={onMouseUp}
-                                onMouseLeave={() => onMouseUp()}
-                            />
-
-                            {/* Input adicionar texto — posição relativa ao drawCanvas (CSS px) */}
-                            {pendingText && (
-                                <input
-                                    ref={textInputRef}
-                                    value={textValue}
-                                    onChange={e => setTextValue(e.target.value)}
-                                    onBlur={commitText}
-                                    onKeyDown={e => {
-                                        if (e.key === 'Enter') commitText();
-                                        if (e.key === 'Escape') { setPendingText(null); setTextValue(''); }
-                                    }}
-                                    className="absolute bg-transparent outline-none border-b border-dashed border-main-400 font-dmSans z-20"
-                                    style={{
-                                        left: pendingText.x,
-                                        top: pendingText.y - fontSize,
-                                        fontSize,
-                                        color: textColor,
-                                        minWidth: 80,
-                                        lineHeight: 1,
-                                    }}
-                                    placeholder="Digite aqui…"
-                                />
-                            )}
-
-                            {/* Input editar texto */}
-                            {pendingEdit && (
-                                <div
-                                    className="absolute z-20"
-                                    style={{
-                                        left: Math.min(pendingEdit.x, (canvasSize.w || 600) - 140),
-                                        top: pendingEdit.y,
-                                        width: Math.max(pendingEdit.w, 120),
-                                    }}
-                                >
-                                    {pendingEdit.originalText && (
-                                        <div className="text-xs text-slate-400 mb-0.5 font-dmSans truncate bg-white/80 px-1 rounded">
-                                            <span className="line-through">{pendingEdit.originalText}</span>
-                                        </div>
-                                    )}
-                                    <input
-                                        ref={editInputRef}
-                                        value={editValue}
-                                        onChange={e => setEditValue(e.target.value)}
-                                        onBlur={commitEdit}
-                                        onKeyDown={e => {
-                                            if (e.key === 'Enter') commitEdit();
-                                            if (e.key === 'Escape') { setPendingEdit(null); setEditValue(''); }
-                                        }}
-                                        className="w-full bg-white border border-main-400 rounded px-1.5 py-0.5 font-dmSans outline-none shadow-sm"
-                                        style={{ fontSize: editFontSize, color: editColor }}
-                                        placeholder="Novo texto…"
-                                    />
-                                    <div className="flex gap-1 mt-1">
-                                        <button onMouseDown={e => { e.preventDefault(); commitEdit(); }} className="text-xs bg-main-500 text-white rounded px-2 py-0.5 cursor-pointer">OK</button>
-                                        <button onMouseDown={e => { e.preventDefault(); setPendingEdit(null); setEditValue(''); }} className="text-xs bg-slate-200 text-slate-600 rounded px-2 py-0.5 cursor-pointer">×</button>
+                            {activeTool === 'draw' && (
+                                <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
+                                    <div className="flex gap-1">
+                                        {COLORS.map(c => (
+                                            <button key={c} onClick={() => setPenColor(c)} className="rounded-full border-2 transition cursor-pointer" style={{ width: 18, height: 18, background: c, borderColor: penColor === c ? '#0f172a' : 'transparent' }} />
+                                        ))}
                                     </div>
+                                    <div className="flex gap-1 items-center ml-1">
+                                        {BRUSH_SIZES.map(s => (
+                                            <button key={s} onClick={() => setPenSize(s)} className={`rounded-full transition cursor-pointer ${penSize === s ? 'bg-main-500' : 'bg-slate-200 hover:bg-slate-300'}`} style={{ width: s + 10, height: s + 10 }}>
+                                                <span className="sr-only">{s}px</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <span className="text-xs text-slate-400 hidden md:block">Clique e arraste para desenhar</span>
                                 </div>
                             )}
 
-                            {pageLoading && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm">
-                                    <div className="w-8 h-8 border-4 border-slate-200 border-t-main-500 rounded-full animate-spin" />
+                            {activeTool === 'text' && (
+                                <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
+                                    <div className="flex gap-1">
+                                        {COLORS.map(c => (
+                                            <button key={c} onClick={() => setTextColor(c)} className="rounded-full border-2 transition cursor-pointer" style={{ width: 18, height: 18, background: c, borderColor: textColor === c ? '#0f172a' : 'transparent' }} />
+                                        ))}
+                                    </div>
+                                    <select value={fontSize} onChange={e => setFontSize(Number(e.target.value))} className="text-xs border border-slate-200 rounded-lg px-2 py-1 text-black bg-white cursor-pointer outline-none">
+                                        {[10, 12, 14, 16, 20, 24, 32].map(s => <option key={s} value={s}>{s}px</option>)}
+                                    </select>
+                                    <span className="text-xs text-slate-400 hidden md:block">Clique na página para inserir texto</span>
+                                </div>
+                            )}
+
+                            {activeTool === 'edit' && (
+                                <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
+                                    <div className="flex gap-1">
+                                        {COLORS.map(c => (
+                                            <button key={c} onClick={() => setEditColor(c)} className="rounded-full border-2 transition cursor-pointer" style={{ width: 18, height: 18, background: c, borderColor: editColor === c ? '#0f172a' : 'transparent' }} />
+                                        ))}
+                                    </div>
+                                    <select value={editFontSize} onChange={e => setEditFontSize(Number(e.target.value))} className="text-xs border border-slate-200 rounded-lg px-2 py-1 text-black bg-white cursor-pointer outline-none">
+                                        {[8, 10, 12, 14, 16, 20, 24, 32].map(s => <option key={s} value={s}>{s}px</option>)}
+                                    </select>
+                                    <span className="text-xs text-slate-400 hidden md:block">Clique sobre o texto para editar</span>
+                                </div>
+                            )}
+
+                            {activeTool === 'highlight' && (
+                                <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
+                                    <div className="flex gap-1">
+                                        {HIGHLIGHT_COLORS.map(c => (
+                                            <button key={c} onClick={() => setHighlightColor(c)}
+                                                className="rounded-sm border-2 transition cursor-pointer"
+                                                style={{ width: 22, height: 14, background: c, borderColor: highlightColor === c ? '#0f172a' : 'transparent' }}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="text-xs text-slate-400 hidden md:block">Clique e arraste para realçar</span>
+                                </div>
+                            )}
+
+                            {annotations.some(a => a.page === currentPage) && (
+                                <div className="flex items-center gap-1 ml-auto">
+                                    <button onClick={undoLast} title="Desfazer" className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition cursor-pointer">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 14 4 9 9 4" /><path d="M20 20v-7a4 4 0 0 0-4-4H4" /></svg>
+                                    </button>
+                                    <button onClick={clearPage} title="Limpar página" className="p-2 rounded-lg hover:bg-red-50 text-red-400 transition cursor-pointer">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4h6v2" /></svg>
+                                    </button>
                                 </div>
                             )}
                         </div>
-                    </div>
-                </main>
-            </div>
 
-            {/* NAV BAR */}
-            <div className="fixed bottom-6 z-50 pointer-events-none flex justify-center" style={{ left: sidebarOpen && !isMobile ? '12rem' : '0', right: 0, transition: 'left 0.3s' }}>
-                <div className="pointer-events-auto flex items-center gap-2 bg-slate-900 text-white rounded-full px-4 py-2 shadow-xl">
-                    <button onClick={() => goTo(currentPage - 1)} disabled={currentPage <= 1} className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6" /></svg>
-                    </button>
-                    <div className="flex items-center gap-1.5 text-sm px-1">
-                        <input type="number" value={inputPage} min={1} max={numPages}
-                            onChange={(e) => setInputPage(e.target.value)}
-                            onBlur={() => { const v = parseInt(inputPage); if (!isNaN(v)) goTo(v); else setInputPage(String(currentPage)); }}
-                            onKeyDown={(e) => { if (e.key === 'Enter') { const v = parseInt(inputPage); if (!isNaN(v)) goTo(v); else setInputPage(String(currentPage)); (e.target as HTMLInputElement).blur(); } }}
-                            className="w-9 text-center bg-slate-700 rounded-md py-0.5 text-white text-sm outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        />
-                        <span className="text-white">de</span>
-                        <span>{numPages}</span>
+                        {/* CANVAS AREA */}
+                        <div
+                            className="flex justify-center p-6 pb-24 flex-1 overflow-auto"
+                            onTouchStart={(e) => { if (activeTool === 'none') touchX.current = e.touches[0].clientX; }}
+                            onTouchEnd={(e) => { if (activeTool === 'none') { const dx = e.changedTouches[0].clientX - touchX.current; if (Math.abs(dx) > 50) goTo(currentPage + (dx < 0 ? 1 : -1)); } }}
+                        >
+                            <div className="relative inline-block shadow-2xl" style={{ alignSelf: 'flex-start' }}>
+                                {highlightPreview && activeTool === 'highlight' && (
+                                    <div
+                                        className="absolute pointer-events-none z-10"
+                                        style={{
+                                            left: highlightPreview.x,
+                                            top: highlightPreview.y,
+                                            width: highlightPreview.w,
+                                            height: highlightPreview.h,
+                                            background: highlightColor,
+                                            opacity: 0.35,
+                                        }}
+                                    />
+                                )}
+
+                                <canvas ref={canvasRef} className="block" />
+
+                                <canvas
+                                    ref={drawCanvasRef}
+                                    className="absolute inset-0"
+                                    style={{
+                                        cursor: activeTool === 'draw' || activeTool === 'highlight' ? 'crosshair' : activeTool === 'text' ? 'text' : activeTool === 'edit' ? 'pointer' : 'default',
+                                        pointerEvents: activeTool === 'none' ? 'none' : 'all',
+                                    }}
+                                    onMouseDown={onMouseDown}
+                                    onMouseMove={onMouseMove}
+                                    onMouseUp={onMouseUp}
+                                    onMouseLeave={() => onMouseUp()}
+                                />
+
+                                {/* Input adicionar texto — posição relativa ao drawCanvas (CSS px) */}
+                                {pendingText && (
+                                    <input
+                                        ref={textInputRef}
+                                        value={textValue}
+                                        onChange={e => setTextValue(e.target.value)}
+                                        onBlur={commitText}
+                                        onKeyDown={e => {
+                                            if (e.key === 'Enter') commitText();
+                                            if (e.key === 'Escape') { setPendingText(null); setTextValue(''); }
+                                        }}
+                                        className="absolute bg-transparent outline-none border-b border-dashed border-main-400 font-dmSans z-20"
+                                        style={{
+                                            left: pendingText.x,
+                                            top: pendingText.y - fontSize,
+                                            fontSize,
+                                            color: textColor,
+                                            minWidth: 80,
+                                            lineHeight: 1,
+                                        }}
+                                        placeholder="Digite aqui…"
+                                    />
+                                )}
+
+                                {/* Input editar texto */}
+                                {pendingEdit && (
+                                    <div
+                                        className="absolute z-20"
+                                        style={{
+                                            left: Math.min(pendingEdit.x, (canvasSize.w || 600) - 140),
+                                            top: pendingEdit.y,
+                                            width: Math.max(pendingEdit.w, 120),
+                                        }}
+                                    >
+                                        {pendingEdit.originalText && (
+                                            <div className="text-xs text-slate-400 mb-0.5 font-dmSans truncate bg-white/80 px-1 rounded">
+                                                <span className="line-through">{pendingEdit.originalText}</span>
+                                            </div>
+                                        )}
+                                        <input
+                                            ref={editInputRef}
+                                            value={editValue}
+                                            onChange={e => setEditValue(e.target.value)}
+                                            onBlur={commitEdit}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter') commitEdit();
+                                                if (e.key === 'Escape') { setPendingEdit(null); setEditValue(''); }
+                                            }}
+                                            className="w-full bg-white border border-main-400 rounded px-1.5 py-0.5 font-dmSans outline-none shadow-sm"
+                                            style={{ fontSize: editFontSize, color: editColor }}
+                                            placeholder="Novo texto…"
+                                        />
+                                        <div className="flex gap-1 mt-1">
+                                            <button onMouseDown={e => { e.preventDefault(); commitEdit(); }} className="text-xs bg-main-500 text-white rounded px-2 py-0.5 cursor-pointer">OK</button>
+                                            <button onMouseDown={e => { e.preventDefault(); setPendingEdit(null); setEditValue(''); }} className="text-xs bg-slate-200 text-slate-600 rounded px-2 py-0.5 cursor-pointer">×</button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {pageLoading && (
+                                    <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm">
+                                        <div className="w-8 h-8 border-4 border-slate-200 border-t-main-500 rounded-full animate-spin" />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </main>
+                </div>
+
+                {/* NAV BAR */}
+                <div className="fixed bottom-6 z-50 pointer-events-none flex justify-center" style={{ left: sidebarOpen && !isMobile ? '12rem' : '0', right: 0, transition: 'left 0.3s' }}>
+                    <div className="pointer-events-auto flex items-center gap-2 bg-slate-900 text-white rounded-full px-4 py-2 shadow-xl">
+                        <button onClick={() => goTo(currentPage - 1)} disabled={currentPage <= 1} className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6" /></svg>
+                        </button>
+                        <div className="flex items-center gap-1.5 text-sm px-1">
+                            <input type="number" value={inputPage} min={1} max={numPages}
+                                onChange={(e) => setInputPage(e.target.value)}
+                                onBlur={() => { const v = parseInt(inputPage); if (!isNaN(v)) goTo(v); else setInputPage(String(currentPage)); }}
+                                onKeyDown={(e) => { if (e.key === 'Enter') { const v = parseInt(inputPage); if (!isNaN(v)) goTo(v); else setInputPage(String(currentPage)); (e.target as HTMLInputElement).blur(); } }}
+                                className="w-9 text-center bg-slate-700 rounded-md py-0.5 text-white text-sm outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
+                            <span className="text-white">de</span>
+                            <span>{numPages}</span>
+                        </div>
+                        <button onClick={() => goTo(currentPage + 1)} disabled={currentPage >= numPages} className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
+                        </button>
+                        <div className="w-px h-4 bg-slate-600 mx-1" />
+                        <button onClick={savePDF} disabled={saving} title="Salvar PDF" className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5">
+                            {saving
+                                ? <div className="w-3.5 h-3.5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
+                                : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                            }
+                            <span className="text-sm hidden md:block">{saving ? 'Salvando…' : 'Salvar'}</span>
+                        </button>
                     </div>
-                    <button onClick={() => goTo(currentPage + 1)} disabled={currentPage >= numPages} className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
-                    </button>
-                    <div className="w-px h-4 bg-slate-600 mx-1" />
-                    <button onClick={savePDF} disabled={saving} title="Salvar PDF" className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5">
-                        {saving
-                            ? <div className="w-3.5 h-3.5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
-                            : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-                        }
-                        <span className="text-sm hidden md:block">{saving ? 'Salvando…' : 'Salvar'}</span>
-                    </button>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
