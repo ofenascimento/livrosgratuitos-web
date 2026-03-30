@@ -32,16 +32,12 @@ interface TextAnnotation extends Annotation {
 }
 interface EditAnnotation extends Annotation {
     type: 'edit';
-    // área a cobrir (white-out) em CSS px
     x: number; y: number; w: number; h: number;
-    // texto novo
     text: string;
     color: string;
     fontSize: number;
-    // texto original (para exibir no input)
     originalText: string;
 }
-
 interface HighlightAnnotation extends Annotation {
     type: 'highlight';
     x: number; y: number; w: number; h: number;
@@ -124,7 +120,6 @@ export default function UploadReaderPage() {
     const [textValue, setTextValue] = useState('');
     const [canvasSize, setCanvasSize] = useState({ w: 0, h: 0 });
 
-    // edit tool state
     const [editColor, setEditColor] = useState('#1e1e1e');
     const [editFontSize, setEditFontSize] = useState(12);
     const [pendingEdit, setPendingEdit] = useState<{
@@ -138,11 +133,23 @@ export default function UploadReaderPage() {
     const highlightStart = useRef<{ x: number; y: number } | null>(null);
     const [highlightPreview, setHighlightPreview] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
 
+    const [deletingPage, setDeletingPage] = useState<number | null>(null);
+
     const isMobile = useIsMobile();
 
     useEffect(() => { annotationsRef.current = annotations; }, [annotations]);
     useEffect(() => { setInputPage(String(currentPage)); }, [currentPage]);
     useEffect(() => { if (isMobile) { setScale(0.6); setSidebarOpen(false); } }, [isMobile]);
+
+    // Limpa pendentes ao mudar escala ou página
+    useEffect(() => {
+        setPendingText(null);
+        setPendingEdit(null);
+        setTextValue('');
+        setEditValue('');
+        setHighlightPreview(null);
+        highlightStart.current = null;
+    }, [scale, currentPage]);
 
     useEffect(() => {
         if (window.pdfjsLib) { setPdfReady(true); return; }
@@ -193,7 +200,6 @@ export default function UploadReaderPage() {
         await Promise.all(promises);
     };
 
-    // Carrega text items da página para o modo edit
     const loadTextItems = useCallback(async (pageNum: number) => {
         if (!pdfRef.current) return;
         try {
@@ -225,12 +231,11 @@ export default function UploadReaderPage() {
             const cssW = viewport.width / dpr;
             const cssH = viewport.height / dpr;
 
-            // drawCanvas com resolução física igual ao PDF canvas
             const dc = drawCanvasRef.current;
             if (dc) {
-                dc.width = viewport.width;        // pixels físicos
+                dc.width = viewport.width;
                 dc.height = viewport.height;
-                dc.style.width = `${cssW}px`;     // tamanho CSS igual
+                dc.style.width = `${cssW}px`;
                 dc.style.height = `${cssH}px`;
             }
 
@@ -255,8 +260,6 @@ export default function UploadReaderPage() {
         const dpr = window.devicePixelRatio || 1;
         const ctx = dc.getContext('2d')!;
         ctx.clearRect(0, 0, dc.width, dc.height);
-
-        // escala o contexto para que coordenadas CSS funcionem normalmente
         ctx.save();
         ctx.scale(dpr, dpr);
 
@@ -285,8 +288,7 @@ export default function UploadReaderPage() {
                 ctx.font = `${ed.fontSize}px 'DM Sans', sans-serif`;
                 ctx.fillStyle = ed.color;
                 ctx.fillText(ed.text, ed.x, ed.y + ed.fontSize);
-            }
-            else if (ann.type === 'highlight') {
+            } else if (ann.type === 'highlight') {
                 const h = ann as HighlightAnnotation;
                 ctx.save();
                 ctx.globalAlpha = 0.35;
@@ -295,7 +297,6 @@ export default function UploadReaderPage() {
                 ctx.restore();
             }
         }
-
         ctx.restore();
     }, [currentPage]);
 
@@ -306,10 +307,12 @@ export default function UploadReaderPage() {
     const getPos = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const dc = drawCanvasRef.current!;
         const rect = dc.getBoundingClientRect();
-        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+        };
     };
 
-    // Encontra text item mais próximo do clique (em CSS px)
     const findTextItemAt = (cx: number, cy: number) => {
         if (!pdfRef.current || textItems.length === 0) return null;
         const ps = pageSizesRef.current[currentPage];
@@ -324,16 +327,13 @@ export default function UploadReaderPage() {
             const itemW = item.width * pdfScale / dpr;
             const cssX = tx * pdfScale / dpr;
             const cssY = ps.h - (ty * pdfScale / dpr) - itemH;
-
             const padding = 4;
             if (
-                cx >= cssX - padding &&
-                cx <= cssX + itemW + padding &&
-                cy >= cssY - padding &&
-                cy <= cssY + itemH + padding
+                cx >= cssX - padding && cx <= cssX + itemW + padding &&
+                cy >= cssY - padding && cy <= cssY + itemH + padding
             ) {
                 return {
-                    originalText: item.str, // 👈 era 'str', agora 'originalText'
+                    originalText: item.str,
                     x: cssX,
                     y: cssY,
                     w: Math.max(itemW, 60),
@@ -346,41 +346,31 @@ export default function UploadReaderPage() {
         return null;
     };
 
-    const [deletingPage, setDeletingPage] = useState<number | null>(null);
-
     const deletePage = useCallback(async (pageNum: number) => {
         if (!pdfRef.current || !pdfUrlRef.current) return;
         setDeletingPage(pageNum);
         try {
             const existingBytes = await fetch(pdfUrlRef.current).then(r => r.arrayBuffer());
             const pdfDoc = await PDFDocument.load(existingBytes);
-
             pdfDoc.removePage(pageNum - 1);
-
-            // deletePage
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
             const newUrl = URL.createObjectURL(blob);
             const newPdf = await window.pdfjsLib.getDocument(newUrl).promise;
             pdfRef.current = newPdf;
             pdfUrlRef.current = newUrl;
-
             const newTotal = newPdf.numPages;
             setNumPages(newTotal);
             setThumbnails(new Array(newTotal).fill(''));
             setAnnotations(prev =>
-                prev
-                    .filter(a => a.page !== pageNum)
-                    .map(a => a.page > pageNum ? { ...a, page: a.page - 1 } : a)
+                prev.filter(a => a.page !== pageNum).map(a => a.page > pageNum ? { ...a, page: a.page - 1 } : a)
             );
             pageSizesRef.current = Object.fromEntries(
                 Object.entries(pageSizesRef.current)
                     .filter(([k]) => Number(k) !== pageNum)
                     .map(([k, v]) => [Number(k) > pageNum ? Number(k) - 1 : Number(k), v])
             );
-
-            const nextPage = pageNum > newTotal ? newTotal : pageNum;
-            setCurrentPage(nextPage);
+            setCurrentPage(pageNum > newTotal ? newTotal : pageNum);
             generateThumbnails(newPdf);
         } catch (e) {
             console.error('Erro ao excluir página:', e);
@@ -394,35 +384,23 @@ export default function UploadReaderPage() {
         try {
             const existingBytes = await fetch(pdfUrlRef.current).then(r => r.arrayBuffer());
             const pdfDoc = await PDFDocument.load(existingBytes);
-
-            // copia a página
             const [copiedPage] = await pdfDoc.copyPages(pdfDoc, [pageNum - 1]);
-
-            // insere logo após a página original
             pdfDoc.insertPage(pageNum, copiedPage);
-
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
             const newUrl = URL.createObjectURL(blob);
-
             const newPdf = await window.pdfjsLib.getDocument(newUrl).promise;
             pdfRef.current = newPdf;
             pdfUrlRef.current = newUrl;
-
             const newTotal = newPdf.numPages;
             setNumPages(newTotal);
             setThumbnails(new Array(newTotal).fill(''));
-
-            // anotações das páginas após a duplicada sobem um índice
-            setAnnotations(prev =>
-                prev.map(a => a.page > pageNum ? { ...a, page: a.page + 1 } : a)
-            );
+            setAnnotations(prev => prev.map(a => a.page > pageNum ? { ...a, page: a.page + 1 } : a));
             pageSizesRef.current = Object.fromEntries(
                 Object.entries(pageSizesRef.current).map(([k, v]) =>
                     [Number(k) > pageNum ? Number(k) + 1 : Number(k), v]
                 )
             );
-
             generateThumbnails(newPdf);
         } catch (e) {
             console.error('Erro ao duplicar página:', e);
@@ -438,30 +416,24 @@ export default function UploadReaderPage() {
             setPendingText(pos);
             setTextValue('');
             setTimeout(() => textInputRef.current?.focus(), 50);
-        }
-
-        else if (activeTool === 'edit') {
+        } else if (activeTool === 'edit') {
             const found = findTextItemAt(pos.x, pos.y);
             if (found) {
                 setPendingEdit(found);
-                setEditValue(found.originalText); // 👈 era found.str
+                setEditValue(found.originalText);
                 setTimeout(() => editInputRef.current?.focus(), 50);
             } else {
-                // clique em área sem texto: edição livre (cobre área + escreve)
                 setPendingEdit({ x: pos.x, y: pos.y, w: 200, h: editFontSize + 6, originalText: '', cssScaleX: 1, cssScaleY: 1 });
                 setEditValue('');
                 setTimeout(() => editInputRef.current?.focus(), 50);
             }
-        }
-
-        else if (activeTool === 'highlight') {
+        } else if (activeTool === 'highlight') {
             highlightStart.current = pos;
         }
     };
 
     const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const pos = getPos(e);
-
         if (activeTool === 'draw' && isDrawing.current) {
             currentStroke.current.push(pos);
             const dc = drawCanvasRef.current!;
@@ -573,7 +545,11 @@ export default function UploadReaderPage() {
     };
 
     const clearPage = () => setAnnotations(prev => prev.filter(a => a.page !== currentPage));
-    const toggleTool = (t: Tool) => { setActiveTool(prev => prev === t ? 'none' : t); setPendingText(null); setPendingEdit(null); };
+    const toggleTool = (t: Tool) => {
+        setActiveTool(prev => prev === t ? 'none' : t);
+        setPendingText(null); setPendingEdit(null);
+        setTextValue(''); setEditValue('');
+    };
 
     const goTo = (p: number) => {
         setCurrentPage(Math.max(1, Math.min(p, numPages)));
@@ -581,7 +557,6 @@ export default function UploadReaderPage() {
         document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // ── SAVE PDF ──
     const savePDF = useCallback(async () => {
         if (!pdfRef.current || !pdfUrlRef.current) return;
         setSaving(true);
@@ -622,7 +597,6 @@ export default function UploadReaderPage() {
                     });
                 } else if (ann.type === 'edit') {
                     const ed = ann as EditAnnotation;
-                    // white-out rect
                     pdfPage.drawRectangle({
                         x: ed.x * scaleX,
                         y: pH - (ed.y + ed.h) * scaleY,
@@ -631,7 +605,6 @@ export default function UploadReaderPage() {
                         color: rgb(1, 1, 1),
                         opacity: 1,
                     });
-                    // novo texto
                     pdfPage.drawText(ed.text, {
                         x: ed.x * scaleX,
                         y: pH - (ed.y + ed.fontSize) * scaleY,
@@ -639,8 +612,7 @@ export default function UploadReaderPage() {
                         font,
                         color: hexToRgbLib(ed.color),
                     });
-                }
-                else if (ann.type === 'highlight') {
+                } else if (ann.type === 'highlight') {
                     const h = ann as HighlightAnnotation;
                     pdfPage.drawRectangle({
                         x: h.x * scaleX,
@@ -673,7 +645,6 @@ export default function UploadReaderPage() {
     const handleDrop = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); const file = e.dataTransfer.files[0]; if (file) loadPDF(file); };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => { const file = e.target.files?.[0]; if (file) loadPDF(file); };
 
-    // ── LANDING ──────────────────────────────────────────────────────────────
     if (!hasFile && !loading) {
         return (
             <div className="min-h-screen bg-white flex flex-col font-dmSans" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
@@ -753,7 +724,6 @@ export default function UploadReaderPage() {
         );
     }
 
-    // ── READER ────────────────────────────────────────────────────────────────
     return (
         <div className="flex flex-col bg-slate-100 font-dmSans" style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}>
 
@@ -800,43 +770,21 @@ export default function UploadReaderPage() {
                                             ? <img src={src} alt={`Página ${pageNum}`} className="w-28 block" />
                                             : <div className="w-28 bg-slate-200 animate-pulse" style={{ height: 160 }} />
                                         }
-
                                         {isDeleting && (
                                             <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded">
                                                 <div className="w-5 h-5 border-2 border-slate-300 border-t-main-400 rounded-full animate-spin" />
                                             </div>
                                         )}
                                     </div>
-
                                     <span className="text-xs text-slate-500 mt-1">{pageNum}</span>
-
-                                    {/* btn flutuante — sai abaixo do número, centralizado */}
                                     {!isDeleting && numPages > 1 && (
                                         <div className="absolute bottom-9 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-2.5 py-1.5">
-                                            {/* Excluir */}
-                                            <button
-                                                onClick={() => {
-                                                    duplicatePage(pageNum);
-                                                }}
-                                                title="Copiar página"
-                                                className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-slate-100 text-black transition cursor-pointer"
-                                            >
+                                            <button onClick={() => duplicatePage(pageNum)} title="Copiar página" className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-slate-100 text-black transition cursor-pointer">
                                                 <IoCopyOutline size={16} />
                                             </button>
-                                            <button
-                                                onClick={() => {
-                                                    deletePage(pageNum)
-                                                }}
-                                                title="Excluir página"
-                                                className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-red-50 text-black transition cursor-pointer"
-                                            >
+                                            <button onClick={() => deletePage(pageNum)} title="Excluir página" className="flex items-center justify-center w-5 h-5 rounded-full hover:bg-red-50 text-black transition cursor-pointer">
                                                 <RiDeleteBin6Line size={16} />
                                             </button>
-
-
-
-                                            {/* Copiar */}
-
                                         </div>
                                     )}
                                 </div>
@@ -857,39 +805,34 @@ export default function UploadReaderPage() {
 
                     {/* TOOLBAR */}
                     <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-slate-100 flex-wrap shrink-0">
-                        {/* Ferramentas */}
                         <div className="flex items-center gap-1 border-r border-slate-200 pr-3 mr-1">
-                            {/* Desenhar */}
                             <button onClick={() => toggleTool('draw')} title="Desenhar"
-                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-3 cursor-pointer ${activeTool === 'draw' ? 'bg-main-500 text-white border-main-500 ' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
+                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'draw' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+                                <span className="font-redRat font-semibold text-sm hidden md:block">Desenhar</span>
                             </button>
-                            {/* Adicionar texto */}
                             <button onClick={() => toggleTool('text')} title="Adicionar texto"
-                                className={`border  p-2 rounded-lg flex justify-center gap-3 items-center transition cursor-pointer ${activeTool === 'text' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
-
+                                className={`border p-2 rounded-lg flex justify-center gap-2 items-center transition cursor-pointer ${activeTool === 'text' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></svg>
+                                <span className="font-redRat font-semibold text-sm hidden md:block">Texto</span>
                             </button>
-
-
-                            {/* Editar texto */}
-                            <button onClick={() => toggleTool('edit')} title="Editar texto existente"
-                                className={`border  p-2 rounded-lg transition flex justify-center items-center gap-3 cursor-pointer ${activeTool === 'edit' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
+                            <button onClick={() => toggleTool('edit')} title="Editar texto"
+                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'edit' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                 </svg>
-
+                                <span className="font-redRat font-semibold text-sm hidden md:block">Editar</span>
                             </button>
                             <button onClick={() => toggleTool('highlight')} title="Realçar"
-                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-3 cursor-pointer ${activeTool === 'highlight' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
+                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-2 cursor-pointer ${activeTool === 'highlight' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                     <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                                 </svg>
+                                <span className="font-redRat font-semibold text-sm hidden md:block">Realçar</span>
                             </button>
                         </div>
 
-                        {/* Opções desenho */}
                         {activeTool === 'draw' && (
                             <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
                                 <div className="flex gap-1">
@@ -904,10 +847,10 @@ export default function UploadReaderPage() {
                                         </button>
                                     ))}
                                 </div>
+                                <span className="text-xs text-slate-400 hidden md:block">Clique e arraste para desenhar</span>
                             </div>
                         )}
 
-                        {/* Opções texto */}
                         {activeTool === 'text' && (
                             <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
                                 <div className="flex gap-1">
@@ -918,10 +861,10 @@ export default function UploadReaderPage() {
                                 <select value={fontSize} onChange={e => setFontSize(Number(e.target.value))} className="text-xs border border-slate-200 rounded-lg px-2 py-1 text-black bg-white cursor-pointer outline-none">
                                     {[10, 12, 14, 16, 20, 24, 32].map(s => <option key={s} value={s}>{s}px</option>)}
                                 </select>
+                                <span className="text-xs text-slate-400 hidden md:block">Clique na página para inserir texto</span>
                             </div>
                         )}
 
-                        {/* Opções editar texto */}
                         {activeTool === 'edit' && (
                             <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
                                 <div className="flex gap-1">
@@ -950,9 +893,6 @@ export default function UploadReaderPage() {
                             </div>
                         )}
 
-                        {activeTool === 'draw' && <span className="text-xs text-slate-400 hidden md:block">Clique e arraste para desenhar</span>}
-                        {activeTool === 'text' && <span className="text-xs text-slate-400 hidden md:block">Clique na página para inserir texto</span>}
-
                         {annotations.some(a => a.page === currentPage) && (
                             <div className="flex items-center gap-1 ml-auto">
                                 <button onClick={undoLast} title="Desfazer" className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition cursor-pointer">
@@ -967,14 +907,14 @@ export default function UploadReaderPage() {
 
                     {/* CANVAS AREA */}
                     <div
-                        className="flex justify-center p-6 pb-24 flex-1"
+                        className="flex justify-center p-6 pb-24 flex-1 overflow-auto"
                         onTouchStart={(e) => { if (activeTool === 'none') touchX.current = e.touches[0].clientX; }}
                         onTouchEnd={(e) => { if (activeTool === 'none') { const dx = e.changedTouches[0].clientX - touchX.current; if (Math.abs(dx) > 50) goTo(currentPage + (dx < 0 ? 1 : -1)); } }}
                     >
-                        <div className="relative inline-block shadow-2xl">
+                        <div className="relative inline-block shadow-2xl" style={{ alignSelf: 'flex-start' }}>
                             {highlightPreview && activeTool === 'highlight' && (
                                 <div
-                                    className="absolute pointer-events-none"
+                                    className="absolute pointer-events-none z-10"
                                     style={{
                                         left: highlightPreview.x,
                                         top: highlightPreview.y,
@@ -985,44 +925,59 @@ export default function UploadReaderPage() {
                                     }}
                                 />
                             )}
+
                             <canvas ref={canvasRef} className="block" />
 
                             <canvas
                                 ref={drawCanvasRef}
                                 className="absolute inset-0"
                                 style={{
-                                    cursor: activeTool === 'draw' ? 'crosshair' : activeTool === 'text' ? 'text' : activeTool === 'edit' ? 'pointer' : activeTool === 'highlight' ? 'crosshair' : 'default',
+                                    cursor: activeTool === 'draw' || activeTool === 'highlight' ? 'crosshair' : activeTool === 'text' ? 'text' : activeTool === 'edit' ? 'pointer' : 'default',
                                     pointerEvents: activeTool === 'none' ? 'none' : 'all',
                                 }}
                                 onMouseDown={onMouseDown}
                                 onMouseMove={onMouseMove}
                                 onMouseUp={onMouseUp}
-                                onMouseLeave={onMouseUp}
+                                onMouseLeave={() => onMouseUp()}
                             />
 
-                            {/* Input adicionar texto */}
+                            {/* Input adicionar texto — posição relativa ao drawCanvas (CSS px) */}
                             {pendingText && (
                                 <input
                                     ref={textInputRef}
                                     value={textValue}
                                     onChange={e => setTextValue(e.target.value)}
                                     onBlur={commitText}
-                                    onKeyDown={e => { if (e.key === 'Enter') commitText(); if (e.key === 'Escape') { setPendingText(null); setTextValue(''); } }}
-                                    className="absolute bg-transparent outline-none border-b border-dashed border-main-400 font-dmSans"
-                                    style={{ left: pendingText.x, top: pendingText.y - fontSize, fontSize, color: textColor, minWidth: 80, lineHeight: 1 }}
+                                    onKeyDown={e => {
+                                        if (e.key === 'Enter') commitText();
+                                        if (e.key === 'Escape') { setPendingText(null); setTextValue(''); }
+                                    }}
+                                    className="absolute bg-transparent outline-none border-b border-dashed border-main-400 font-dmSans z-20"
+                                    style={{
+                                        left: pendingText.x,
+                                        top: pendingText.y - fontSize,
+                                        fontSize,
+                                        color: textColor,
+                                        minWidth: 80,
+                                        lineHeight: 1,
+                                    }}
                                     placeholder="Digite aqui…"
                                 />
                             )}
 
-                            {/* Input editar texto — mostra sobre a área do texto original */}
+                            {/* Input editar texto */}
                             {pendingEdit && (
                                 <div
-                                    className="absolute"
-                                    style={{ left: pendingEdit.x, top: pendingEdit.y, width: Math.max(pendingEdit.w, 120) }}
+                                    className="absolute z-20"
+                                    style={{
+                                        left: Math.min(pendingEdit.x, (canvasSize.w || 600) - 140),
+                                        top: pendingEdit.y,
+                                        width: Math.max(pendingEdit.w, 120),
+                                    }}
                                 >
                                     {pendingEdit.originalText && (
-                                        <div className="text-xs text-slate-400 mb-0.5 font-dmSans truncate">
-                                            Original: <span className="line-through">{pendingEdit.originalText}</span>
+                                        <div className="text-xs text-slate-400 mb-0.5 font-dmSans truncate bg-white/80 px-1 rounded">
+                                            <span className="line-through">{pendingEdit.originalText}</span>
                                         </div>
                                     )}
                                     <input
@@ -1030,7 +985,10 @@ export default function UploadReaderPage() {
                                         value={editValue}
                                         onChange={e => setEditValue(e.target.value)}
                                         onBlur={commitEdit}
-                                        onKeyDown={e => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') { setPendingEdit(null); setEditValue(''); } }}
+                                        onKeyDown={e => {
+                                            if (e.key === 'Enter') commitEdit();
+                                            if (e.key === 'Escape') { setPendingEdit(null); setEditValue(''); }
+                                        }}
                                         className="w-full bg-white border border-main-400 rounded px-1.5 py-0.5 font-dmSans outline-none shadow-sm"
                                         style={{ fontSize: editFontSize, color: editColor }}
                                         placeholder="Novo texto…"
@@ -1071,11 +1029,7 @@ export default function UploadReaderPage() {
                     <button onClick={() => goTo(currentPage + 1)} disabled={currentPage >= numPages} className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
-
-                    {/* Separador */}
                     <div className="w-px h-4 bg-slate-600 mx-1" />
-
-                    {/* Salvar PDF */}
                     <button onClick={savePDF} disabled={saving} title="Salvar PDF" className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer flex items-center gap-1.5">
                         {saving
                             ? <div className="w-3.5 h-3.5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
