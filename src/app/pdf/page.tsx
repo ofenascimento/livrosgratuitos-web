@@ -1,5 +1,8 @@
 "use client";
 
+import AdBanner from "@/components/ADS/AdBanner";
+import AdResponsive from "@/components/ADS/AdResponsive";
+import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import Metadata from "@/components/Metadata";
 import { useFetchBooksPDF } from "@/hooks/useFetchBooksPDF";
 import { urlApi } from "@/utils/url";
@@ -82,13 +85,21 @@ export default function LivrosPDFPage() {
       <main className="min-h-screen bg-white text-stone-900">
 
 
+
         <section className="relative border-b border-stone-100 bg-gradient-to-b from-amber-50/60 to-white overflow-hidden">
 
-          <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-12 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+          <div className="relative mx-auto max-w-6xl px-4 pt-8 pb-12 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
 
 
             <div className="flex flex-col items-center justify-center">
-              <div className="max-w-2xl w-full flex  flex-col justify-center items-center">
+              <AdBanner
+                dataAdFormat=""
+                dataFullWidthResponsive={false}
+                dataAdSlot="3946512730"
+                customClassName="mt-4"
+              />
+              <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
+              <div className="max-w-2xl w-full flex mt-4  flex-col justify-center items-center">
                 <span className="items-center text-center gap-1.5 bg-main-50 text-main-500 text-xs font-semibold px-3 py-1 rounded-full font-dmSans mb-4">
                   livrosgratuitos.com
                 </span>
@@ -109,7 +120,6 @@ export default function LivrosPDFPage() {
 
             </div>
 
-            {/* search */}
             <div className="mt-8 justify-center items-center flex flex-col w-full sm:flex-row gap-3 max-w-2xl">
               <div className="relative flex-1 justify-center items-center w-full">
                 <svg className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -143,7 +153,6 @@ export default function LivrosPDFPage() {
           </div>
         </section>
 
-        {/* ── grid ── */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           {error && (
             <div className="flex flex-col items-center gap-3 py-24 text-center">
@@ -193,6 +202,14 @@ export default function LivrosPDFPage() {
           )}
         </section>
 
+        <AdBanner
+          dataAdFormat=""
+          dataFullWidthResponsive={false}
+          dataAdSlot="2423907456"
+          customClassName="mb-4"
+        />
+        <AdResponsive dataAdSlot="1435361044" />
+
         {!isLoading && !error && books.length > 0 && (
           <section className="bg-stone-50 border-t border-stone-100">
             <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
@@ -225,6 +242,7 @@ export default function LivrosPDFPage() {
             </div>
           </section>
         )}
+
       </main>
     </>
   );
