@@ -1,5 +1,6 @@
 "use client";
 
+import Metadata from "@/components/Metadata";
 import { useFetchBooksPDF } from "@/hooks/useFetchBooksPDF";
 import { urlApi } from "@/utils/url";
 import Link from "next/link";
@@ -39,7 +40,7 @@ const BookCard = ({ book }: { book: IBook }) => {
             </svg>
           </div>
         )}
-       
+
       </div>
 
       <div className="flex flex-col gap-0.5 px-0.5">
@@ -47,7 +48,7 @@ const BookCard = ({ book }: { book: IBook }) => {
           {book.titulo}
         </h2>
         <p className="font-dmSans text-xs text-stone-500 line-clamp-1">{book.autor}</p>
-       
+
       </div>
     </Link>
   );
@@ -75,152 +76,156 @@ export default function LivrosPDFPage() {
   });
 
   return (
-    <main className="min-h-screen bg-white text-stone-900">
-     
+    <>
+      <Metadata seoTitle={"Livros em PDF grátis"} seoDescription={"Nossa biblioteca reúne obras em formato PDF prontas para leitura online ou download. Sem cadastro, sem limite de downloads."} />
 
-      <section className="relative border-b border-stone-100 bg-gradient-to-b from-amber-50/60 to-white overflow-hidden">
+      <main className="min-h-screen bg-white text-stone-900">
 
-        <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-12 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
-         
 
-          <div className="flex flex-col items-center justify-center">
-            <div className="max-w-2xl w-full flex  flex-col justify-center items-center">
-              <span className="items-center text-center gap-1.5 bg-main-50 text-main-500 text-xs font-semibold px-3 py-1 rounded-full font-dmSans mb-4">
-                livrosgratuitos.com
-              </span>
+        <section className="relative border-b border-stone-100 bg-gradient-to-b from-amber-50/60 to-white overflow-hidden">
 
-              <h1 className="font-redHat text-center text-4xl sm:text-5xl lg:text-[56px] font-bold tracking-tight text-stone-900 leading-[1.1]">
-                Livros em PDF grátis
-                <br />
-                <span className="text-main-500">baixe ou leia online  </span>
-              </h1>
+          <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-12 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
 
-              <p className="font-dmSans mt-5 text-base text-center text-black leading-relaxed max-w-lg">
-                Leia no navegador ou baixe no seu dispositivo — sem cadastro, sem assinatura, sem custo.
-                {!isLoading && books.length > 0 && (
-                  <> <strong className="text-stone-700 font-semibold">{books.length} títulos</strong> disponíveis agora.</>
-                )}
-              </p>
+
+            <div className="flex flex-col items-center justify-center">
+              <div className="max-w-2xl w-full flex  flex-col justify-center items-center">
+                <span className="items-center text-center gap-1.5 bg-main-50 text-main-500 text-xs font-semibold px-3 py-1 rounded-full font-dmSans mb-4">
+                  livrosgratuitos.com
+                </span>
+
+                <h1 className="font-redHat text-center text-4xl sm:text-5xl lg:text-[56px] font-bold tracking-tight text-stone-900 leading-[1.1]">
+                  Livros em PDF grátis
+                  <br />
+                  <span className="text-main-500">baixe ou leia online  </span>
+                </h1>
+
+                <p className="font-dmSans mt-5 text-base text-center text-black leading-relaxed max-w-lg">
+                  Leia no navegador ou baixe no seu dispositivo — sem cadastro, sem assinatura, sem custo.
+                  {!isLoading && books.length > 0 && (
+                    <> <strong className="text-stone-700 font-semibold">{books.length} títulos</strong> disponíveis agora.</>
+                  )}
+                </p>
+              </div>
+
             </div>
 
-          </div>
-
-          {/* search */}
-          <div className="mt-8 justify-center items-center flex flex-col w-full sm:flex-row gap-3 max-w-2xl">
-            <div className="relative flex-1 justify-center items-center w-full">
-              <svg className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-              </svg>
-              <input
-                type="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar por título, autor ou categoria"
-                className="font-dmSans w-full rounded-xl bg-white py-3 pl-11 pr-4 text-sm text-stone-900 placeholder-stone-600 ring-1 ring-gray-300 outline-none focus:ring-2 focus:ring-main-400/70 transition-shadow shadow-sm"
-                aria-label="Buscar livros em PDF"
-              />
+            {/* search */}
+            <div className="mt-8 justify-center items-center flex flex-col w-full sm:flex-row gap-3 max-w-2xl">
+              <div className="relative flex-1 justify-center items-center w-full">
+                <svg className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+                </svg>
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Buscar por título, autor ou categoria"
+                  className="font-dmSans w-full rounded-xl bg-white py-3 pl-11 pr-4 text-sm text-stone-900 placeholder-stone-600 ring-1 ring-gray-300 outline-none focus:ring-2 focus:ring-main-400/70 transition-shadow shadow-sm"
+                  aria-label="Buscar livros em PDF"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={` font-redRat font-semibold text-xs px-3.5 py-1.5 rounded-full ring-1 transition-all ${activeCategory === cat
-                  ? "bg-main-500 text-white ring-main-500"
-                  : "bg-white text-black ring-black "
-                  }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── grid ── */}
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        {error && (
-          <div className="flex flex-col items-center gap-3 py-24 text-center">
-            <span className="text-4xl">📚</span>
-            <p className="font-redHat text-lg font-semibold text-stone-700">Não foi possível carregar os livros</p>
-            <p className="font-dmSans text-sm text-stone-400">{error.message}</p>
-          </div>
-        )}
-
-        {!isLoading && !error && filtered.length === 0 && (search || activeCategory !== "Todos") && (
-          <div className="flex flex-col items-center gap-3 py-24 text-center">
-            <span className="text-4xl">🔍</span>
-            <p className="font-redHat text-lg font-semibold text-stone-700">
-              Nenhum resultado encontrado
-            </p>
-            <p className="font-dmSans text-sm text-stone-400">
-              Tente outro termo ou selecione uma categoria diferente.
-            </p>
-            <button
-              onClick={() => { setSearch(""); setActiveCategory("Todos"); }}
-              className="font-dmSans mt-2 text-xs text-amber-600 hover:text-amber-700 underline underline-offset-2"
-            >
-              Limpar filtros
-            </button>
-          </div>
-        )}
-
-        {!error && (
-          <>
-            {!isLoading && filtered.length > 0 && (
-              <div className="flex items-center justify-between mb-6">
-                <p className=" font-redRat font-semibold text-sm text-stone-900">
-                  {search || activeCategory !== "Todos"
-                    ? `${filtered.length} resultado${filtered.length !== 1 ? "s" : ""} encontrado${filtered.length !== 1 ? "s" : ""}`
-                    : `${books.length} livro${books.length !== 1 ? "s" : ""} disponível${books.length !== 1 ? "s" : ""}`}
-                </p>
-                <p className=" font-redRat font-semibold text-sm text-stone-900">Domínio público · Gratuito</p>
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {isLoading
-                ? Array.from({ length: 18 }).map((_, i) => <SkeletonCard key={i} />)
-                : filtered.map((book) => <BookCard key={book._id} book={book} />)}
-            </div>
-          </>
-        )}
-      </section>
-
-      {!isLoading && !error && books.length > 0 && (
-        <section className="bg-stone-50 border-t border-stone-100">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              <div>
-                <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
-                  Baixe livros em PDF grátis
-                </h2>
-                <p className="font-dmSans text-xs text-stone-600 leading-relaxed">
-                  Nossa biblioteca reúne centenas de obras em formato PDF prontas para download imediato. Sem cadastro, sem limite de downloads.
-                </p>
-              </div>
-              <div>
-                <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
-                  Leia online no navegador
-                </h2>
-                <p className="font-dmSans text-xs text-stone-600 leading-relaxed">
-                  Prefere não baixar? Leia diretamente pelo navegador com nosso leitor de PDF integrado, compatível com celular e computador.
-                </p>
-              </div>
-              <div>
-                <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
-                  Domínio público e gratuito
-                </h2>
-                <p className="font-dmSans text-xs text-stone-600 leading-relaxed">
-                  Todos os títulos estão em domínio público ou foram disponibilizados com autorização. Acervo 100% legal e gratuito para sempre.
-                </p>
-              </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={` font-redRat font-semibold text-xs px-3.5 py-1.5 rounded-full ring-1 transition-all ${activeCategory === cat
+                    ? "bg-main-500 text-white ring-main-500"
+                    : "bg-white text-black ring-black "
+                    }`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           </div>
         </section>
-      )}
-    </main>
+
+        {/* ── grid ── */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+          {error && (
+            <div className="flex flex-col items-center gap-3 py-24 text-center">
+              <span className="text-4xl">📚</span>
+              <p className="font-redHat text-lg font-semibold text-stone-700">Não foi possível carregar os livros</p>
+              <p className="font-dmSans text-sm text-stone-400">{error.message}</p>
+            </div>
+          )}
+
+          {!isLoading && !error && filtered.length === 0 && (search || activeCategory !== "Todos") && (
+            <div className="flex flex-col items-center gap-3 py-24 text-center">
+              <span className="text-4xl">🔍</span>
+              <p className="font-redHat text-lg font-semibold text-stone-700">
+                Nenhum resultado encontrado
+              </p>
+              <p className="font-dmSans text-sm text-stone-400">
+                Tente outro termo ou selecione uma categoria diferente.
+              </p>
+              <button
+                onClick={() => { setSearch(""); setActiveCategory("Todos"); }}
+                className="font-dmSans mt-2 text-xs text-amber-600 hover:text-amber-700 underline underline-offset-2"
+              >
+                Limpar filtros
+              </button>
+            </div>
+          )}
+
+          {!error && (
+            <>
+              {!isLoading && filtered.length > 0 && (
+                <div className="flex items-center justify-between mb-6">
+                  <p className=" font-redRat font-semibold text-sm text-stone-900">
+                    {search || activeCategory !== "Todos"
+                      ? `${filtered.length} resultado${filtered.length !== 1 ? "s" : ""} encontrado${filtered.length !== 1 ? "s" : ""}`
+                      : `${books.length} livro${books.length !== 1 ? "s" : ""} disponível${books.length !== 1 ? "s" : ""}`}
+                  </p>
+                  <p className=" font-redRat font-semibold text-sm text-stone-900">Domínio público · Gratuito</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                {isLoading
+                  ? Array.from({ length: 18 }).map((_, i) => <SkeletonCard key={i} />)
+                  : filtered.map((book) => <BookCard key={book._id} book={book} />)}
+              </div>
+            </>
+          )}
+        </section>
+
+        {!isLoading && !error && books.length > 0 && (
+          <section className="bg-stone-50 border-t border-stone-100">
+            <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div>
+                  <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
+                    Baixe livros em PDF grátis
+                  </h2>
+                  <p className="font-dmSans text-sm text-stone-800 leading-relaxed">
+                    Nossa biblioteca reúne obras em formato PDF prontas para leitura online ou download. Sem cadastro, sem limite de downloads.
+                  </p>
+                </div>
+                <div>
+                  <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
+                    Leia online no navegador
+                  </h2>
+                  <p className="font-dmSans text-sm text-stone-800 leading-relaxed">
+                    Prefere não baixar? Leia diretamente pelo navegador com nosso leitor de PDF integrado, compatível com celular e computador.
+                  </p>
+                </div>
+                <div>
+                  <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
+                    Domínio público e gratuito
+                  </h2>
+                  <p className="font-dmSans text-sm text-stone-800 leading-relaxed">
+                    Todos os títulos estão em domínio público ou foram disponibilizados com autorização. Acervo 100% legal e gratuito para sempre.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+      </main>
+    </>
   );
 }
