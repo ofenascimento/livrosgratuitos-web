@@ -610,7 +610,7 @@ export default function UploadReaderPage() {
         return (
             <div className="min-h-screen bg-white flex flex-col font-dmSans" onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}>
                 <nav className="px-6 md:px-12 py-5 flex items-center justify-between border-b border-slate-100">
-                    <a href="/"><img src="/logo.png" style={{ height: 26, width: 'auto' }} alt="logo" /></a>
+                    <a href="/"><img src="/logo.png" style={{ height: 50, width: 'auto' }} alt="logo" /></a>
                     <button onClick={() => landingInputRef.current?.click()} className="bg-main-500 hover:bg-main-600 text-white text-sm font-medium rounded-full px-5 py-2 transition cursor-pointer">Abrir PDF</button>
                 </nav>
                 <section className="flex flex-col items-center text-center px-6 pt-6 pb-16">

@@ -180,7 +180,7 @@ export default function LivroPage() {
           <a href="/">
             <img
               src="/logo.png"
-              style={{ width: "auto", height: "30px" }}
+              style={{ width: "auto", height: "50px" }}
               alt=""
             />
           </a>
