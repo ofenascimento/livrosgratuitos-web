@@ -14,9 +14,9 @@ declare global {
     interface Window { pdfjsLib: any; }
 }
 
-type Tool = 'none' | 'draw' | 'text' | 'edit';
+type Tool = 'none' | 'draw' | 'text' | 'edit' | 'highlight';
 
-interface Annotation { type: 'draw' | 'text' | 'edit'; page: number; }
+interface Annotation { type: 'draw' | 'text' | 'edit' | 'highlight'; page: number; }
 interface DrawAnnotation extends Annotation {
     type: 'draw';
     points: { x: number; y: number }[];
@@ -42,17 +42,24 @@ interface EditAnnotation extends Annotation {
     originalText: string;
 }
 
-type AnyAnnotation = DrawAnnotation | TextAnnotation | EditAnnotation;
+interface HighlightAnnotation extends Annotation {
+    type: 'highlight';
+    x: number; y: number; w: number; h: number;
+    color: string;
+}
+
+type AnyAnnotation = DrawAnnotation | TextAnnotation | EditAnnotation | HighlightAnnotation;
 
 interface TextItem {
     str: string;
-    transform: number[];   // [scaleX, skewY, skewX, scaleY, tx, ty]
+    transform: number[];
     width: number;
     height: number;
 }
 
 const COLORS = ['#1e1e1e', '#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#7B66FF', '#ec4899'];
 const BRUSH_SIZES = [2, 4, 8, 14];
+const HIGHLIGHT_COLORS = ['#facc15', '#86efac', '#93c5fd', '#f9a8d4', '#fb923c'];
 
 const features = [
     { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>), title: 'Privado por padrão', desc: 'Seu arquivo nunca sai do navegador. Nenhum dado é enviado a servidores.' },
@@ -126,6 +133,10 @@ export default function UploadReaderPage() {
     } | null>(null);
     const [editValue, setEditValue] = useState('');
     const [textItems, setTextItems] = useState<TextItem[]>([]);
+
+    const [highlightColor, setHighlightColor] = useState('#facc15');
+    const highlightStart = useRef<{ x: number; y: number } | null>(null);
+    const [highlightPreview, setHighlightPreview] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
 
     const isMobile = useIsMobile();
 
@@ -275,6 +286,14 @@ export default function UploadReaderPage() {
                 ctx.fillStyle = ed.color;
                 ctx.fillText(ed.text, ed.x, ed.y + ed.fontSize);
             }
+            else if (ann.type === 'highlight') {
+                const h = ann as HighlightAnnotation;
+                ctx.save();
+                ctx.globalAlpha = 0.35;
+                ctx.fillStyle = h.color;
+                ctx.fillRect(h.x, h.y, h.w, h.h);
+                ctx.restore();
+            }
         }
 
         ctx.restore();
@@ -419,7 +438,9 @@ export default function UploadReaderPage() {
             setPendingText(pos);
             setTextValue('');
             setTimeout(() => textInputRef.current?.focus(), 50);
-        } else if (activeTool === 'edit') {
+        }
+
+        else if (activeTool === 'edit') {
             const found = findTextItemAt(pos.x, pos.y);
             if (found) {
                 setPendingEdit(found);
@@ -432,47 +453,83 @@ export default function UploadReaderPage() {
                 setTimeout(() => editInputRef.current?.focus(), 50);
             }
         }
+
+        else if (activeTool === 'highlight') {
+            highlightStart.current = pos;
+        }
     };
 
     const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-        if (activeTool !== 'draw' || !isDrawing.current) return;
         const pos = getPos(e);
-        currentStroke.current.push(pos);
-        const dc = drawCanvasRef.current!;
-        const dpr = window.devicePixelRatio || 1;
-        const ctx = dc.getContext('2d')!;
-        ctx.save();
-        ctx.scale(dpr, dpr);
-        ctx.beginPath();
-        ctx.strokeStyle = penColor;
-        ctx.lineWidth = penSize;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        const pts = currentStroke.current;
-        if (pts.length >= 2) {
-            ctx.moveTo(pts[pts.length - 2].x, pts[pts.length - 2].y);
-            ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
-            ctx.stroke();
+
+        if (activeTool === 'draw' && isDrawing.current) {
+            currentStroke.current.push(pos);
+            const dc = drawCanvasRef.current!;
+            const dpr = window.devicePixelRatio || 1;
+            const ctx = dc.getContext('2d')!;
+            ctx.save();
+            ctx.scale(dpr, dpr);
+            ctx.beginPath();
+            ctx.strokeStyle = penColor;
+            ctx.lineWidth = penSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            const pts = currentStroke.current;
+            if (pts.length >= 2) {
+                ctx.moveTo(pts[pts.length - 2].x, pts[pts.length - 2].y);
+                ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+                ctx.stroke();
+            }
+            ctx.restore();
+        } else if (activeTool === 'highlight' && highlightStart.current) {
+            const s = highlightStart.current;
+            setHighlightPreview({
+                x: Math.min(s.x, pos.x),
+                y: Math.min(s.y, pos.y),
+                w: Math.abs(pos.x - s.x),
+                h: Math.abs(pos.y - s.y),
+            });
         }
-        ctx.restore();
     };
 
-    const onMouseUp = () => {
-        if (activeTool !== 'draw' || !isDrawing.current) return;
-        isDrawing.current = false;
-        if (currentStroke.current.length < 2) { currentStroke.current = []; return; }
-        const newAnnotation: DrawAnnotation = {
-            type: 'draw', page: currentPage,
-            points: [...currentStroke.current],
-            color: penColor, size: penSize,
-        };
-        currentStroke.current = [];
-        setAnnotations(prev => {
-            const next = [...prev, newAnnotation];
-            annotationsRef.current = next;
-            setTimeout(() => redrawAnnotations(), 0);
-            return next;
-        });
+    const onMouseUp = (e?: React.MouseEvent<HTMLCanvasElement>) => {
+        if (activeTool === 'draw') {
+            if (!isDrawing.current) return;
+            isDrawing.current = false;
+            if (currentStroke.current.length < 2) { currentStroke.current = []; return; }
+            const newAnnotation: DrawAnnotation = {
+                type: 'draw', page: currentPage,
+                points: [...currentStroke.current],
+                color: penColor, size: penSize,
+            };
+            currentStroke.current = [];
+            setAnnotations(prev => {
+                const next = [...prev, newAnnotation];
+                annotationsRef.current = next;
+                setTimeout(() => redrawAnnotations(), 0);
+                return next;
+            });
+        } else if (activeTool === 'highlight' && highlightStart.current && e) {
+            const pos = getPos(e);
+            const s = highlightStart.current;
+            const x = Math.min(s.x, pos.x);
+            const y = Math.min(s.y, pos.y);
+            const w = Math.abs(pos.x - s.x);
+            const h = Math.abs(pos.y - s.y);
+            highlightStart.current = null;
+            setHighlightPreview(null);
+            if (w < 5 || h < 5) return;
+            const newAnn: HighlightAnnotation = {
+                type: 'highlight', page: currentPage,
+                x, y, w, h, color: highlightColor,
+            };
+            setAnnotations(prev => {
+                const next = [...prev, newAnn];
+                annotationsRef.current = next;
+                setTimeout(() => redrawAnnotations(), 0);
+                return next;
+            });
+        }
     };
 
     const commitText = () => {
@@ -581,6 +638,17 @@ export default function UploadReaderPage() {
                         size: ed.fontSize * scaleX,
                         font,
                         color: hexToRgbLib(ed.color),
+                    });
+                }
+                else if (ann.type === 'highlight') {
+                    const h = ann as HighlightAnnotation;
+                    pdfPage.drawRectangle({
+                        x: h.x * scaleX,
+                        y: pH - (h.y + h.h) * scaleY,
+                        width: h.w * scaleX,
+                        height: h.h * scaleY,
+                        color: hexToRgbLib(h.color),
+                        opacity: 0.35,
                     });
                 }
             }
@@ -795,14 +863,12 @@ export default function UploadReaderPage() {
                             <button onClick={() => toggleTool('draw')} title="Desenhar"
                                 className={`border p-2 rounded-lg transition flex justify-center items-center gap-3 cursor-pointer ${activeTool === 'draw' ? 'bg-main-500 text-white border-main-500 ' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-                                <span className=' font-redRat font-semibold  '>Desenhar</span>
                             </button>
                             {/* Adicionar texto */}
                             <button onClick={() => toggleTool('text')} title="Adicionar texto"
                                 className={`border  p-2 rounded-lg flex justify-center gap-3 items-center transition cursor-pointer ${activeTool === 'text' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
 
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 7 4 4 20 4 20 7" /><line x1="9" y1="20" x2="15" y2="20" /><line x1="12" y1="4" x2="12" y2="20" /></svg>
-                                <span className=' font-redRat font-semibold'>Add Texto</span>
                             </button>
 
 
@@ -813,8 +879,13 @@ export default function UploadReaderPage() {
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                 </svg>
-                                <span className=' font-redRat font-semibold'>Editar Texto</span>
 
+                            </button>
+                            <button onClick={() => toggleTool('highlight')} title="Realçar"
+                                className={`border p-2 rounded-lg transition flex justify-center items-center gap-3 cursor-pointer ${activeTool === 'highlight' ? 'bg-main-500 text-white border-main-500' : 'hover:bg-slate-100 text-black border-gray-300'}`}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                </svg>
                             </button>
                         </div>
 
@@ -865,6 +936,20 @@ export default function UploadReaderPage() {
                             </div>
                         )}
 
+                        {activeTool === 'highlight' && (
+                            <div className="flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
+                                <div className="flex gap-1">
+                                    {HIGHLIGHT_COLORS.map(c => (
+                                        <button key={c} onClick={() => setHighlightColor(c)}
+                                            className="rounded-sm border-2 transition cursor-pointer"
+                                            style={{ width: 22, height: 14, background: c, borderColor: highlightColor === c ? '#0f172a' : 'transparent' }}
+                                        />
+                                    ))}
+                                </div>
+                                <span className="text-xs text-slate-400 hidden md:block">Clique e arraste para realçar</span>
+                            </div>
+                        )}
+
                         {activeTool === 'draw' && <span className="text-xs text-slate-400 hidden md:block">Clique e arraste para desenhar</span>}
                         {activeTool === 'text' && <span className="text-xs text-slate-400 hidden md:block">Clique na página para inserir texto</span>}
 
@@ -887,13 +972,26 @@ export default function UploadReaderPage() {
                         onTouchEnd={(e) => { if (activeTool === 'none') { const dx = e.changedTouches[0].clientX - touchX.current; if (Math.abs(dx) > 50) goTo(currentPage + (dx < 0 ? 1 : -1)); } }}
                     >
                         <div className="relative inline-block shadow-2xl">
+                            {highlightPreview && activeTool === 'highlight' && (
+                                <div
+                                    className="absolute pointer-events-none"
+                                    style={{
+                                        left: highlightPreview.x,
+                                        top: highlightPreview.y,
+                                        width: highlightPreview.w,
+                                        height: highlightPreview.h,
+                                        background: highlightColor,
+                                        opacity: 0.35,
+                                    }}
+                                />
+                            )}
                             <canvas ref={canvasRef} className="block" />
 
                             <canvas
                                 ref={drawCanvasRef}
                                 className="absolute inset-0"
                                 style={{
-                                    cursor: activeTool === 'draw' ? 'crosshair' : activeTool === 'text' ? 'text' : activeTool === 'edit' ? 'pointer' : 'default',
+                                    cursor: activeTool === 'draw' ? 'crosshair' : activeTool === 'text' ? 'text' : activeTool === 'edit' ? 'pointer' : activeTool === 'highlight' ? 'crosshair' : 'default',
                                     pointerEvents: activeTool === 'none' ? 'none' : 'all',
                                 }}
                                 onMouseDown={onMouseDown}
