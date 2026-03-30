@@ -4,7 +4,7 @@ declare global {
     fontLink?: string;
     license?: string;
     licenseLink?: string;
-    modified?: string; 
+    modified?: string;
   }
   interface IBook {
     capa: string;
@@ -34,6 +34,8 @@ declare global {
     progressPercentage?: number;
     urlHtml?: string;
     slug?: string;
+    categoria: string[];
+    descricao: string;
   }
 }
 

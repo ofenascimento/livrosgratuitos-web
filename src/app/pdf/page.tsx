@@ -1,399 +1,226 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useFetchBook } from '@/hooks/useFetchBook';
-import AdBanner from '@/components/ADS/AdBanner';
-import AdBannerMobile from '@/components/ADS/AdsBannerMobile';
-import AdResponsive from '@/components/ADS/AdResponsive';
-import useIsMobile from '@/hooks/isMobile';
+import { useFetchBooksPDF } from "@/hooks/useFetchBooksPDF";
+import { urlApi } from "@/utils/url";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const FALLBACK_PDF =
-  'https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Fo-pequeno-principe.pdf?alt=media&token=cb7b8f63-e9ac-4154-bc40-2fad4bbec002';
 
-const PDFJS_VERSION = '3.11.174';
-const WORKER_SRC = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
-const PDFJS_SRC = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.min.js`;
 
-declare global {
-  interface Window { pdfjsLib: any; }
-}
+const SkeletonCard = () => (
+  <div className="flex flex-col gap-3 animate-pulse">
+    <div className="w-full aspect-[2/3] rounded-2xl bg-stone-200" />
+    <div className="h-3.5 w-3/4 rounded-full bg-stone-200" />
+    <div className="h-3 w-1/2 rounded-full bg-stone-200" />
+  </div>
+);
 
-export default function LivroPage() {
-  const searchParams = useSearchParams();
-  const bookId = searchParams.get('id') ?? '';
-  const { book, isLoading: bookLoading } = useFetchBook(bookId);
-
-  const pdfUrl = book?.pdf || FALLBACK_PDF;
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pdfRef = useRef<any>(null);
-  const renderTaskRef = useRef<any>(null);
-  const touchX = useRef(0);
-
-  const [numPages, setNumPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [scale, setScale] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [pageLoading, setPageLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [pdfReady, setPdfReady] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [thumbnails, setThumbnails] = useState<string[]>([]);
-
-  const [inputPage, setInputPage] = useState('1');
-
-  useEffect(() => {
-    setInputPage(String(currentPage));
-  }, [currentPage]);
-
-  const isMobile = useIsMobile();
-
-  useEffect(() => {
-    if (isMobile) setScale(0.6);
-  }, [isMobile]);
-
-  useEffect(() => {
-    if (window.pdfjsLib) { setPdfReady(true); return; }
-    const script = document.createElement('script');
-    script.src = PDFJS_SRC;
-    script.onload = () => {
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = WORKER_SRC;
-      setPdfReady(true);
-    };
-    script.onerror = () => setError('Falha ao carregar PDF.js.');
-    document.head.appendChild(script);
-  }, []);
-
-  // Carrega o PDF só depois que o book foi resolvido e pdfjs está pronto
-  useEffect(() => {
-    if (!pdfReady || bookLoading) return;
-
-    let cancelled = false;
-
-    (async () => {
-      try {
-        setLoading(true);
-        setThumbnails([]);
-        setCurrentPage(1);
-        pdfRef.current = null;
-
-        const pdf = await window.pdfjsLib.getDocument(pdfUrl).promise;
-        if (cancelled) return;
-
-        pdfRef.current = pdf;
-        setNumPages(pdf.numPages);
-        setLoading(false);
-        generateThumbnails(pdf);
-      } catch {
-        if (!cancelled) {
-          setError('Não foi possível carregar o livro.');
-          setLoading(false);
-        }
-      }
-    })();
-
-    return () => { cancelled = true; };
-  }, [pdfReady, pdfUrl, bookLoading]);
-
-  const generateThumbnails = async (pdf: any) => {
-    const total = pdf.numPages;
-    const thumbs = new Array(total).fill('');
-    setThumbnails(new Array(total).fill(''));
-
-    const promises = Array.from({ length: total }, async (_, i) => {
-      try {
-        const page = await pdf.getPage(i + 1);
-        const viewport = page.getViewport({ scale: 0.3 });
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        await page.render({ canvasContext: canvas.getContext('2d')!, viewport }).promise;
-        thumbs[i] = canvas.toDataURL();
-        setThumbnails([...thumbs]);
-      } catch { }
-    });
-
-    await Promise.all(promises);
-  };
-
-  const renderPage = useCallback(async (pageNum: number, sc: number) => {
-    if (!pdfRef.current || !canvasRef.current) return;
-    renderTaskRef.current?.cancel();
-    setPageLoading(true);
-    try {
-      const page = await pdfRef.current.getPage(pageNum);
-
-      const dpr = window.devicePixelRatio || 1; // 👈 pega o pixel ratio
-
-      const viewport = page.getViewport({ scale: sc * dpr }); // 👈 escala multiplicada
-
-      const canvas = canvasRef.current;
-
-      // Dimensões físicas (pixels reais da tela)
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      // Dimensões CSS (o que ocupa no layout)
-      canvas.style.width = `${viewport.width / dpr}px`;   // 👈
-      canvas.style.height = `${viewport.height / dpr}px`; // 👈
-
-      const task = page.render({ canvasContext: canvas.getContext('2d')!, viewport });
-      renderTaskRef.current = task;
-      await task.promise;
-    } catch (e: any) {
-      if (e?.name === 'RenderingCancelledException') return;
-    } finally {
-      setPageLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!loading && pdfRef.current) renderPage(currentPage, scale);
-  }, [currentPage, scale, loading, renderPage]);
-
-  const goTo = (p: number) => {
-    setCurrentPage(Math.max(1, Math.min(p, numPages)));
-    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleDownload = async () => {
-    const res = await fetch(pdfUrl);
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = book ? `${book.titulo}.pdf` : 'livro.pdf';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const isInitializing = bookLoading || loading;
+const BookCard = ({ book }: { book: IBook }) => {
+  const href = book.slug ? `/pdf/${book.slug}` : `/`;
 
   return (
-    <div
-      className="flex flex-col bg-slate-100 font-lexend"
-      style={{ position: 'fixed', inset: 0, overflow: 'hidden' }}
+    <Link
+      href={href}
+      className="group flex flex-col gap-3 cursor-pointer"
+      aria-label={`Ler ${book.titulo} de ${book.autor} em PDF gratuitamente`}
     >
-      <header className="bg-white h-16 px-4 flex justify-between items-center border-b border-slate-200 shrink-0 z-10">
-        <div className="flex items-center gap-3">
-          <a href="/">
-            <img
-              src="/logo.png"
-              style={{ width: "auto", height: "50px" }}
-              alt=""
-            />
-          </a>
-
-          {bookLoading ? (
-            <div className="h-4 w-40 bg-slate-200 rounded animate-pulse hidden md:block" />
-          ) : (
-            <>
-              <h1 className="font-normal text-gray-800 text-lg hidden md:block">
-                {book?.titulo ?? 'O Pequeno Príncipe'}
-              </h1>
-              <span className="text-gray-400 text-sm hidden md:block">·</span>
-              <span className="text-gray-400 text-sm hidden md:block">
-                {book?.autor ?? 'Antoine de Saint-Exupéry'}
-              </span>
-            </>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 border-r border-slate-200 pr-3 mr-1">
-            <button
-              onClick={() => setScale(s => Math.max(s - 0.2, 0.4))}
-              className="p-2 rounded-full hover:bg-slate-100 text-slate-600 transition cursor-pointer"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="8" y1="11" x2="14" y2="11" />
-              </svg>
-            </button>
-            <span className="text-sm text-slate-500 w-10 text-center">{Math.round(scale * 100)}%</span>
-            <button
-              onClick={() => setScale(s => Math.min(s + 0.2, 3))}
-              className="p-2 rounded-full hover:bg-slate-100 text-slate-600 transition cursor-pointer"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-                <line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Download */}
-          <button
-            onClick={handleDownload}
-            disabled={isInitializing}
-            className="flex items-center gap-2 border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1.5 rounded-full text-sm font-medium transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            <span className="hidden md:block">Download</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+      <div className="relative overflow-hidden rounded-2xl aspect-[2/3] bg-stone-100 shadow-sm ring-1 ring-stone-200 transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-lg group-hover:shadow-stone-300/60">
+        {book.capa ? (
+          <img
+            src={book.capa}
+            alt={`Capa do livro ${book.titulo} de ${book.autor}`}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-stone-100 to-stone-200">
+            <svg className="w-10 h-10 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-          </button>
-        </div>
-      </header>
-
-      {/* BODY */}
-      <div className="flex flex-1 overflow-hidden">
-        <aside
-          className={`${sidebarOpen ? 'w-48' : 'w-0'} transition-all duration-300 overflow-hidden bg-[#ECEAFF] shrink-0 hidden md:flex flex-col`}
-          style={{ scrollbarWidth: 'thin' }}
-        >
-          <div className="flex-1 overflow-y-auto flex flex-col items-center py-3 gap-2">
-            {thumbnails.map((src, i) => (
-              <div key={i} className="flex flex-col items-center shrink-0">
-                <div
-                  onClick={() => goTo(i + 1)}
-                  className={`border-2 rounded cursor-pointer transition ${currentPage === i + 1 ? 'border-indigo-500' : 'border-transparent hover:border-indigo-300'
-                    }`}
-                >
-                  {src ? (
-                    <img src={src} alt={`Página ${i + 1}`} className="w-28 block" />
-                  ) : (
-                    <div className="w-28 bg-slate-200 animate-pulse" style={{ height: 160 }} />
-                  )}
-                </div>
-                <span className="text-xs text-slate-500 mt-0.5">{i + 1}</span>
-              </div>
-            ))}
           </div>
-        </aside>
-
-        <button
-          onClick={() => setSidebarOpen(o => !o)}
-          className="hidden md:flex items-center justify-center w-5 bg-[#dddaf5] hover:bg-[#ccc9ef] transition cursor-pointer shrink-0"
-        >
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.5">
-            {sidebarOpen
-              ? <polyline points="15 18 9 12 15 6" />
-              : <polyline points="9 18 15 12 9 6" />
-            }
-          </svg>
-        </button>
-
-        <main className="flex-1 overflow-auto bg-slate-100">
-          <div id="top" />
-          <AdBanner
-            dataAdFormat=""
-            dataFullWidthResponsive={false}
-            dataAdSlot="3946512730"
-            customClassName="mt-4"
-          />
-          <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
-          <div className=' flex justify-center items-center gap-3'>
-            <AdBanner
-              dataAdSlot="9774541568"
-              vertical={true}
-              customClassName="mt-2"
-            />
-            {error ? (
-              <div className="flex items-center justify-center h-full text-red-500 italic">{error}</div>
-            ) : isInitializing ? (
-              <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-400">
-                <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
-                <span className="text-sm">
-                  {bookLoading ? 'Buscando livro…' : 'Carregando PDF…'}
-                </span>
-              </div>
-            ) : (
-              <div
-                className="flex justify-center p-6 pb-6"
-                onTouchStart={(e) => { touchX.current = e.touches[0].clientX; }}
-                onTouchEnd={(e) => {
-                  const dx = e.changedTouches[0].clientX - touchX.current;
-                  if (Math.abs(dx) > 50) goTo(currentPage + (dx < 0 ? 1 : -1));
-                }}
-              >
-                <div className="relative inline-block shadow-2xl">
-                  <canvas ref={canvasRef} className="block" />
-                  {pageLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm">
-                      <div className="w-8 h-8 border-4 border-slate-200 border-t-indigo-500 rounded-full animate-spin" />
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-            <AdBanner
-              dataAdSlot="3432494495"
-              vertical={true}
-              customClassName="mt-2"
-            />
-          </div>
-
-
-          <AdBanner
-            dataAdFormat=""
-            dataFullWidthResponsive={false}
-            dataAdSlot="2423907456"
-            customClassName="mb-4"
-          />
-          <AdResponsive dataAdSlot="1435361044" />
-        </main>
+        )}
+       
       </div>
 
-      {!isInitializing && !error && (
-        <div
-          className="fixed bottom-6 z-50 pointer-events-none flex justify-center"
-          style={{
-            left: sidebarOpen && !isMobile ? '12rem' : '0', // 12rem = w-48 da sidebar + toggle (w-5)
-            right: 0,
-            transition: 'left 0.3s',
-          }}
-        >
-          <div className="pointer-events-auto flex items-center gap-2 bg-slate-900 text-white rounded-full px-4 py-2 shadow-xl">
-            <button
-              onClick={() => goTo(currentPage - 1)}
-              disabled={currentPage <= 1}
-              className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
+      <div className="flex flex-col gap-0.5 px-0.5">
+        <h2 className="font-redHat text-sm font-semibold text-stone-800 leading-snug line-clamp-2 group-hover:text-stone-950 transition-colors">
+          {book.titulo}
+        </h2>
+        <p className="font-dmSans text-xs text-stone-500 line-clamp-1">{book.autor}</p>
+       
+      </div>
+    </Link>
+  );
+};
 
-            <div className="flex items-center gap-1.5 text-sm px-1">
-              <input
-                type="number"
-                value={inputPage}
-                min={1}
-                max={numPages}
-                onChange={(e) => setInputPage(e.target.value)}
-                onBlur={() => {
-                  const v = parseInt(inputPage);
-                  if (!isNaN(v)) goTo(v);
-                  else setInputPage(String(currentPage));
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    const v = parseInt(inputPage);
-                    if (!isNaN(v)) goTo(v);
-                    else setInputPage(String(currentPage));
-                    (e.target as HTMLInputElement).blur();
-                  }
-                }}
-                className="w-9 text-center bg-slate-700 rounded-md py-0.5 text-white text-sm outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
-              <span className="text-slate-400">de</span>
-              <span>{numPages}</span>
+const categories = ["Todos", "Romance", "Filosofia", "Ciências", "História", "Poesia", "Crônicas"];
+
+export default function LivrosPDFPage() {
+  const { books, isLoading, error } = useFetchBooksPDF();
+  const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("Todos");
+
+
+
+  const filtered = books.filter((b) => {
+    const q = search.toLowerCase();
+    const matchesSearch =
+      b.titulo.toLowerCase().includes(q) ||
+      b.autor.toLowerCase().includes(q) ||
+      b.categoria?.some((c) => c.toLowerCase().includes(q));
+    const matchesCategory =
+      activeCategory === "Todos" ||
+      b.categoria?.some((c) => c.toLowerCase() === activeCategory.toLowerCase());
+    return matchesSearch && matchesCategory;
+  });
+
+  return (
+    <main className="min-h-screen bg-white text-stone-900">
+     
+
+      <section className="relative border-b border-stone-100 bg-gradient-to-b from-amber-50/60 to-white overflow-hidden">
+
+        <div className="relative mx-auto max-w-6xl px-4 pt-16 pb-12 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
+         
+
+          <div className="flex flex-col items-center justify-center">
+            <div className="max-w-2xl w-full flex  flex-col justify-center items-center">
+              <span className="items-center text-center gap-1.5 bg-main-50 text-main-500 text-xs font-semibold px-3 py-1 rounded-full font-dmSans mb-4">
+                livrosgratuitos.com
+              </span>
+
+              <h1 className="font-redHat text-center text-4xl sm:text-5xl lg:text-[56px] font-bold tracking-tight text-stone-900 leading-[1.1]">
+                Livros em PDF grátis
+                <br />
+                <span className="text-main-500">baixe ou leia online  </span>
+              </h1>
+
+              <p className="font-dmSans mt-5 text-base text-center text-black leading-relaxed max-w-lg">
+                Leia no navegador ou baixe no seu dispositivo — sem cadastro, sem assinatura, sem custo.
+                {!isLoading && books.length > 0 && (
+                  <> <strong className="text-stone-700 font-semibold">{books.length} títulos</strong> disponíveis agora.</>
+                )}
+              </p>
             </div>
 
-            <button
-              onClick={() => goTo(currentPage + 1)}
-              disabled={currentPage >= numPages}
-              className="p-1 rounded-full hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="9 18 15 12 9 6" />
+          </div>
+
+          {/* search */}
+          <div className="mt-8 justify-center items-center flex flex-col w-full sm:flex-row gap-3 max-w-2xl">
+            <div className="relative flex-1 justify-center items-center w-full">
+              <svg className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
               </svg>
-            </button>
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Buscar por título, autor ou categoria"
+                className="font-dmSans w-full rounded-xl bg-white py-3 pl-11 pr-4 text-sm text-stone-900 placeholder-stone-600 ring-1 ring-gray-300 outline-none focus:ring-2 focus:ring-main-400/70 transition-shadow shadow-sm"
+                aria-label="Buscar livros em PDF"
+              />
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={` font-redRat font-semibold text-xs px-3.5 py-1.5 rounded-full ring-1 transition-all ${activeCategory === cat
+                  ? "bg-main-500 text-white ring-main-500"
+                  : "bg-white text-black ring-black "
+                  }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
+      </section>
+
+      {/* ── grid ── */}
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        {error && (
+          <div className="flex flex-col items-center gap-3 py-24 text-center">
+            <span className="text-4xl">📚</span>
+            <p className="font-redHat text-lg font-semibold text-stone-700">Não foi possível carregar os livros</p>
+            <p className="font-dmSans text-sm text-stone-400">{error.message}</p>
+          </div>
+        )}
+
+        {!isLoading && !error && filtered.length === 0 && (search || activeCategory !== "Todos") && (
+          <div className="flex flex-col items-center gap-3 py-24 text-center">
+            <span className="text-4xl">🔍</span>
+            <p className="font-redHat text-lg font-semibold text-stone-700">
+              Nenhum resultado encontrado
+            </p>
+            <p className="font-dmSans text-sm text-stone-400">
+              Tente outro termo ou selecione uma categoria diferente.
+            </p>
+            <button
+              onClick={() => { setSearch(""); setActiveCategory("Todos"); }}
+              className="font-dmSans mt-2 text-xs text-amber-600 hover:text-amber-700 underline underline-offset-2"
+            >
+              Limpar filtros
+            </button>
+          </div>
+        )}
+
+        {!error && (
+          <>
+            {!isLoading && filtered.length > 0 && (
+              <div className="flex items-center justify-between mb-6">
+                <p className=" font-redRat font-semibold text-sm text-stone-900">
+                  {search || activeCategory !== "Todos"
+                    ? `${filtered.length} resultado${filtered.length !== 1 ? "s" : ""} encontrado${filtered.length !== 1 ? "s" : ""}`
+                    : `${books.length} livro${books.length !== 1 ? "s" : ""} disponível${books.length !== 1 ? "s" : ""}`}
+                </p>
+                <p className=" font-redRat font-semibold text-sm text-stone-900">Domínio público · Gratuito</p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {isLoading
+                ? Array.from({ length: 18 }).map((_, i) => <SkeletonCard key={i} />)
+                : filtered.map((book) => <BookCard key={book._id} book={book} />)}
+            </div>
+          </>
+        )}
+      </section>
+
+      {!isLoading && !error && books.length > 0 && (
+        <section className="bg-stone-50 border-t border-stone-100">
+          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+              <div>
+                <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
+                  Baixe livros em PDF grátis
+                </h2>
+                <p className="font-dmSans text-xs text-stone-600 leading-relaxed">
+                  Nossa biblioteca reúne centenas de obras em formato PDF prontas para download imediato. Sem cadastro, sem limite de downloads.
+                </p>
+              </div>
+              <div>
+                <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
+                  Leia online no navegador
+                </h2>
+                <p className="font-dmSans text-xs text-stone-600 leading-relaxed">
+                  Prefere não baixar? Leia diretamente pelo navegador com nosso leitor de PDF integrado, compatível com celular e computador.
+                </p>
+              </div>
+              <div>
+                <h2 className="font-redHat text-base font-bold text-stone-800 mb-2">
+                  Domínio público e gratuito
+                </h2>
+                <p className="font-dmSans text-xs text-stone-600 leading-relaxed">
+                  Todos os títulos estão em domínio público ou foram disponibilizados com autorização. Acervo 100% legal e gratuito para sempre.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       )}
-    </div>
+    </main>
   );
 }
