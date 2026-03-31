@@ -334,7 +334,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                             } catch (e) {
                                 console.error("Erro ao salvar progresso antes de voltar:", e);
                             }
-                            router.push(`/livro?book._id=${book._id}`);
+                            router.push(`/${book.slug}`);
                         }}
                         className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
                     >
