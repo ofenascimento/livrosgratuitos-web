@@ -350,7 +350,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
 
 
                     <div className="ml-auto flex items-center gap-2">
-                        <div className=" flex flex-col jusitfy-center items-center gap-2 mr-10"> 
+                        <div className=" flex flex-col jusitfy-center items-center gap-2 mr-10">
                             {locationsReady && pageData && (
                                 <div className="w-full h-1 bg-gray-800">
                                     <div
@@ -407,7 +407,16 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                     onRequestClose={() => setOpenToc(false)}
                     toc={toc}
                     onSelectItem={(href) => {
-                        try { rendition?.display(href); } catch { }
+                        try {
+                            rendition?.book?.spine?.each((item: any) => {
+                                if (item.href.includes(href) || href.includes(item.href)) {
+                                    rendition?.display(item.index);
+                                    return false;
+                                }
+                            });
+                        } catch (e) {
+                            console.warn("Erro ao navegar pelo TOC:", e);
+                        }
                     }}
                 />
                 <ModalInfo
