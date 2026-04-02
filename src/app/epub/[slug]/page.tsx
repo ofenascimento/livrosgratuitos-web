@@ -336,14 +336,14 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                             }
                             router.push(`/${book.slug}`);
                         }}
-                        className="bg-gray-700 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
+                        className="bg-gray-800 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
                     >
                         <HiChevronLeft />
                         <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
                     </a>
                     {toc.length > 5 && <button
                         onClick={() => setOpenToc((v) => !v)}
-                        className="rounded-full px-3 py-2 text-sm bg-gray-700 flex justify-center items-center gap-3 font-normal text-white font-lexend "
+                        className="rounded-full px-3 py-2 text-sm bg-gray-800 flex justify-center items-center gap-3 font-normal text-white font-lexend "
                     >
                         <MdMenuBook /> Sumário
                     </button>}
@@ -352,7 +352,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                     <div className="ml-auto flex items-center gap-2">
                         <div className=" flex flex-col jusitfy-center items-center gap-2 mr-10"> 
                             {locationsReady && pageData && (
-                                <div className="w-full h-1 bg-gray-700">
+                                <div className="w-full h-1 bg-gray-800">
                                     <div
                                         className="h-1 bg-main-500 transition-all duration-300"
                                         style={{ width: `${Math.round(pageData.percentage * 100)}%` }}
@@ -367,14 +367,14 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                         </div>
                         <button
                             onClick={() => setIsAutorInfoOpen(true)}
-                            className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+                            className="bg-gray-800 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
                         >
                             <p className="hidden lg:block font-lexend text-sm font-normal">Informações</p>
                             <MdInfoOutline />
                         </button>
                         <button
                             onClick={() => setIsModalConfigOpen(true)}
-                            className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
+                            className="bg-gray-800 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
                         >
                             <p className="hidden lg:block font-lexend text-sm font-normal">Configurações</p>
                             <HiDotsVertical />

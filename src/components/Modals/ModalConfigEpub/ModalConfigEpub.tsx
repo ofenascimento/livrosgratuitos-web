@@ -16,7 +16,6 @@ const ModalEpubConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
         setFontSizeEpub,
     } = useReaderConfig();
 
-
     return (
         <Modal
             isOpen={isOpen}
@@ -24,127 +23,69 @@ const ModalEpubConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
             className="fixed inset-0 flex items-center justify-center p-4 z-50"
             overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-50"
         >
-            <div className=" bg-gray-800 rounded-lg shadow-lg w-full max-w-md text-white border-2 border-[#4a5568] font-lexend font-light">
-                <div className="flex justify-between items-center p-4 border-b-gray-500 border-b">
-                    <h2 className="text-lg font-semibold text-white">
+            <div className="bg-black rounded-lg shadow-lg w-full max-w-md text-white border border-gray-600 font-dmSans">
+                <div className="flex justify-between items-center p-4 border-b border-gray-600">
+                    <h2 className="text-lg font-bold font-redRat text-white">
                         Configurações de leitura
                     </h2>
-                    <button
-                        onClick={onRequestClose}
-                        className="text-gray-600 hover:text-gray-900"
-                    >
-                        <HiOutlineX color="#ffffff" />
+                    <button onClick={onRequestClose} className="text-gray-400 hover:text-white transition">
+                        <HiOutlineX size={20} />
                     </button>
                 </div>
                 <div className="p-4">
-                    <div id="configs" className=" flex flex-col gap-4">
-                        {/* <div>
-                            <div className=" flex justify-between items-center">
-                                <h1>Fonte:</h1> <span className=" capitalize">{fontFamily}</span>
-                            </div>
-                            <div className=" flex gap-3 mt-2 flex-wrap">
-                                <button
-                                    className={`py-2 px-4 rounded-full border-2 font-merriweather  ${fontFamily === "merriweather"
-                                        ? " border-main-400"
-                                        : " border-sepia"
-                                        }`}
-                                    onClick={() => setFontFamily("merriweather")}
-                                >
-                                    Merriweather
-                                </button>
-                                <button
-                                    className={`py-2 px-4 rounded-full border-2 font-lora  ${fontFamily === "lora" ? " border-main-400" : " border-sepia"
-                                        }`}
-                                    onClick={() => setFontFamily("lora")}
-                                >
-                                    Lora
-                                </button>
-                                <button
-                                    className={`py-2 px-4 rounded-full border-2  ${fontFamily === "raleway"
-                                        ? " border-main-400"
-                                        : " border-sepia"
-                                        }`}
-                                    onClick={() => setFontFamily("raleway")}
-                                >
-                                    Raleway
-                                </button>
-
-
-                                <button
-                                    className={`py-2 px-4 rounded-full border-2 font-poppins  ${fontFamily === "poppins"
-                                        ? " border-main-400"
-                                        : " border-sepia"
-                                        }`}
-                                    onClick={() => setFontFamily("poppins")}
-                                >
-                                    Poppins
-                                </button>
-                            </div>
-                        </div> */}
+                    <div id="configs" className="flex flex-col gap-4">
                         <div>
-                            <div className=" flex justify-between items-center font-raleway">
-                                <h1>Tema:</h1>{" "}
-                                <span className=" capitalize">
-                                    {background}
-                                </span>
+                            <div className="flex justify-between items-center">
+                                <h1 className="text-white font-normal">Tema:</h1>
+                                <span className="capitalize text-gray-400">{background}</span>
                             </div>
-                            <div className=" flex gap-2 mt-2">
+                            <div className="flex gap-2 mt-2">
                                 <button
                                     onClick={() => setBackground("sepia")}
-                                    className={`p-6 rounded-full border-2  ${background === "sepia"
-                                        ? " border-main-400"
-                                        : " border-sepia"
-                                        }`}
+                                    className={`p-6 rounded-full border-2 ${background === "sepia" ? "border-main-400" : "border-gray-600"}`}
                                     style={{ backgroundColor: "#faf2e7" }}
-                                ></button>
+                                />
                                 <button
                                     onClick={() => setBackground("dark")}
-                                    className={`p-6 rounded-full  border-2 ${background === "dark" ? " border-main-400" : " border-black"
-                                        }`}
+                                    className={`p-6 rounded-full border-2 ${background === "dark" ? "border-main-400" : "border-gray-600"}`}
                                     style={{ backgroundColor: "#000000" }}
-                                ></button>
+                                />
                                 <button
                                     onClick={() => setBackground("light")}
-                                    className={`p-6 rounded-full border-2 ${background === "light"
-                                        ? " border-main-400"
-                                        : " border-white"
-                                        }`}
+                                    className={`p-6 rounded-full border-2 ${background === "light" ? "border-main-400" : "border-gray-600"}`}
                                     style={{ backgroundColor: "#ffffff" }}
-                                ></button>
+                                />
                             </div>
                         </div>
                         <div>
-                            <div className=" flex justify-between items-center">
-                                <h1>Tamanho da fonte:</h1> <span>{`${fontSizeEpub}%`} </span>
+                            <div className="flex justify-between items-center">
+                                <h1 className="text-white font-normal">Tamanho da fonte:</h1>
+                                <span className="text-gray-400">{`${fontSizeEpub}%`}</span>
                             </div>
-
-                            <div className=" flex gap-4 mt-2">
+                            <div className="flex gap-4 mt-2">
                                 <button
-                                    className={`p-2 px-4 border-2 rounded-lg ${fontSizeEpub === 100 ? "border-main-400" : "border-white"
-                                        }`}
+                                    className={`p-2 px-4 border-2 rounded-lg ${fontSizeEpub === 100 ? "border-main-400" : "border-gray-600"}`}
                                     style={{ fontSize: 16 }}
                                     onClick={() => setFontSizeEpub(100)}
                                 >
                                     Tt
                                 </button>
                                 <button
-                                    className={`p-2 px-4 border-2 rounded-lg ${fontSizeEpub === 120 ? "border-main-400" : "border-white"
-                                        }`}
+                                    className={`p-2 px-4 border-2 rounded-lg ${fontSizeEpub === 120 ? "border-main-400" : "border-gray-600"}`}
                                     style={{ fontSize: 18 }}
-                                    onClick={() => setFontSizeEpub(120)}                >
+                                    onClick={() => setFontSizeEpub(120)}
+                                >
                                     Tt
                                 </button>
                                 <button
-                                    className={`p-2 px-4 border-2 rounded-lg ${fontSizeEpub === 140 ? "border-main-400" : "border-white"
-                                        }`}
+                                    className={`p-2 px-4 border-2 rounded-lg ${fontSizeEpub === 140 ? "border-main-400" : "border-gray-600"}`}
                                     style={{ fontSize: 20 }}
                                     onClick={() => setFontSizeEpub(140)}
                                 >
                                     Tt
                                 </button>
                                 <button
-                                    className={`p-2 px-4 border-2 rounded-lg ${fontSizeEpub === 160 ? "border-main-400" : "border-white"
-                                        }`}
+                                    className={`p-2 px-4 border-2 rounded-lg ${fontSizeEpub === 160 ? "border-main-400" : "border-gray-600"}`}
                                     style={{ fontSize: 24 }}
                                     onClick={() => setFontSizeEpub(160)}
                                 >
@@ -155,7 +96,7 @@ const ModalEpubConfig: React.FC<IModal> = ({ isOpen, onRequestClose }) => {
                     </div>
                     <button
                         onClick={onRequestClose}
-                        className="bg-main-400 w-full rounded-full text-center p-2 mt-6"
+                        className="bg-main-400 w-full rounded-full text-center p-2 mt-6 font-redRat font-semibold"
                     >
                         Voltar a leitura
                     </button>
