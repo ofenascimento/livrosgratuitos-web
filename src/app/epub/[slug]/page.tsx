@@ -341,7 +341,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                         <HiChevronLeft />
                         <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
                     </a>
-                    {toc.length > 5 && <button
+                    {toc.length > 1 && <button
                         onClick={() => setOpenToc((v) => !v)}
                         className="rounded-full px-3 py-2 text-sm bg-gray-800 flex justify-center items-center gap-3 font-normal text-white font-lexend "
                     >
