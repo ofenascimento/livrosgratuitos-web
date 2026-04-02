@@ -319,8 +319,8 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
             return <FullScreenLoader label={isLoading ? "Carregando EPUB" : "Aguardando progresso..."} />;
 
         return (
-            <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-gray-800 backdrop-blur">
-                <div className="mx-auto flex max-w-5xl items-center gap-2 p-2 bg-gray-800">
+            <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-black backdrop-blur">
+                <div className="mx-auto flex max-w-5xl items-center gap-2 p-2 bg-black">
                     <a
                         onClick={async () => {
                             try {
@@ -350,11 +350,21 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
 
 
                     <div className="ml-auto flex items-center gap-2">
-                        {locationsReady && pageData && (
-                            <div className="text-white text-sm font-lexend ml-4 opacity-80 font-normal">
-                                {`Página ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
-                            </div>
-                        )}
+                        <div className=" flex flex-col jusitfy-center items-center gap-2 mr-10"> 
+                            {locationsReady && pageData && (
+                                <div className="w-full h-1 bg-gray-700">
+                                    <div
+                                        className="h-1 bg-main-500 transition-all duration-300"
+                                        style={{ width: `${Math.round(pageData.percentage * 100)}%` }}
+                                    />
+                                </div>
+                            )}
+                            {locationsReady && pageData && (
+                                <div className="text-white text-sm font-dmSans ml-4 opacity-80 font-normal">
+                                    {`Página ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
+                                </div>
+                            )}
+                        </div>
                         <button
                             onClick={() => setIsAutorInfoOpen(true)}
                             className="bg-gray-700 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
