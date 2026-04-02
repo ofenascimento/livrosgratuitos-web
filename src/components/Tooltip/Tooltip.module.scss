@@ -2,20 +2,30 @@
     position: relative;
     display: flex;
     cursor: pointer;
-  
+
     .tooltip {
-      visibility: visible;
-      background-color: #374151;
-      color: #fff;
-      text-align: center;
-      border-radius: 4px;
-      padding: 5px 10px;
-      position: absolute;
-      z-index: 1;
-      top: 125%; 
-      left: 50%;
-      transform: translateX(-50%);
-      white-space: nowrap;
+        visibility: visible;
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        border-radius: 4px;
+        padding: 5px 10px;
+        position: absolute;
+        z-index: 1;
+        top: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #000 transparent;
+        }
     }
-  }
-  
+}
