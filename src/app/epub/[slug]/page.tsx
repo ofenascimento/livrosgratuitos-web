@@ -389,7 +389,8 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                         ? `${book.descricao} EPUB Grátis`
                         : "Livros Gratuitos EPUB Grátis"
                 }
-            />            <div style={{ minHeight: '200vh' }} ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
+            />
+            <div ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
                 {Toolbar}
                 <ModalToc
                     isOpen={openToc}
@@ -426,7 +427,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                             <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-4" />
 
                             {isReaderConfigReady && bookUrl && location !== null ? (
-                                <div style={{ height: "calc(var(--vh, 1vh) * 100 - 56px)" }}>
+                                <div style={{ height: "calc(var(--vh, 1vh) * 100 - 56px - 90px)" }}>
                                     <ReactReader
                                         key={`reader-${(book && book._id) ?? "local"}`}
                                         url={bookUrl}
