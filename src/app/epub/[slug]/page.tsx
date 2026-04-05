@@ -200,8 +200,8 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                 body: {
                     background: bgColor,
                     color: textColor,
-                    lineHeight: "1.6",
-                    fontWeight: "600",
+                    lineHeight: "1.8",
+                    fontWeight: "400",
                 },
                 a: { color: linkColor },
                 "h1,h2,h3": { color: textColor },
@@ -320,51 +320,57 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
 
         return (
             <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-black backdrop-blur">
-                <div className="mx-auto flex max-w-5xl items-center gap-2 p-2 bg-black">
-                    <a
-                        onClick={async () => {
-                            try {
-                                if (isAuth) {
-                                    await addEpubProgress(
-                                        book._id ?? "",
-                                        Math.max(0, Math.min(100, Math.round(((pageData?.percentage ?? 0) as number) * 100))),
-                                        typeof location === "string" ? location : undefined
-                                    );
+                <div className="mx-auto flex max-w-5xl justify-between items-center gap-2 p-2">
+                    <div className=" flex justify-center items-center gap-2">
+                        <a
+                            onClick={async () => {
+                                try {
+                                    if (isAuth) {
+                                        await addEpubProgress(
+                                            book._id ?? "",
+                                            Math.max(0, Math.min(100, Math.round(((pageData?.percentage ?? 0) as number) * 100))),
+                                            typeof location === "string" ? location : undefined
+                                        );
+                                    }
+                                } catch (e) {
+                                    console.error("Erro ao salvar progresso antes de voltar:", e);
                                 }
-                            } catch (e) {
-                                console.error("Erro ao salvar progresso antes de voltar:", e);
-                            }
-                            router.push(`/${book.slug}`);
-                        }}
-                        className="bg-gray-800 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
-                    >
-                        <HiChevronLeft />
-                        <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
-                    </a>
-                    {toc.length > 1 && <button
-                        onClick={() => setOpenToc((v) => !v)}
-                        className="rounded-full px-3 py-2 text-sm bg-gray-800 flex justify-center items-center gap-3 font-normal text-white font-lexend "
-                    >
-                        <MdMenuBook /> Sumário
-                    </button>}
+                                router.push(`/${book.slug}`);
+                            }}
+                            className="bg-gray-800 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
+                        >
+                            <HiChevronLeft />
+                            <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
+                        </a>
+                        {toc.length > 1 && <button
+                            onClick={() => setOpenToc((v) => !v)}
+                            className="rounded-full lg:px-4 p-2 text-sm bg-gray-800 flex justify-center items-center gap-3 font-normal text-white font-lexend "
+                        >
+                            <MdMenuBook /> <span className="hidden md:block">Sumário</span>
+                        </button>}
+                    </div>
+
+                    <div className=" flex flex-col jusitfy-center items-center gap-2">
+                        {locationsReady && pageData && (
+                            <div className="w-full h-1 bg-gray-800">
+                                <div
+                                    className="h-1 bg-main-500 transition-all duration-300"
+                                    style={{ width: `${Math.round(pageData.percentage * 100)}%` }}
+                                />
+                            </div>
+                        )}
+                        {locationsReady && pageData && (
+                            <div className="text-white text-sm font-dmSans opacity-80 font-normal">
+                                {`Página ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
+                            </div>
+                        )}
+                    </div>
 
 
-                    <div className="ml-auto flex items-center gap-2">
-                        <div className=" flex flex-col jusitfy-center items-center gap-2 mr-10">
-                            {locationsReady && pageData && (
-                                <div className="w-full h-1 bg-gray-800">
-                                    <div
-                                        className="h-1 bg-main-500 transition-all duration-300"
-                                        style={{ width: `${Math.round(pageData.percentage * 100)}%` }}
-                                    />
-                                </div>
-                            )}
-                            {locationsReady && pageData && (
-                                <div className="text-white text-sm font-dmSans ml-4 opacity-80 font-normal">
-                                    {`Página ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
-                                </div>
-                            )}
-                        </div>
+
+
+                    <div className="flex items-center gap-2">
+
                         <button
                             onClick={() => setIsAutorInfoOpen(true)}
                             className="bg-gray-800 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
