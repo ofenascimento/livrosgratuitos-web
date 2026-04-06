@@ -192,7 +192,7 @@ function Livros() {
                                 className="w-full"
                             >
                                 <div className="w-full bg-main-400 hover:bg-main-500 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
-                                    EPUB
+                                    Ler online
                                 </div>
 
                             </Link>
@@ -238,7 +238,7 @@ function Livros() {
                                     className="md:w-2/4"
                                 >
                                     <div className="w-full bg-main-400 hover:bg-main-500 bg-main hidden md:block px-4 py-2 rounded-full  text-center font-bold">
-                                        Ler EPUB
+                                        Ler online
                                     </div>
 
                                 </Link>
@@ -251,7 +251,7 @@ function Livros() {
                                     className="md:w-2/4"
                                 >
                                     <div className="w-full bg-[#F72C5B] bg-main hidden md:block px-4 py-2 rounded-full text-center font-bold">
-                                        Ler PDF
+                                        PDF
                                     </div>
 
                                 </Link>
