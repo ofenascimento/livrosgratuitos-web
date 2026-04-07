@@ -311,7 +311,7 @@ export default function Leitor() {
                   </React.Fragment>)
               })}
               <div className="h-[30px]"></div>
-              <BannerWithButton title="Deseja finalizar o livro?" subtitle="Ele ficará disponível em sua aba de livros finalizados" srcImg="/ilustrations/book-1.png?v=" buttonLabel="Finalizar livro" onClick={() => { }} />
+              {/* <BannerWithButton title="Deseja finalizar o livro?" subtitle="Ele ficará disponível em sua aba de livros finalizados" srcImg="/ilustrations/book-1.png?v=" buttonLabel="Finalizar livro" onClick={() => { }} /> */}
               <div className=" h-[300px]"></div>
             </div>
             <ModalReaderConfig
