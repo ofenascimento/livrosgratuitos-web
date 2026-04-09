@@ -6,12 +6,11 @@ import Link from "next/link";
 import StorySliderSkeleton from "../Skeleton/StorySliderSkeleton";
 
 export const categoriesMock = [
-  { id: "1", title: "Fantasia", cover: "/images/categories/fantasia.png", url: "Fantasia" },
-  { id: "2", title: "Poesia", cover: "/images/categories/poesia.png", url: "Poesia" },
+  { id: "1", title: "Romance", cover: "/images/categories/romance.png", url: "Romance" }, { id: "2", title: "Poesia", cover: "/images/categories/poesia.png", url: "Poesia" },
   { id: "3", title: "Terror", cover: "/images/categories/terror.png", url: "Terror" },
   { id: "4", title: "Filosofia", cover: "/images/categories/filosofia.webp", url: "Filosofia" },
   { id: "5", title: "Ficção", cover: "/images/categories/ficcao.png", url: "Ficcao" },
-  { id: "6", title: "Romance", cover: "/images/categories/romance.png", url: "Romance" },
+  { id: "6", title: "Fantasia", cover: "/images/categories/fantasia.png", url: "Fantasia" },
   { id: "7", title: "Política", cover: "/images/categories/politica.png", url: "Politica" },
   { id: "8", title: "História", cover: "/images/categories/historia.png", url: "Historia" },
   { id: "9", title: "Aventura", cover: "/images/categories/aventura.webp", url: "Aventura" },
@@ -42,9 +41,8 @@ function CategoryCard({
             alt={item.title}
             fill
             sizes="96px"
-            className={`object-cover transition-opacity duration-300 ${
-              loaded ? "opacity-100" : "opacity-0"
-            }`}
+            className={`object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"
+              }`}
             priority={priority}
             onLoadingComplete={() => setLoaded(true)}
           />
