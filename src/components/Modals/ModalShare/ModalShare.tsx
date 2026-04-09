@@ -1,9 +1,10 @@
 import { useRef } from "react";
 import { MdClose } from "react-icons/md";
-import { FaCheckDouble, FaWhatsapp } from "react-icons/fa";
+import { FaCheck, FaCheckDouble, FaWhatsapp } from "react-icons/fa";
 import { RiFileCopyLine, RiShareBoxFill } from "react-icons/ri";
 import { BsTwitterX } from "react-icons/bs";
 import useCopyToClipboard from "@/utils/useToClipboard";
+import { useToast } from "@/components/Toast/ToastProvider";
 
 interface IModalShare {
     isOpen: boolean;
@@ -17,11 +18,14 @@ const ModalShare: React.FC<IModalShare> = ({ isOpen, onClose, bookName, bookImag
     const currentUrl = encodeURIComponent(window.location.href);
     const { isCopied, copyText } = useCopyToClipboard();
 
+    const { showToast } = useToast();
+
+
     return (
         <div className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 ${isOpen ? "flex" : "hidden"}`}>
             <div className="absolute inset-0" onClick={onClose} />
             <div ref={modalRef} className="relative border border-gray-600 bg-black p-5 rounded-xl shadow-lg w-full max-w-xs md:max-w-md font-redRat">
-                
+
                 {/* Close */}
                 <div className="flex justify-end">
                     <MdClose className="cursor-pointer text-white" size={20} onClick={onClose} />
@@ -43,13 +47,20 @@ const ModalShare: React.FC<IModalShare> = ({ isOpen, onClose, bookName, bookImag
                 {/* Copiar link */}
                 <button
                     className="flex justify-between border border-gray-600 w-full items-center bg-dark-background mb-2 p-3 rounded-md cursor-pointer text-white"
-                    onClick={() => copyText(window.location.href)}
+                    onClick={() => {
+                        copyText(window.location.href);
+                        showToast({
+                            title: "Link copiado",
+                            type: "success",
+                        });
+                    }
+                    }
                 >
                     <div className="flex items-center gap-2">
                         <img src="/logo.png" style={{ width: "auto", height: "20px" }} alt="" />
                         <p className="font-normal">{isCopied ? "Link copiado" : "Copiar link"}</p>
                     </div>
-                    {isCopied ? <FaCheckDouble /> : <RiFileCopyLine size={20} />}
+                    {isCopied ? <FaCheck /> : <RiFileCopyLine size={20} />}
                 </button>
 
                 {/* WhatsApp */}
