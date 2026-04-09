@@ -15,11 +15,10 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { metadata } from "./metadata";
-import { BookProvider } from "@/context/BookContext";
-import { ReaderConfigProvider } from "@/context/ReaderConfiContext";
+
 import GoogleAdsense from "@/components/Ads";
-import CookieBanner from "@/components/CookieBanner/CookieBanner";
 import Providers from "./providers";
+import { ToastProvider } from "@/components/Toast/ToastProvider";
 
 const poppins = Poppins({
   weight: ["400", "500", "700"],
@@ -156,9 +155,11 @@ export default function RootLayout({
           bg-blured
         `}
       >
-        <Providers>
-          {children}
-        </Providers>
+        <ToastProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </ToastProvider>
 
         {/* ✅ AdSense dentro do body */}
         <GoogleAdsense />

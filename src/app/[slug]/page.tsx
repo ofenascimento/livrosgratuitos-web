@@ -11,6 +11,7 @@ import ModalShare from "@/components/Modals/ModalShare/ModalShare";
 import Navbar from "@/components/Navbar/Navbar";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
+import { useToast } from "@/components/Toast/ToastProvider";
 import { addBookToReadingBook } from "@/hooks/addBookToReadingList";
 import { addFavoriteBook } from "@/hooks/addFavoriteBook";
 import { removeFavoriteBook } from "@/hooks/removeFavoriteBook";
@@ -45,6 +46,8 @@ function Livros() {
 
     const isAuth = useAuth();
     const { isCopied, copyText } = useCopyToClipboard()
+
+    const { showToast } = useToast();
 
     const isInstagramWebView = (): boolean => {
         if (typeof window === "undefined" || typeof navigator === "undefined") return false;
@@ -121,6 +124,11 @@ function Livros() {
                                             onClick={() => {
                                                 removeFavoriteBook(book._id);
                                                 setIsFavorited(false);
+                                                showToast({
+                                                    title: "Desfavoritado",
+                                                    description: "Livro desfavoritado com sucesso",
+                                                    type: "success",
+                                                });
                                             }}
                                         >
                                             <svg
@@ -142,6 +150,11 @@ function Livros() {
                                                 if (isAuth) {
                                                     addFavoriteBook(book._id);
                                                     setIsFavorited(true);
+                                                    showToast({
+                                                        title: "Favoritado",
+                                                        description: "Livro favoritado com sucesso",
+                                                        type: "success",
+                                                    });
                                                 } else {
                                                     setModalLoginIsOpen(true);
                                                 }
