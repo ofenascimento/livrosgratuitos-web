@@ -3,27 +3,26 @@ import { getUserIdFromToken } from "./getUserIdFromToken";
 import { urlApi } from "@/utils/url";
 
 const useFetchReadingList = () => {
-  const [readingList, setReadingList] = useState<IBooks[]>([]);
+  const [epubReadingList, setEpubReadingList] = useState<IBooks[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchReadingList = async () => {
     setIsLoading(true);
     setError(null);
+
     try {
-      const token = await localStorage.getItem("userToken");
+      const token = localStorage.getItem("userToken");
       const userId = await getUserIdFromToken();
-      const url = `${urlApi}/users/${userId}/reading-list`;
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
+      const res = await fetch(`${urlApi}/reading-progress/${userId}/epub-reading-list`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setReadingList(data);
+
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+      const data = await res.json();
+      setEpubReadingList(data);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("An error occurred"));
     } finally {
@@ -35,7 +34,7 @@ const useFetchReadingList = () => {
     fetchReadingList();
   }, []);
 
-  return { readingList, isLoading, error };
+  return { epubReadingList, isLoading, error };
 };
 
 export default useFetchReadingList;
