@@ -1,33 +1,30 @@
 import { urlApi } from "@/utils/url";
-import { getUserIdFromToken } from "./getUserIdFromToken";
 
-export async function addEpubProgress(
-  bookId: string,
-  progress: number,     
-  cfi?: string,          
-  callback?: () => void
-) {
+export const addEpubProgress = async (
+  livroId: string,
+  progressPercentage: number,
+  currentCfi?: string
+) => {
   try {
     const token = localStorage.getItem("userToken");
-    const userId = await getUserIdFromToken();
-    const url = `${urlApi}/users/${userId}/epub-progress`;
 
-    const resp = await fetch(url, {
+    console.log("addEpubProgress chamou");
+
+    const res = await fetch(`${urlApi}/reading-progress`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ bookId, progress, cfi }),
-      keepalive: true, 
+      body: JSON.stringify({
+        livroId,
+        progressPercentage,
+        currentCfi,
+      }),
     });
 
-    if (!resp.ok) {
-      throw new Error(`Erro HTTP: ${resp.status}`);
-    }
-
-    if (callback) callback();
-  } catch (err) {
-    console.error("Falha ao salvar EPUB progress:", err);
+    console.log("status", res.status);
+  } catch (e) {
+    console.error("Erro ao salvar progresso", e);
   }
-}
+};

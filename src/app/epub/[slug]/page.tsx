@@ -10,8 +10,6 @@ import { ReactReaderStyle } from "react-reader";
 import { useRouter, useSearchParams } from "next/navigation";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
-import AutorInfo from "@/components/AutorInfo/AutorInfo";
-import { useFetchBook } from "@/hooks/useFetchBook";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import { addEpubProgress } from "@/hooks/addEpubProgress";
 import { getEpubProgress } from "@/hooks/getEpubProgress";
@@ -37,11 +35,9 @@ function useStableVhForIG() {
             const vh = (window.visualViewport?.height ?? window.innerHeight) * 0.01;
             document.documentElement.style.setProperty("--vh", `${vh}px`);
         };
-        // seta na carga e de novo após pequenos atrasos (UI do IG assenta)
         setVh();
         const t1 = setTimeout(setVh, 250);
         const t2 = setTimeout(setVh, 750);
-        // atualiza em mudanças de orientação; evita atualizar em scroll pra não repaginar
         const onOrient = () => setVh();
         window.addEventListener("orientationchange", onOrient);
         return () => {
@@ -74,6 +70,9 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
     const [isReaderConfigReady, setIsReaderConfigReady] = useState(false);
     const [initialCfiDisplayed, setInitialCfiDisplayed] = useState(false);
     const [isAutorInfoOpen, setIsAutorInfoOpen] = useState(false);
+    const [saveLocation, setSaveLocation] = useState<string | null>(null);
+    const [initialCfi, setInitialCfi] = useState<string | null>(null);
+
 
     const { fontSizeEpub, background } = useReaderConfig();
 
@@ -152,7 +151,10 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
         let didCancel = false;
 
         (async () => {
+          
+
             if (!book?._id || !isAuth) {
+             
                 if (!didCancel && location === null) {
                     setLocation(0);
                 }
@@ -160,9 +162,12 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
             }
 
             try {
+               
                 const data = await getEpubProgress(book._id);
+               
 
                 if (!didCancel && data?.cfi && typeof data.cfi === "string") {
+                    setInitialCfi(data.cfi);
                     setLocation(data.cfi);
                 } else if (!didCancel && location === null) {
                     setLocation(0);
@@ -178,11 +183,92 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
         return () => { didCancel = true; };
     }, [book?._id, isAuth]);
 
+    const saveEpubProgress = useCallback(async () => {
+
+        if (!isAuth) return;
+        if (!book?._id) return;
+        if (typeof location !== "string") return;
+
+        try {
+            let percentage = 0;
+
+            if (rendition?.book?.locations?.percentageFromCfi) {
+                percentage = rendition.book.locations.percentageFromCfi(location);
+            } else if (pageData?.percentage) {
+                percentage = pageData.percentage;
+            }
+
+
+            await addEpubProgress(
+                book._id,
+                Math.max(0, Math.min(100, Math.round(percentage * 100))),
+                location
+            );
+        } catch (e) {
+            console.error("Erro ao salvar progresso EPUB:", e);
+        }
+    }, [isAuth, book?._id, location, rendition, pageData?.percentage]);
+
+    useEffect(() => {
+        if (!isAuth) return;
+
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            saveEpubProgress();
+            event.preventDefault();
+            event.returnValue = "";
+        };
+
+        const handlePopState = () => {
+            saveEpubProgress();
+        };
+
+        const handlePageHide = () => {
+            saveEpubProgress();
+        };
+
+
+
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("popstate", handlePopState);
+        window.addEventListener("pagehide", handlePageHide);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.removeEventListener("popstate", handlePopState);
+            window.removeEventListener("pagehide", handlePageHide);
+        };
+    }, [isAuth, saveEpubProgress]);
+
+    useEffect(() => {
+        if (!isAuth) return;
+        if (!book?._id) return;
+        if (!saveLocation) return;
+        if (!rendition?.book?.locations?.percentageFromCfi) return;
+
+        const timeout = setTimeout(() => {
+            const percentage = rendition.book.locations.percentageFromCfi(saveLocation);
+
+            addEpubProgress(
+                book._id,
+                Math.max(0, Math.min(100, Math.round(percentage * 100))),
+                saveLocation
+            );
+        }, 2000);
+
+        return () => clearTimeout(timeout);
+    }, [saveLocation, isAuth, book?._id, rendition]);
+
     const onLocationChanged = useCallback(
         (loc: string) => {
+            if (typeof loc !== "string") return;
+
             setLocation(loc);
-            if (!locationsReady || typeof loc !== "string") return;
-            computeFromCfi(rendition, loc);
+            setSaveLocation(loc);
+
+            if (locationsReady) {
+                computeFromCfi(rendition, loc);
+            }
         },
         [rendition, locationsReady, computeFromCfi]
     );
@@ -239,14 +325,26 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                 const cfi = loc?.start?.cfi;
                 if (cfi && typeof cfi === "string") {
                     setLocation(cfi);
+                    setSaveLocation(cfi);
                     if (r.book?.locations?.length()) computeFromCfi(r, cfi);
                 }
             });
 
             r.book.ready
                 .then(() => r.book.locations.generate(1024))
-                .then(() => {
+                .then(async () => {
                     setLocationsReady(true);
+
+                    if (initialCfi) {
+                        try {
+                            await r.display(initialCfi);
+                            setLocation(initialCfi);
+                            setSaveLocation(initialCfi);
+                            setInitialCfiDisplayed(true);
+                        } catch (e) {
+                            console.error("Erro ao abrir no CFI salvo:", e);
+                        }
+                    }
                 })
                 .catch((err: any) => {
                     console.error("Erro ao gerar as localizações:", err);
@@ -256,60 +354,27 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
     );
 
     useEffect(() => {
-        if (rendition && locationsReady && typeof location === "string" && !initialCfiDisplayed) {
-            try {
-                console.log("[CFI] Forçando display para:", location);
-                rendition.display(location).then(() => {
-                    setInitialCfiDisplayed(true);
-                }).catch((e: any) => {
-                    console.warn("Falha no primeiro rendition.display:", e);
-                });
-            } catch (e) {
-                console.warn("Erro ao forçar display CFI:", e);
-            }
-        }
-    }, [locationsReady, location, rendition, initialCfiDisplayed]);
-
-    useEffect(() => {
         if (rendition) {
             applyThemeToRendition(rendition, background, fontSizeEpub);
         }
     }, [fontSizeEpub, background, rendition, applyThemeToRendition]);
 
-    useEffect(() => {
-        if (book && !book._id) return;
-        if (!isAuth) return;
+    const handleBack = useCallback(async () => {
 
-        const save = () => {
-            addEpubProgress(
-                (book && book._id) ?? "",
-                Math.max(0, Math.min(100, Math.round(((pageData?.percentage ?? 0) as number) * 100))),
-                typeof location === "string" ? location : undefined
-            );
-        };
+        try {
+            if (isAuth) {
+                await saveEpubProgress();
+            }
+        } catch (e) {
+            console.error("Erro ao salvar progresso antes de voltar:", e);
+        }
 
-        const onBeforeUnload = (e: BeforeUnloadEvent) => {
-            save();
-            e.preventDefault();
-            e.returnValue = "";
-        };
+        router.push(`/${book?.slug}`);
+    }, [isAuth, saveEpubProgress, router, book?.slug]);
 
-        const onPageHide = () => { save(); };
-        const onVisibilityChange = () => { if (document.visibilityState === "hidden") save(); };
-        const onPopState = () => { save(); };
 
-        window.addEventListener("beforeunload", onBeforeUnload);
-        window.addEventListener("pagehide", onPageHide);
-        document.addEventListener("visibilitychange", onVisibilityChange);
-        window.addEventListener("popstate", onPopState);
 
-        return () => {
-            window.removeEventListener("beforeunload", onBeforeUnload);
-            window.removeEventListener("pagehide", onPageHide);
-            document.removeEventListener("visibilitychange", onVisibilityChange);
-            window.removeEventListener("popstate", onPopState);
-        };
-    }, [book && book._id, location, pageData?.percentage, isAuth]);
+
 
     const Toolbar = useMemo(() => {
         const progress = locationsReady && pageData ? Math.round(pageData.percentage * 100).toString() : "";
@@ -322,26 +387,14 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
             <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-black backdrop-blur">
                 <div className="mx-auto flex max-w-5xl justify-between items-center gap-2 p-2">
                     <div className=" flex justify-center items-center gap-2">
-                        <a
-                            onClick={async () => {
-                                try {
-                                    if (isAuth) {
-                                        await addEpubProgress(
-                                            book._id ?? "",
-                                            Math.max(0, Math.min(100, Math.round(((pageData?.percentage ?? 0) as number) * 100))),
-                                            typeof location === "string" ? location : undefined
-                                        );
-                                    }
-                                } catch (e) {
-                                    console.error("Erro ao salvar progresso antes de voltar:", e);
-                                }
-                                router.push(`/${book.slug}`);
-                            }}
+                        <button
+                            type="button"
+                            onClick={handleBack}
                             className="bg-gray-800 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
                         >
                             <HiChevronLeft />
                             <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
-                        </a>
+                        </button>
                         {toc.length > 1 && <button
                             onClick={() => setOpenToc((v) => !v)}
                             className="rounded-full lg:px-4 p-2 text-sm bg-gray-800 flex justify-center items-center gap-3 font-normal text-white font-lexend "
@@ -387,7 +440,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                         </button>
                     </div>
                 </div>
-            </div>
+            </div >
         );
     }, [pageData, locationsReady, isAuth, isLoading, book?.epub, book && book._id, location, router]);
 
