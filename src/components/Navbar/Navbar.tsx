@@ -1,32 +1,34 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { FaCheckDouble } from "react-icons/fa";
 import {
-  MdPerson,
-  MdFavoriteBorder,
-  MdClose,
-  MdMenu,
-  MdBookmarkAdded,
-  MdBookmarks,
-  MdMenuBook,
   MdBook,
+  MdLogout,
+  MdMenuBook,
+  MdPerson
 } from "react-icons/md";
-import { FaCheckDouble, FaMoon, FaSun } from "react-icons/fa";
-import { FaBookOpenReader } from "react-icons/fa6";
 
-import SearchInput from "../SearchInput/SearchInput";
 import useAuth from "@/hooks/useAuth";
-import Tooltip from "../Tooltip/Tooltip";
-import ModalLogin from "../Modals/ModalLogin/ModalLogin";
 import ModalCreateAccount from "../Modals/ModalCreateAccount/ModalCreateAccount";
+import ModalLogin from "../Modals/ModalLogin/ModalLogin";
+import SearchInput from "../SearchInput/SearchInput";
+import Tooltip from "../Tooltip/Tooltip";
 
 export default function Navbar() {
   const isAuth = useAuth();
-  const [navbar, setNavbar] = useState(false);
   const [isModalLoginOpen, setIsModalLoginOpen] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalCreateAccountOpen, setIsModalCreateAccountOpen] =
     useState<boolean>(false);
+
+  useEffect(() => {
+    const handleClick = () => setIsMenuOpen(false);
+    if (isMenuOpen) {
+      window.addEventListener("click", handleClick);
+    }
+    return () => window.removeEventListener("click", handleClick);
+  }, [isMenuOpen]);
 
   return (
     <div className="w-full">
@@ -76,11 +78,40 @@ export default function Navbar() {
                       <FaCheckDouble />
                     </Link>
 
-                    <Link href="/minha-conta">
-                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-3 py-3 justify-center items-center">
+                    <div className="relative">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsMenuOpen(!isMenuOpen);
+                        }}
+                        className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-3 py-3 justify-center items-center"
+                      >
                         <MdPerson size={20} />
-                      </div>
-                    </Link>
+                      </button>
+
+                      {isMenuOpen && (
+                        <div className="absolute right-0 mt-2 w-52 bg-gray-900 border border-white/10 rounded-xl overflow-hidden z-50">
+                          <Link
+                            href="/minha-conta"
+                            className="flex items-center gap-2.5 px-4 py-3 text-sm text-white font-semibold hover:bg-white/5 border-b border-white/10 transition-colors"
+                          >
+                            <MdPerson size={16} className="opacity-60" />
+                            Editar perfil
+                          </Link>
+
+                          <div
+                            onClick={() => {
+                              localStorage.removeItem("userToken");
+                              window.location.reload();
+                            }}
+                            className="flex items-center gap-2.5 px-4 py-3 text-sm text-red-400 font-semibold hover:bg-red-500/10 cursor-pointer transition-colors"
+                          >
+                            <MdLogout size={16} />
+                            Sair
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className=" flex justify-center items-center gap-2">
@@ -154,12 +185,41 @@ export default function Navbar() {
               {isAuth ? (
                 <>
                   <li className="">
-                    <Link href="/minha-conta">
-                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
+                    <div className="relative">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsMenuOpen(!isMenuOpen);
+                        }}
+                        className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 items-center"
+                      >
                         Minha conta
                         <MdPerson size={20} />
-                      </div>
-                    </Link>
+                      </button>
+
+                      {isMenuOpen && (
+                        <div className="absolute right-0 mt-2 w-52 bg-gray-900 border border-white/10 rounded-xl overflow-hidden z-50">
+                          <Link
+                            href="/minha-conta"
+                            className="flex items-center gap-2.5 px-4 py-3 text-sm text-white font-redRat font-semibold hover:bg-white/5 border-b border-white/10 transition-colors"
+                          >
+                            <MdPerson size={16} className="opacity-60" />
+                            Editar perfil
+                          </Link>
+
+                          <div
+                            onClick={() => {
+                              localStorage.removeItem("userToken");
+                              window.location.reload();
+                            }}
+                            className="flex items-center gap-2.5 px-4 py-3 text-sm text-red-400 font-redRat font-semibold hover:bg-red-500/10 cursor-pointer transition-colors"
+                          >
+                            <MdLogout size={16} />
+                            Sair
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </li>
                 </>
               ) : (
@@ -181,48 +241,6 @@ export default function Navbar() {
                   </li>
                 </>
               )}
-            </ul>
-          </div>
-          {/* Navbar Mobile */}
-          <div
-            className={`flex-1 justify-self-center pb-3 mt-8 md:hidden md:pb-0 md:mt-0 h-screen ${
-              navbar ? "block" : "hidden"
-            }`}
-          >
-            <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0 text-white">
-              <li className="">
-                <Link href="/login">Login</Link>
-              </li>
-              <>
-                {isAuth ? (
-                  <>
-                    <Link href="/minha-conta">
-                      <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                        Minha conta
-                        <MdPerson size={20} />
-                      </div>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <li className=" font-semibold ">
-                      <button onClick={() => setIsModalLoginOpen(true)}>
-                        <h1 className="border-2 border-gray-600 px-6 py-2 rounded-full text-white">
-                          Entrar
-                        </h1>
-                      </button>
-                    </li>
-                    <li className="">
-                      <Link href="/criar-conta">
-                        <div className="flex gap-2 bg-main-400 hover:bg-main-500 text-white font-semibold rounded-full px-6 py-2 justify-center items-center">
-                          Criar conta
-                          <MdPerson size={20} />
-                        </div>
-                      </Link>
-                    </li>
-                  </>
-                )}
-              </>
             </ul>
           </div>
         </div>
