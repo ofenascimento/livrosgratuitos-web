@@ -153,6 +153,7 @@ function FavoritosPage() {
             capa={item.capa}
             titulo={item.titulo}
             autor={item.autor}
+            slug={item.slug}
           />
         ))}
       </div>
