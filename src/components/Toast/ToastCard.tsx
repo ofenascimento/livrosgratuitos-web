@@ -71,7 +71,7 @@ export function ToastCard({
 
                 {toast.description && (
                     <p
-                    className=" font-lexend font-light"
+                    className=" font-lexend font-medium"
                         style={{
                             fontSize: 13,
                             opacity: 0.9,

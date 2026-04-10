@@ -6,6 +6,14 @@ declare global {
     licenseLink?: string;
     modified?: string;
   }
+
+  interface IEpubProgress {
+    progressPercentage?: number;
+    currentCfi?: string;
+    currentPage?: number;
+    totalPages?: number;
+  }
+
   interface IBook {
     capa: string;
     titulo: string;
@@ -22,7 +30,9 @@ declare global {
     urlHtml?: string;
     slug?: string;
     epubInfo?: IEpubInfo;
+    epubProgress?: IEpubProgress;
   }
+
   interface IBooks {
     capa: string;
     titulo: string;
@@ -39,4 +49,4 @@ declare global {
   }
 }
 
-export { };
+export {};

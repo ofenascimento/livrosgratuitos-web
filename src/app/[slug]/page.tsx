@@ -35,6 +35,7 @@ function Livros() {
     const params = useParams();
     const slug = params?.slug as string;
     const { book, isLoading } = useFetchBookBySlug(slug);
+    console.log(book)
     const [imageLoaded, setImageLoaded] = useState(false);
     const { setTitle, setUrlBook, setBookId, setPdfUrlBook } = useBook();
     const [isFavorited, setIsFavorited] = useState<boolean | null>(null);
@@ -200,15 +201,24 @@ function Livros() {
                             {book.descricao}
                         </p>
                         {book.epub && (
-                            <Link
-                                href={`https://livrosgratuitos.com/epub/${book.slug}`}
-                                className="w-full"
-                            >
-                                <div className="w-full bg-main-400 hover:bg-main-500 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
-                                    Ler online
-                                </div>
+                            <>
+                                <Link
+                                    href={`https://livrosgratuitos.com/epub/${book.slug}`}
+                                    className="w-full"
+                                >
+                                    <div className="w-full bg-main-400 hover:bg-main-500 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
+                                        {(book.epubProgress?.progressPercentage ?? 0) > 0 ? 'Continuar leitura' : 'Ler online'}
+                                    </div>
 
-                            </Link>
+                                </Link>
+                                {book.epubProgress?.progressPercentage &&
+                                    <div className=" block md:hidden px-2 flex flex-col gap-1 justify-center items-start mt-3">
+                                        <span className="font-redRat font-semibold">Progresso: {book.epubProgress.progressPercentage}%</span>
+                                        <ProgressBar progress={book.epubProgress.progressPercentage} />
+                                    </div>
+                                }
+
+                            </>
                         )}
                         {book.pdf && (
                             <Link
@@ -251,9 +261,13 @@ function Livros() {
                                     className="md:w-2/4"
                                 >
                                     <div className="w-full bg-main-400 hover:bg-main-500 bg-main hidden md:block px-4 py-2 rounded-full  text-center font-bold">
-                                        Ler online
-                                    </div>
-
+                                        {(book.epubProgress?.progressPercentage ?? 0) > 0 ? 'Continuar leitura' : 'Ler online'}                                    </div>
+                                    {book.epubProgress?.progressPercentage &&
+                                        <div className=" flex flex-col gap-1 justify-center items-start mt-3">
+                                            <span className="font-redRat font-semibold">Progresso: {book.epubProgress.progressPercentage}%</span>
+                                            <ProgressBar progress={book.epubProgress.progressPercentage} />
+                                        </div>
+                                    }
                                 </Link>
                             )}
 
