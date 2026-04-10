@@ -231,7 +231,7 @@ function Livros() {
 
                             </Link>
                         )}
-                        {book.txt && (
+                        {/* {book.txt && (
                             <Link
                                 href={`/leitor`}
                                 className="w-full"
@@ -250,7 +250,7 @@ function Livros() {
                                 </div>
 
                             </Link>
-                        )}
+                        )} */}
                         <div
                             className="flex-col gap-2 mt-2 lg:mt-4 w-full justify-center items-center hidden md:flex"
                             id="desktop-buttons"
@@ -284,7 +284,7 @@ function Livros() {
                                 </Link>
                             )}
 
-                            {book.txt && (
+                            {/* {book.txt && (
                                 <Link
                                     href={`/leitor`}
                                     className="w-full flex justify-center items-center"
@@ -298,7 +298,7 @@ function Livros() {
                                         Ler TXT
                                     </div>
                                 </Link>
-                            )}
+                            )} */}
 
                             {/* {book.progressPercentage !== undefined &&
                 book.progressPercentage > 0 &&
