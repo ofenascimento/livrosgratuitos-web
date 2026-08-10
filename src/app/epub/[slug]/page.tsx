@@ -385,7 +385,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
 
         return (
             <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-black backdrop-blur">
-                <div className="mx-auto flex max-w-5xl justify-between items-center gap-2 p-2">
+                <div className="mx-auto flex max-w-5xl justify-between items-center gap-2 p-2 pb-22">
                     <div className=" flex justify-center items-center gap-2">
                         <button
                             type="button"
@@ -545,6 +545,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                                 customClassName="mb-4"
                             />
                             <AdResponsive dataAdSlot="1435361044" />
+                            <div className="h-[90px] md:h-[90px]" aria-hidden="true" />
                             <AdBanner dataAdSlot="2423907456" fixed />
                             <AdBannerMobile dataAdSlot="6603126932" fixed />
 
