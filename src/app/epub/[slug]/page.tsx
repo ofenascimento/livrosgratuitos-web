@@ -414,7 +414,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                         )}
                         {locationsReady && pageData && (
                             <div className="text-white text-sm font-dmSans opacity-80 font-normal">
-                                {`Página ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
+                                {`Posição ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
                             </div>
                         )}
                     </div>
