@@ -413,7 +413,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                             </div>
                         )}
                         {locationsReady && pageData && (
-                            <div className="text-white text-sm font-dmSans opacity-80 font-normal">
+                            <div className="text-white text-sm font-lexend opacity-80 font-normal">
                                 {`Posição ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
                             </div>
                         )}

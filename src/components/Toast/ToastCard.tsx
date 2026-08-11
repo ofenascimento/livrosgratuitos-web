@@ -1,4 +1,4 @@
-import { FiCheck, FiInfo, FiAlertTriangle, FiX } from "react-icons/fi";
+import { FiCheck, FiInfo, FiAlertTriangle, FiX, FiBellOff } from "react-icons/fi";
 import { ToastItem } from "./ToastItem";
 
 export function ToastCard({
@@ -12,110 +12,83 @@ export function ToastCard({
 
   const config = {
     success: {
-      icon: <FiCheck size={15} />,
-      color: "#22c55e",
-      bg: "rgba(34,197,94,0.12)",
+      icon: <FiCheck size={17} />,
+      iconColor: "text-emerald-600",
+      bg: "bg-gradient-to-br from-emerald-100 to-emerald-200",
+      shadow: "shadow-emerald-500/25",
+      iconShadow: "shadow-emerald-500/25",
     },
     info: {
-      icon: <FiInfo size={15} />,
-      color: "#60a5fa",
-      bg: "rgba(96,165,250,0.12)",
+      icon: <FiInfo size={17} />,
+      iconColor: "text-blue-600",
+      bg: "bg-gradient-to-br from-blue-100 to-blue-200",
+      shadow: "shadow-blue-500/25",
+      iconShadow: "shadow-blue-500/25",
+    },
+    neutralBlue: {
+      icon: <FiBellOff size={17} />,
+      iconColor: "text-indigo-600",
+      bg: "bg-gradient-to-br from-indigo-100 to-indigo-200",
+      shadow: "shadow-indigo-500/25",
+      iconShadow: "shadow-indigo-500/25",
     },
     warning: {
-      icon: <FiAlertTriangle size={15} />,
-      color: "#f59e0b",
-      bg: "rgba(245,158,11,0.12)",
+      icon: <FiAlertTriangle size={17} />,
+      iconColor: "text-amber-600",
+      bg: "bg-gradient-to-br from-amber-100 to-amber-200",
+      shadow: "shadow-amber-500/30",
+      iconShadow: "shadow-amber-500/30",
     },
     error: {
-      icon: <FiX size={15} />,
-      color: "#f87171",
-      bg: "rgba(248,113,113,0.12)",
+      icon: <FiX size={17} />,
+      iconColor: "text-red-600",
+      bg: "bg-gradient-to-br from-red-100 to-red-200",
+      shadow: "shadow-red-500/30",
+      iconShadow: "shadow-red-500/30",
     },
   };
 
-  const current = config[type];
+  const current = config[type as keyof typeof config] || config.info;
 
   return (
     <div
-      style={{
-        pointerEvents: "auto",
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        borderRadius: 14,
-        background: "#111113",
-        border: "1px solid rgba(255,255,255,0.08)",
-        padding: "12px 14px",
-        color: "#fff",
-        animation: "toast-enter 0.22s ease-out",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-        minWidth: 280,
-        maxWidth: 360,
-      }}
+      className={`
+        toast-enter
+        pointer-events-auto flex items-center gap-3.5 rounded-[18px]
+        border border-white/60 px-[18px] py-4
+        min-w-[320px] max-w-[420px]
+        shadow-lg ${current.shadow} ${current.bg}
+      `}
     >
-      {/* Ícone */}
       <div
-        style={{
-          width: 34,
-          height: 34,
-          borderRadius: 9,
-          background: current.bg,
-          border: `1px solid ${current.color}30`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: current.color,
-          flexShrink: 0,
-        }}
+        className={`
+          flex h-[42px] w-[42px] flex-shrink-0 items-center justify-center
+          rounded-[13px] bg-white shadow-md ${current.iconShadow} ${current.iconColor}
+        `}
       >
         {current.icon}
       </div>
 
-      {/* Texto */}
-      <div style={{ flex: 1 }}>
-        <p
-          className="font-redRat"
-          style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "#fff" }}
-        >
+      <div className="flex-1">
+        <p className="font-raleway m-0 text-[15px] font-bold text-black">
           {toast.title}
         </p>
         {toast.description && (
-          <p
-            className="font-dmSans font-medium"
-            style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.8)" }}
-          >
+          <p className="font-dmSans font-medium m-0 mt-0.5 text-[13px] text-gray-800">
             {toast.description}
           </p>
         )}
       </div>
 
-      {/* Botão fechar */}
       <button
         onClick={onClose}
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: 8,
-          border: "1px solid rgba(255,255,255,0.08)",
-          background: "rgba(255,255,255,0.04)",
-          color: "rgba(255,255,255,0.4)",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          transition: "all 0.15s",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget.style.background = "rgba(255,255,255,0.08)");
-          (e.currentTarget.style.color = "#fff");
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget.style.background = "rgba(255,255,255,0.04)");
-          (e.currentTarget.style.color = "rgba(255,255,255,0.4)");
-        }}
+        className={`
+          flex h-[26px] w-[26px] flex-shrink-0 items-center justify-center
+          rounded-lg border-none bg-white/50 ${current.iconColor}
+          transition-all duration-150 hover:scale-[1.08] hover:bg-white
+        `}
       >
-        <FiX size={13} />
+        <FiX size={14} />
       </button>
     </div>
   );
