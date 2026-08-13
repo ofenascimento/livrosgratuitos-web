@@ -12,7 +12,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import { useToast } from "@/components/Toast/ToastProvider";
-import { addBookToReadingBook } from "@/hooks/addBookToReadingList";
 import useAuth from "@/hooks/useAuth";
 import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
@@ -241,26 +240,7 @@ function Livros() {
 
                             </Link>
                         )}
-                        {/* {book.txt && (
-                            <Link
-                                href={`/leitor`}
-                                className="w-full"
-                                onClick={() => {
 
-                                    if (isInstagramWebView()) {
-                                        setIsInstagramModalOpen(true);
-                                    }
-                                    !book.currentParagraph || book.currentParagraph === 0
-                                        ? addBookToReadingBook(book._id)
-                                        : null;
-                                }}
-                            >
-                                <div className="w-full bg-orange-500 hover:bg-orange-600 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
-                                    TXT
-                                </div>
-
-                            </Link>
-                        )} */}
                         <div
                             className="flex-col gap-2 mt-2 lg:mt-4 w-full justify-center items-center hidden md:flex"
                             id="desktop-buttons"
@@ -294,71 +274,13 @@ function Livros() {
                                 </Link>
                             )}
 
-                            {/* {book.txt && (
-                                <Link
-                                    href={`/leitor`}
-                                    className="w-full flex justify-center items-center"
-                                    onClick={() => {
-                                        !book.currentParagraph || book.currentParagraph === 0
-                                            ? addBookToReadingBook(book._id)
-                                            : null;
-                                    }}
-                                >
-                                    <div className="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-full w-full md:w-2/4 text-center font-lexend font-bold">
-                                        Ler TXT
-                                    </div>
-                                </Link>
-                            )} */}
 
-                            {/* {book.progressPercentage !== undefined &&
-                book.progressPercentage > 0 &&
-                book.currentParagraph !== 0 && (
-                  <div className="md:w-2/4">
-                    <ProgressBar progress={book.progressPercentage ?? 0} />
-                    <div className="w-full text-center mt-2 font-lexend font-light">
-                      Progresso: {book.progressPercentage}%
-                    </div>
-                  </div>
-                )} */}
+
                         </div>
                     </div>
                 </div>
 
-                {/* <div
-                    className=" fixed bottom-0  z-50 left-0 w-full p-4 bg-black md:hidden"
-                    id="fixed-mobile-buttons"
-                >
-                    {book.txt !== "" && (
-                        <Link
-                            href={`/leitor`}
-                            className="w-full flex justify-center items-center"
-                            onClick={() => {
-                                !book.currentParagraph || book.currentParagraph === 0
-                                    ? addBookToReadingBook(book._id)
-                                    : null;
-                            }}
-                        >
-                            <div className="bg-main-400 hover:bg-main-500 px-4 py-2 font-medium rounded-full w-full md:w-2/4 text-center text-white">
-                                {book.currentParagraph &&
-                                    book.currentParagraph !== 0 &&
-                                    book.progressPercentage !== undefined &&
-                                    book.progressPercentage > 0
-                                    ? "Continuar leitura"
-                                    : "Ler online"}{" "}
-                            </div>
-                        </Link>
-                    )}
-                    {book.progressPercentage !== 0 &&
-                        book.progressPercentage !== undefined &&
-                        book.progressPercentage > 0 && (
-                            <div className="mt-3 mb-3">
-                                <ProgressBar progress={book.progressPercentage ?? 0} />
-                                <div className=" w-full text-center mt-2 font-lexend font-light">
-                                    Progresso: {book.progressPercentage}%
-                                </div>
-                            </div>
-                        )}
-                </div> */}
+
                 <AdResponsive dataAdSlot="1435361044" />
                 <BookList
                     options={{ q: "9", sort: "true" }}

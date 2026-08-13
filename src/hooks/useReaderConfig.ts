@@ -1,4 +1,4 @@
-import { ReaderConfigContext } from "@/context/ReaderConfiContext";
+import { ReaderConfigContext } from "@/contexts/ReaderConfiContext";
 import { useContext } from "react";
 
 export function useReaderConfig() {

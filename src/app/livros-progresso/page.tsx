@@ -8,19 +8,19 @@ import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import Navbar from "@/components/Navbar/Navbar";
 import Title from "@/components/Title/Title";
 import useAuth from "@/hooks/useAuth";
-import useFetchReadingList from "@/hooks/useFetchReadingList";
+import { useEpubReadingList } from "@/hooks/useReadingProgress";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 function FavoritosPage() {
   const isAuth = useAuth();
-  const { epubReadingList, isLoading } = useFetchReadingList();
+  const { data: epubReadingList = [], isLoading } = useEpubReadingList();
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
     if (epubReadingList.length > 0 && !isLoading) {
-      const imagePromises = epubReadingList.map((book) =>
+      const imagePromises = epubReadingList.map((book: any) =>
         new Promise((resolve) => {
           const img = new window.Image();
           img.src = book.capa;
@@ -142,7 +142,7 @@ function FavoritosPage() {
         }
       />
       <div className="w-full flex flex-wrap gap-4 items-center justify-center mt-2">
-        {epubReadingList.map((item, index) => (
+        {epubReadingList.map((item: any, index: number) => (
           <Card
             key={index}
             id={item._id}
