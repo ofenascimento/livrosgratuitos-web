@@ -1,13 +1,13 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useFetchBook } from "@/hooks/useFetchBook";
+import { useBookById } from "@/hooks/useBooks";
 
 function Livros() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const bookId = searchParams.get("bookId");
-  const { book } = useFetchBook(bookId ?? "");
+  const { book } = useBookById(bookId ?? "");
 
   useEffect(() => {
     if (book?.slug) {

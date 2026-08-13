@@ -4,10 +4,9 @@ import AdBanner from "@/components/ADS/AdBanner";
 import AdResponsive from "@/components/ADS/AdResponsive";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import Metadata from "@/components/Metadata";
-import { useFetchBooksPDF } from "@/hooks/useFetchBooksPDF";
-import { urlApi } from "@/utils/url";
+import { useBooksPDF } from "@/hooks/useBooks";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 
@@ -60,7 +59,7 @@ const BookCard = ({ book }: { book: IBook }) => {
 const categories = ["Todos", "Romance", "Filosofia", "Ciências", "História", "Poesia", "Crônicas"];
 
 export default function LivrosPDFPage() {
-  const { books, isLoading, error } = useFetchBooksPDF();
+  const { books, isLoading, error } = useBooksPDF();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("Todos");
 

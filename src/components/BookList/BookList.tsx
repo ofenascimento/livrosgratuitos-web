@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import useFetchBooks from "@/hooks/useFetchBooks";
+import { useBooksList } from "@/hooks/useBooks";
 import CardBookSkeleton from "../Skeleton/CardBookSkeleton";
 import Card from "../Card/Card";
 import Title from "../Title/Title";
@@ -8,7 +8,7 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { IBookList } from "./types";
 
 export default function BookList({ options, label }: IBookList) {
-  const { books, isLoading } = useFetchBooks(options);
+  const { books, isLoading } = useBooksList(options);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 

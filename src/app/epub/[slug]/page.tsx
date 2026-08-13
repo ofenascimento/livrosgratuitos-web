@@ -17,7 +17,7 @@ import useAuth from "@/hooks/useAuth";
 import ModalToc from "@/components/Modals/TocModal/TocModal";
 import ModalInfo from "@/components/Modals/ModalInfo/ModalInfo";
 import AdResponsive from "@/components/ADS/AdResponsive";
-import { useFetchBookBySlug } from "@/hooks/useFetchBookBySlug";
+import { useBookBySlug } from "@/hooks/useBooks";
 import Metadata from "@/components/Metadata";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
@@ -53,8 +53,8 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
 
     const searchParams = useSearchParams();
     const slug = params?.slug as string;
-    const { book, isLoading, error } = useFetchBookBySlug(slug);
-
+    const { book, isLoading, error } = useBookBySlug(slug);
+    
     const isAuth = useAuth();
     const router = useRouter();
 
@@ -151,10 +151,10 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
         let didCancel = false;
 
         (async () => {
-          
+
 
             if (!book?._id || !isAuth) {
-             
+
                 if (!didCancel && location === null) {
                     setLocation(0);
                 }
@@ -162,9 +162,9 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
             }
 
             try {
-               
+
                 const data = await getEpubProgress(book._id);
-               
+
 
                 if (!didCancel && data?.cfi && typeof data.cfi === "string") {
                     setInitialCfi(data.cfi);

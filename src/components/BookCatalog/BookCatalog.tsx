@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import useFetchBooks from "@/hooks/useFetchBooks";
+import { useBooksList } from "@/hooks/useBooks";
 import Image from "next/image";
 import Title from "../Title/Title";
 import Card from "../Card/Card";
@@ -10,7 +10,7 @@ import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 
 function BookCatalog({ titulo, categoria }: IBookCatalog) {
-  const { books, isLoading } = useFetchBooks({
+  const { books, isLoading } = useBooksList({
     titulo: titulo ?? "",
     categoria: categoria ?? "",
   });

@@ -14,35 +14,25 @@ import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import { useToast } from "@/components/Toast/ToastProvider";
 import useAuth from "@/hooks/useAuth";
 import { useBook } from "@/hooks/useBook";
-import { useFetchBook } from "@/hooks/useFetchBook";
-import useFetchBookAuth from "@/hooks/useFetchBookAuth";
-import { useFetchBookBySlug } from "@/hooks/useFetchBookBySlug";
+import { useBookBySlug } from "@/hooks/useBooks";
 import useCopyToClipboard from "@/utils/useToClipboard";
-import Head from "next/head";
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import { FaFilePdf } from "react-icons/fa";
 import { MdOutlineShare } from "react-icons/md";
-import { PiFilePdf } from "react-icons/pi";
 import { useAddFavoriteBook, useRemoveFavoriteBook } from "@/hooks/useFavorites";
 
 
 function Livros() {
-    const searchParams = useSearchParams();
-    const bookId = searchParams.get("bookId");
     const params = useParams();
     const slug = params?.slug as string;
-    const { book, isLoading } = useFetchBookBySlug(slug);
-    console.log(book)
+    const { book, isLoading } = useBookBySlug(slug);
     const [imageLoaded, setImageLoaded] = useState(false);
     const { setTitle, setUrlBook, setBookId, setPdfUrlBook } = useBook();
     const [isFavorited, setIsFavorited] = useState<boolean | null>(null);
-    const { setToParagraph, toParagraph } = useBook();
     const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
     const [modalLoginIsOpen, setModalLoginIsOpen] = useState<boolean>(false);
     const [fullUrl, setFullUrl] = useState<string>("");
-    const [isInstagramModalOpen, setIsInstagramModalOpen] = useState(false);
 
     const isAuth = useAuth();
 
@@ -57,13 +47,6 @@ function Livros() {
         if (typeof window === "undefined" || typeof navigator === "undefined") return false;
         return navigator.userAgent.toLowerCase().includes("instagram");
     };
-
-
-    useEffect(() => {
-        if (isInstagramWebView()) {
-            setIsInstagramModalOpen(true);
-        }
-    }, []);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -83,8 +66,6 @@ function Livros() {
             const img = new Image();
             img.src = book.capa;
             img.onload = () => setImageLoaded(true);
-            setToParagraph(book.currentParagraph ?? 0);
-            // console.log(toParagraph);
         }
     }, [book]);
 
@@ -313,29 +294,7 @@ function Livros() {
                     isOpen={modalLoginIsOpen}
                     onClose={() => setModalLoginIsOpen(false)}
                 />
-                {/* {isInstagramModalOpen && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div className="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm">
-                            <h2 className="text-xl font-bold text-gray-800">Abra no navegador</h2>
-                            <p className="text-gray-600 mt-2">
-                                Infelizmente o livro não pode ser aberto pelo navegador do instagram. Copie o link e cole no seu navegador de preferência.
-
-                            </p>
-                            <div className="bg-indigo-200 rounded-lg mt-2 py-2">
-                                <span className=" text-main-500 font-semibold">{fullUrl}</span>
-                            </div>
-                            <button
-                                className="mt-4 bg-main-600 font-semibold text-white px-4 py-2 rounded-md w-full"
-                                onClick={() => {
-                                    copyText(fullUrl)
-                                }}
-                            >
-                                {isCopied ? 'Link copiado' : 'Copiar link'}
-                            </button>
-
-                        </div>
-                    </div>
-                )} */}
+                
             </CustomLayout>
         </>
     );
