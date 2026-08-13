@@ -6,7 +6,7 @@ import AdBanner from '@/components/ADS/AdBanner';
 import AdBannerMobile from '@/components/ADS/AdsBannerMobile';
 import AdResponsive from '@/components/ADS/AdResponsive';
 import useIsMobile from '@/hooks/isMobile';
-import { useFetchBookBySlug } from '@/hooks/useFetchBookBySlug';
+import { useBookBySlug } from '@/hooks/useBooks';
 import Metadata from '@/components/Metadata';
 
 const FALLBACK_PDF =
@@ -25,7 +25,7 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
     const bookId = searchParams.get('id') ?? '';
     const { slug } = params;
 
-    const { book, isLoading: bookLoading } = useFetchBookBySlug(slug);
+    const { book, isLoading: bookLoading } = useBookBySlug(slug);
     const pdfUrl = book?.pdf || FALLBACK_PDF;
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
