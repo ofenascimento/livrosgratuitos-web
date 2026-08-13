@@ -13,8 +13,6 @@ import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import { useToast } from "@/components/Toast/ToastProvider";
 import { addBookToReadingBook } from "@/hooks/addBookToReadingList";
-import { addFavoriteBook } from "@/hooks/addFavoriteBook";
-import { removeFavoriteBook } from "@/hooks/removeFavoriteBook";
 import useAuth from "@/hooks/useAuth";
 import { useBook } from "@/hooks/useBook";
 import { useFetchBook } from "@/hooks/useFetchBook";
@@ -28,6 +26,8 @@ import React, { useState, useEffect } from "react";
 import { FaFilePdf } from "react-icons/fa";
 import { MdOutlineShare } from "react-icons/md";
 import { PiFilePdf } from "react-icons/pi";
+import { useAddFavoriteBook, useRemoveFavoriteBook } from "@/hooks/useFavorites";
+
 
 function Livros() {
     const searchParams = useSearchParams();
@@ -46,6 +46,10 @@ function Livros() {
     const [isInstagramModalOpen, setIsInstagramModalOpen] = useState(false);
 
     const isAuth = useAuth();
+
+    const addFavoriteBook = useAddFavoriteBook();
+    const removeFavoriteBook = useRemoveFavoriteBook();
+
     const { isCopied, copyText } = useCopyToClipboard()
 
     const { showToast } = useToast();
@@ -123,12 +127,15 @@ function Livros() {
                                         <button
                                             className="rounded-full border border-slate-600 bg-dark-background p-3 lg:px-4 lg:py-2 flex justify-center items-center gap-3"
                                             onClick={() => {
-                                                removeFavoriteBook(book._id);
-                                                setIsFavorited(false);
-                                                showToast({
-                                                    title: "Desfavoritado",
-                                                    description: "Livro desfavoritado com sucesso",
-                                                    type: "info",
+                                                removeFavoriteBook.mutate(book._id, {
+                                                    onSuccess: () => {
+                                                        setIsFavorited(false);
+                                                        showToast({
+                                                            title: "Desfavoritado",
+                                                            description: "Livro desfavoritado com sucesso",
+                                                            type: "info",
+                                                        });
+                                                    },
                                                 });
                                             }}
                                         >
@@ -149,12 +156,15 @@ function Livros() {
                                             className="rounded-full border border-slate-600 bg-dark-background p-3 lg:px-4 lg:py-2  flex justify-center items-center gap-3"
                                             onClick={() => {
                                                 if (isAuth) {
-                                                    addFavoriteBook(book._id);
-                                                    setIsFavorited(true);
-                                                    showToast({
-                                                        title: "Favoritado",
-                                                        description: "Livro favoritado com sucesso",
-                                                        type: "success",
+                                                    addFavoriteBook.mutate(book._id, {
+                                                        onSuccess: () => {
+                                                            setIsFavorited(true);
+                                                            showToast({
+                                                                title: "Favoritado",
+                                                                description: "Livro favoritado com sucesso",
+                                                                type: "success",
+                                                            });
+                                                        },
                                                     });
                                                 } else {
                                                     setModalLoginIsOpen(true);

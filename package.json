@@ -12,6 +12,7 @@
     "node": "22.x"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.4",
     "@types/react-modal": "^3.16.3",
     "framer-motion": "^11.2.10",
     "next": "14.1.3",
