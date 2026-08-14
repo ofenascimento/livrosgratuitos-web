@@ -2,31 +2,23 @@
 import ModalEpubConfig from "@/components/Modals/ModalConfigEpub/ModalConfigEpub";
 import { useReaderConfig } from "@/hooks/useReaderConfig";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { HiChevronLeft, HiDotsVertical } from "react-icons/hi";
-import { MdInfoOutline, MdMenuBook } from "react-icons/md";
-import type { IReactReaderStyle } from "react-reader";
-import { ReactReaderStyle } from "react-reader";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
-import { useSaveProgress } from "@/hooks/useReadingProgress";
-import { readingProgressService } from "@/services/readingProgress.service";
 import useAuth from "@/hooks/useAuth";
 import ModalToc from "@/components/Modals/TocModal/TocModal";
 import ModalInfo from "@/components/Modals/ModalInfo/ModalInfo";
 import AdResponsive from "@/components/ADS/AdResponsive";
 import { useBookBySlug } from "@/hooks/useBooks";
 import Metadata from "@/components/Metadata";
+import { useEpubTheme } from "@/hooks/useEpubTheme";
+import { useEpubRendition } from "@/hooks/useEpubRendition";
+import { useEpubProgressPersistence } from "@/hooks/useEpubProgressPersistence";
+import EpubReaderToolbar from "@/components/EpubReader/EpubReaderToolbar";
 
 const ReactReader = dynamic(() => import("react-reader").then(m => m.ReactReader), { ssr: false });
-
-interface PageData {
-    currentPage: number;
-    totalPages: number;
-    percentage: number;
-}
 
 function useStableVhForIG() {
     useEffect(() => {
@@ -50,77 +42,60 @@ function useStableVhForIG() {
 export default function EpubReaderPage({ params }: { params: { slug: string } }) {
     useStableVhForIG();
 
-    const searchParams = useSearchParams();
     const slug = params?.slug as string;
     const { book, isLoading, error } = useBookBySlug(slug);
 
     const isAuth = useAuth();
     const router = useRouter();
 
-    const saveProgress = useSaveProgress();
-
     const [bookUrl, setBookUrl] = useState<string>("");
-    const [location, setLocation] = useState<string | number | null>(null);
-    const [rendition, setRendition] = useState<any>(null);
     const [toc, setToc] = useState<any[]>([]);
     const [openToc, setOpenToc] = useState(false);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [isModalConfigOpen, setIsModalConfigOpen] = useState(false);
-    const [pageData, setPageData] = useState<PageData | null>(null);
-    const [locationsReady, setLocationsReady] = useState(false);
     const [isReaderConfigReady, setIsReaderConfigReady] = useState(false);
-    const [initialCfiDisplayed, setInitialCfiDisplayed] = useState(false);
     const [isAutorInfoOpen, setIsAutorInfoOpen] = useState(false);
-    const [saveLocation, setSaveLocation] = useState<string | null>(null);
-    const [initialCfi, setInitialCfi] = useState<string | null>(null);
-
 
     const { fontSizeEpub, background } = useReaderConfig();
 
     const [mounted, setMounted] = useState(false);
     useEffect(() => { setMounted(true); }, []);
 
-    const backgroundClass = useMemo(() => {
-        if (!mounted) return "";
-        switch (background) {
-            case "dark":
-                return "bg-black text-white";
-            case "light":
-                return "bg-white text-zinc-900";
-            case "sepia":
-                return "bg-sepia text-zinc-900";
-            default:
-                return "";
-        }
-    }, [background, mounted]);
+    const { backgroundClass, READER_STYLES, applyThemeToRendition } = useEpubTheme(
+        background,
+        fontSizeEpub,
+        mounted
+    );
+
+    const {
+        location,
+        saveLocation,
+        rendition,
+        toc: renditionToc,
+        pageData,
+        locationsReady,
+        onLocationChanged,
+        onRendition,
+    } = useEpubRendition({
+        bookId: book?._id,
+        isAuth,
+        background,
+        fontSizeEpub,
+        applyThemeToRendition,
+    });
+
+    const { saveEpubProgress } = useEpubProgressPersistence({
+        bookId: book?._id,
+        isAuth,
+        location,
+        rendition,
+        pageData,
+        saveLocation,
+    });
 
     useEffect(() => {
         setIsReaderConfigReady(true);
     }, []);
-
-    const isDark = background === "dark";
-    const isLight = background === "light";
-    const isSepia = background === "sepia";
-
-    const READER_STYLES: IReactReaderStyle = {
-        ...ReactReaderStyle,
-        container: {
-            ...ReactReaderStyle.container,
-            backgroundColor: isSepia ? "#faf2e7" : isDark ? "#000000" : "#ffffff",
-        },
-        readerArea: {
-            ...ReactReaderStyle.readerArea,
-            backgroundColor: isSepia ? "#faf2e7" : isDark ? "#000000" : "#ffffff",
-        },
-        titleArea: { ...ReactReaderStyle.titleArea, display: "none" },
-        tocArea: { ...ReactReaderStyle.tocArea, display: "none" },
-        tocBackground: { ...ReactReaderStyle.tocBackground, display: "none" },
-        arrow: {
-            ...ReactReaderStyle.arrow,
-            color: isDark ? "#ffffff" : "#000000",
-            opacity: 1,
-        },
-    };
 
     useEffect(() => {
         if (error) {
@@ -129,236 +104,11 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
         setBookUrl(book?.epub ?? "");
     }, [book?.epub, isLoading, book, router, error]);
 
-    const computeFromCfi = useCallback((r: any, cfi: string) => {
-        if (!r?.book?.locations || !r.book.locations.length()) return;
-        try {
-            const currentPageNumber = r.book.locations.locationFromCfi(cfi);
-            const totalPages = r.book.locations.length();
-            const percentageProgress = r.book.locations.percentageFromCfi(cfi);
-
-            if (currentPageNumber !== null) {
-                setPageData({
-                    currentPage: currentPageNumber + 1,
-                    totalPages,
-                    percentage: percentageProgress,
-                });
-            }
-        } catch (e) {
-            console.error("Erro ao calcular pageData:", e);
-        }
-    }, []);
-
     useEffect(() => {
-        let didCancel = false;
+        setToc(renditionToc);
+    }, [renditionToc]);
 
-        (async () => {
-
-            if (!book?._id || !isAuth) {
-
-                if (!didCancel && location === null) {
-                    setLocation(0);
-                }
-                return;
-            }
-
-            try {
-
-                const data = await readingProgressService.getProgress(book._id);
-
-                if (!didCancel && data?.currentCfi && typeof data.currentCfi === "string") {
-                    setInitialCfi(data.currentCfi);
-                    setLocation(data.currentCfi);
-                } else if (!didCancel && location === null) {
-                    setLocation(0);
-                }
-            } catch (e) {
-                console.warn("[EPUB] Falha ao carregar CFI da API:", e);
-                if (!didCancel && location === null) {
-                    setLocation(0);
-                }
-            }
-        })();
-
-        return () => { didCancel = true; };
-    }, [book?._id, isAuth]);
-
-    const saveEpubProgress = useCallback(async () => {
-
-        if (!isAuth) return;
-        if (!book?._id) return;
-        if (typeof location !== "string") return;
-
-        try {
-            let percentage = 0;
-
-            if (rendition?.book?.locations?.percentageFromCfi) {
-                percentage = rendition.book.locations.percentageFromCfi(location);
-            } else if (pageData?.percentage) {
-                percentage = pageData.percentage;
-            }
-
-            saveProgress.mutate({
-                livroId: book._id,
-                progressPercentage: Math.max(0, Math.min(100, Math.round(percentage * 100))),
-                currentCfi: location,
-            });
-        } catch (e) {
-            console.error("Erro ao salvar progresso EPUB:", e);
-        }
-    }, [isAuth, book?._id, location, rendition, pageData?.percentage, saveProgress]);
-
-    useEffect(() => {
-        if (!isAuth) return;
-
-        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            saveEpubProgress();
-            event.preventDefault();
-            event.returnValue = "";
-        };
-
-        const handlePopState = () => {
-            saveEpubProgress();
-        };
-
-        const handlePageHide = () => {
-            saveEpubProgress();
-        };
-
-
-
-
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        window.addEventListener("popstate", handlePopState);
-        window.addEventListener("pagehide", handlePageHide);
-
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-            window.removeEventListener("popstate", handlePopState);
-            window.removeEventListener("pagehide", handlePageHide);
-        };
-    }, [isAuth, saveEpubProgress]);
-
-    useEffect(() => {
-        if (!isAuth) return;
-        if (!book?._id) return;
-        if (!saveLocation) return;
-        if (!rendition?.book?.locations?.percentageFromCfi) return;
-
-        const timeout = setTimeout(() => {
-            const percentage = rendition.book.locations.percentageFromCfi(saveLocation);
-
-            saveProgress.mutate({
-                livroId: book._id,
-                progressPercentage: Math.max(0, Math.min(100, Math.round(percentage * 100))),
-                currentCfi: saveLocation,
-            });
-        }, 2000);
-
-        return () => clearTimeout(timeout);
-    }, [saveLocation, isAuth, book?._id, rendition, saveProgress]);
-
-    const onLocationChanged = useCallback(
-        (loc: string) => {
-            if (typeof loc !== "string") return;
-
-            setLocation(loc);
-            setSaveLocation(loc);
-
-            if (locationsReady) {
-                computeFromCfi(rendition, loc);
-            }
-        },
-        [rendition, locationsReady, computeFromCfi]
-    );
-
-    const applyThemeToRendition = useCallback((r: any, b: string, f: number) => {
-        const isDark = b === "dark";
-        const isLight = b === "light";
-
-        const bgColor = isDark ? "#000000" : isLight ? "#ffffff" : "#faf2e7";
-        const textColor = isDark ? "#ffffff" : "#2b2117";
-        const linkColor = isDark ? "#8cb4ff" : "#7a4d2a";
-
-        try {
-            r.themes.default({
-                body: {
-                    background: bgColor,
-                    color: textColor,
-                    lineHeight: "1.8",
-                    fontWeight: "400",
-                },
-                a: { color: linkColor },
-                "h1,h2,h3": { color: textColor },
-                "a:hover": {
-                    color: textColor,
-                    textDecoration: "none",
-                },
-
-                "a:focus": {
-                    outline: "none",
-                },
-
-                "a:active": {
-                    color: textColor,
-                },
-            });
-
-            r.themes.fontSize(`${f}%`);
-            r.views().forEach((view: any) => view.pane && view.pane.render());
-        } catch (e) {
-            console.warn("Erro ao aplicar tema:", e);
-        }
-    }, []);
-
-    const onRendition = useCallback(
-        (r: any) => {
-            setRendition(r);
-            setLocationsReady(false);
-
-            applyThemeToRendition(r, background, fontSizeEpub);
-
-            r.book.loaded.navigation.then((nav: any) => setToc(nav.toc || []));
-
-            r.on("relocated", (loc: any) => {
-                const cfi = loc?.start?.cfi;
-                if (cfi && typeof cfi === "string") {
-                    setLocation(cfi);
-                    setSaveLocation(cfi);
-                    if (r.book?.locations?.length()) computeFromCfi(r, cfi);
-                }
-            });
-
-            r.book.ready
-                .then(() => r.book.locations.generate(1024))
-                .then(async () => {
-                    setLocationsReady(true);
-
-                    if (initialCfi) {
-                        try {
-                            await r.display(initialCfi);
-                            setLocation(initialCfi);
-                            setSaveLocation(initialCfi);
-                            setInitialCfiDisplayed(true);
-                        } catch (e) {
-                            console.error("Erro ao abrir no CFI salvo:", e);
-                        }
-                    }
-                })
-                .catch((err: any) => {
-                    console.error("Erro ao gerar as localizações:", err);
-                });
-        },
-        [location, computeFromCfi, background, fontSizeEpub, applyThemeToRendition]
-    );
-
-    useEffect(() => {
-        if (rendition) {
-            applyThemeToRendition(rendition, background, fontSizeEpub);
-        }
-    }, [fontSizeEpub, background, rendition, applyThemeToRendition]);
-
-    const handleBack = useCallback(async () => {
-
+    const handleBack = async () => {
         try {
             if (isAuth) {
                 await saveEpubProgress();
@@ -368,80 +118,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
         }
 
         router.push(`/${book?.slug}`);
-    }, [isAuth, saveEpubProgress, router, book?.slug]);
-
-
-
-
-
-    const Toolbar = useMemo(() => {
-        const progress = locationsReady && pageData ? Math.round(pageData.percentage * 100).toString() : "";
-        const percentageDisplay = locationsReady && pageData ? ` | ${progress}%` : "";
-
-        if (!book?.epub || isLoading || (location === null))
-            return <FullScreenLoader label={isLoading ? "Carregando EPUB" : "Aguardando progresso..."} />;
-
-        return (
-            <div className="sticky top-0 z-10 w-full border-b border-zinc-800/20 bg-black backdrop-blur">
-                <div className="mx-auto flex max-w-5xl justify-between items-center gap-2 p-2 pb-22">
-                    <div className=" flex justify-center items-center gap-2">
-                        <button
-                            type="button"
-                            onClick={handleBack}
-                            className="bg-gray-800 cursor-pointer rounded-full text-white lg:px-4 p-2 flex gap-2 justify-center items-center"
-                        >
-                            <HiChevronLeft />
-                            <p className="hidden lg:block font-lexend text-sm font-normal">Voltar</p>
-                        </button>
-                        {toc.length > 1 && <button
-                            onClick={() => setOpenToc((v) => !v)}
-                            className="rounded-full lg:px-4 p-2 text-sm bg-gray-800 flex justify-center items-center gap-3 font-normal text-white font-lexend "
-                        >
-                            <MdMenuBook /> <span className="hidden md:block">Sumário</span>
-                        </button>}
-                    </div>
-
-                    <div className=" flex flex-col jusitfy-center items-center gap-2">
-                        {locationsReady && pageData && (
-                            <div className="w-full h-1 bg-gray-800">
-                                <div
-                                    className="h-1 bg-main-500 transition-all duration-300"
-                                    style={{ width: `${Math.round(pageData.percentage * 100)}%` }}
-                                />
-                            </div>
-                        )}
-                        {locationsReady && pageData && (
-                            <div className="text-white text-sm font-lexend opacity-80 font-normal">
-                                {`Posição ${pageData.currentPage} de ${pageData.totalPages}${percentageDisplay}`}
-                            </div>
-                        )}
-                    </div>
-
-
-
-
-                    <div className="flex items-center gap-2">
-
-                        <button
-                            onClick={() => setIsAutorInfoOpen(true)}
-                            className="bg-gray-800 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
-                        >
-                            <p className="hidden lg:block font-lexend text-sm font-normal">Informações</p>
-                            <MdInfoOutline />
-                        </button>
-                        <button
-                            onClick={() => setIsModalConfigOpen(true)}
-                            className="bg-gray-800 text-white lg:px-4 p-2 rounded-full flex gap-2 justify-center items-center"
-                        >
-                            <p className="hidden lg:block font-lexend text-sm font-normal">Configurações</p>
-                            <HiDotsVertical />
-                        </button>
-                    </div>
-                </div>
-            </div >
-        );
-    }, [pageData, locationsReady, isAuth, isLoading, book?.epub, book && book._id, location, router]);
-
+    };
 
     return (
         <>
@@ -458,7 +135,18 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                 }
             />
             <div ref={containerRef} className={`flex min-h-screen w-full flex-col ${backgroundClass}`} suppressHydrationWarning>
-                {Toolbar}
+                <EpubReaderToolbar
+                    hasEpub={!!book?.epub}
+                    isLoading={isLoading}
+                    location={location}
+                    locationsReady={locationsReady}
+                    pageData={pageData}
+                    tocLength={toc.length}
+                    onBack={handleBack}
+                    onToggleToc={() => setOpenToc((v) => !v)}
+                    onOpenAuthorInfo={() => setIsAutorInfoOpen(true)}
+                    onOpenConfig={() => setIsModalConfigOpen(true)}
+                />
                 <ModalToc
                     isOpen={openToc}
                     onRequestClose={() => setOpenToc(false)}
@@ -488,9 +176,6 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                     fontLink={book?.epubInfo?.fontLink}
                 />
                 <div className={`mx-auto grid w-full max-w-5xl grid-cols-1  ${backgroundClass}`} suppressHydrationWarning>
-
-
-
                     <main className="min-h-[70vh]">
                         <div className="w-full overscroll-contain touch-pan-y">
 
