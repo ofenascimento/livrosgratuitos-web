@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaCheckDouble } from "react-icons/fa";
 import {
   MdBook,
   MdLogout,
@@ -70,13 +69,6 @@ export default function Navbar() {
                       <MdMenuBook size={20} />
                     </Link>
 
-                    <Link
-                      href="/livros-finalizados"
-                      style={{ backgroundColor: "#468966" }}
-                      className="px-3 py-3 bg-gray-800 rounded-full text-white flex flex-row justify-center items-center gap-2"
-                    >
-                      <FaCheckDouble />
-                    </Link>
 
                     <div className="relative">
                       <button
@@ -171,17 +163,6 @@ export default function Navbar() {
                 </Tooltip>
               </li>
 
-              <li>
-                <Tooltip text="Livros finalizados">
-                  <Link
-                    href="/livros-finalizados"
-                    style={{ backgroundColor: "#468966" }}
-                    className="px-3 py-3 bg-gray-800 rounded-full text-white flex flex-row justify-center items-center gap-2"
-                  >
-                    <FaCheckDouble />
-                  </Link>
-                </Tooltip>
-              </li>
               {isAuth ? (
                 <>
                   <li className="">
