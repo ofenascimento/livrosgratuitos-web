@@ -8,19 +8,20 @@ import AdResponsive from '@/components/ADS/AdResponsive';
 import useIsMobile from '@/hooks/isMobile';
 import { useBookBySlug } from '@/hooks/useBooks';
 import Metadata from '@/components/Metadata';
+import { usePdfJsLoader } from '@/hooks/usePdfJsLoader';
 
 const FALLBACK_PDF =
     'https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Fo-pequeno-principe.pdf?alt=media&token=cb7b8f63-e9ac-4154-bc40-2fad4bbec002';
 
-const PDFJS_VERSION = '3.11.174';
-const WORKER_SRC = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
-const PDFJS_SRC = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.min.js`;
-
-declare global {
-    interface Window { pdfjsLib: any; }
-}
 
 export default function PDFSlugPage({ params }: { params: { slug: string } }) {
+
+    const { pdfReady, error: scriptError } = usePdfJsLoader();
+
+    useEffect(() => {
+        if (scriptError) setError(scriptError);
+    }, [scriptError]);
+
     const searchParams = useSearchParams();
     const bookId = searchParams.get('id') ?? '';
     const { slug } = params;
@@ -39,7 +40,6 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
     const [loading, setLoading] = useState(true);
     const [pageLoading, setPageLoading] = useState(false);
     const [error, setError] = useState('');
-    const [pdfReady, setPdfReady] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [thumbnails, setThumbnails] = useState<string[]>([]);
 
@@ -54,18 +54,6 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
     useEffect(() => {
         if (isMobile) setScale(0.6);
     }, [isMobile]);
-
-    useEffect(() => {
-        if (window.pdfjsLib) { setPdfReady(true); return; }
-        const script = document.createElement('script');
-        script.src = PDFJS_SRC;
-        script.onload = () => {
-            window.pdfjsLib.GlobalWorkerOptions.workerSrc = WORKER_SRC;
-            setPdfReady(true);
-        };
-        script.onerror = () => setError('Falha ao carregar PDF.js.');
-        document.head.appendChild(script);
-    }, []);
 
     useEffect(() => {
         if (!pdfReady || bookLoading) return;
@@ -125,19 +113,17 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
         try {
             const page = await pdfRef.current.getPage(pageNum);
 
-            const dpr = window.devicePixelRatio || 1; // 👈 pega o pixel ratio
+            const dpr = window.devicePixelRatio || 1;
 
-            const viewport = page.getViewport({ scale: sc * dpr }); // 👈 escala multiplicada
+            const viewport = page.getViewport({ scale: sc * dpr });
 
             const canvas = canvasRef.current;
 
-            // Dimensões físicas (pixels reais da tela)
             canvas.width = viewport.width;
             canvas.height = viewport.height;
 
-            // Dimensões CSS (o que ocupa no layout)
-            canvas.style.width = `${viewport.width / dpr}px`;   // 👈
-            canvas.style.height = `${viewport.height / dpr}px`; // 👈
+            canvas.style.width = `${viewport.width / dpr}px`;
+            canvas.style.height = `${viewport.height / dpr}px`;
 
             const task = page.render({ canvasContext: canvas.getContext('2d')!, viewport });
             renderTaskRef.current = task;
@@ -235,7 +221,6 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
                         </button>
                     </div>
 
-                    {/* Download */}
                     <button
                         onClick={handleDownload}
                         disabled={isInitializing}
@@ -250,7 +235,6 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
                 </div>
             </header>
 
-            {/* BODY */}
             <div className="flex flex-1 overflow-hidden">
                 <aside
                     className={`${sidebarOpen ? 'w-48' : 'w-0'} transition-all duration-300 overflow-hidden bg-[#ECEAFF] shrink-0 hidden md:flex flex-col`}
