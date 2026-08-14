@@ -1,6 +1,8 @@
+"use client";
 import { useCallback, useMemo } from "react";
 import type { IReactReaderStyle } from "react-reader";
 import { ReactReaderStyle } from "react-reader";
+import type { EpubRendition } from "@/types/epubjs";
 
 export function useEpubTheme(background: string, fontSizeEpub: number, mounted: boolean) {
   const isDark = background === "dark";
@@ -43,7 +45,7 @@ export function useEpubTheme(background: string, fontSizeEpub: number, mounted: 
     [isDark, isSepia]
   );
 
-  const applyThemeToRendition = useCallback((r: any, b: string, f: number) => {
+  const applyThemeToRendition = useCallback((r: EpubRendition, b: string, f: number) => {
     const isDarkTheme = b === "dark";
     const isLightTheme = b === "light";
 
@@ -61,20 +63,13 @@ export function useEpubTheme(background: string, fontSizeEpub: number, mounted: 
         },
         a: { color: linkColor },
         "h1,h2,h3": { color: textColor },
-        "a:hover": {
-          color: textColor,
-          textDecoration: "none",
-        },
-        "a:focus": {
-          outline: "none",
-        },
-        "a:active": {
-          color: textColor,
-        },
+        "a:hover": { color: textColor, textDecoration: "none" },
+        "a:focus": { outline: "none" },
+        "a:active": { color: textColor },
       });
 
       r.themes.fontSize(`${f}%`);
-      r.views().forEach((view: any) => view.pane && view.pane.render());
+      r.views().forEach((view) => view.pane?.render?.());
     } catch (e) {
       console.warn("Erro ao aplicar tema:", e);
     }

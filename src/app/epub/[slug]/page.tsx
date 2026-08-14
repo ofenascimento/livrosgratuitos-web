@@ -194,7 +194,7 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                                         url={bookUrl}
                                         location={location}
                                         locationChanged={onLocationChanged}
-                                        getRendition={onRendition}
+                                        getRendition={onRendition as any}
                                         epubOptions={{ flow: "paginated", spread: "none" }}
                                         showToc={false}
                                         readerStyles={READER_STYLES}

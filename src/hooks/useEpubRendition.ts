@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { readingProgressService } from "@/services/readingProgress.service";
+import type { EpubRendition, EpubNavItem } from "@/types/epubjs";
 
 interface PageData {
   currentPage: number;
@@ -13,7 +14,7 @@ interface UseEpubRenditionParams {
   isAuth: boolean | undefined;
   background: string;
   fontSizeEpub: number;
-  applyThemeToRendition: (r: any, b: string, f: number) => void;
+  applyThemeToRendition: (r: EpubRendition, b: string, f: number) => void;
 }
 
 export function useEpubRendition({
@@ -26,8 +27,8 @@ export function useEpubRendition({
   const [location, setLocation] = useState<string | number | null>(null);
   const [saveLocation, setSaveLocation] = useState<string | null>(null);
   const [initialCfi, setInitialCfi] = useState<string | null>(null);
-  const [rendition, setRendition] = useState<any>(null);
-  const [toc, setToc] = useState<any[]>([]);
+  const [rendition, setRendition] = useState<EpubRendition | null>(null);
+  const [toc, setToc] = useState<EpubNavItem[]>([]);
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [locationsReady, setLocationsReady] = useState(false);
 
@@ -61,7 +62,7 @@ export function useEpubRendition({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookId, isAuth]);
 
-  const computeFromCfi = useCallback((r: any, cfi: string) => {
+  const computeFromCfi = useCallback((r: EpubRendition, cfi: string) => {
     if (!r?.book?.locations || !r.book.locations.length()) return;
     try {
       const currentPageNumber = r.book.locations.locationFromCfi(cfi);
@@ -87,7 +88,7 @@ export function useEpubRendition({
       setLocation(loc);
       setSaveLocation(loc);
 
-      if (locationsReady) {
+      if (locationsReady && rendition) {
         computeFromCfi(rendition, loc);
       }
     },
@@ -95,15 +96,15 @@ export function useEpubRendition({
   );
 
   const onRendition = useCallback(
-    (r: any) => {
+    (r: EpubRendition) => {
       setRendition(r);
       setLocationsReady(false);
 
       applyThemeToRendition(r, background, fontSizeEpub);
 
-      r.book.loaded.navigation.then((nav: any) => setToc(nav.toc || []));
+      r.book.loaded.navigation.then((nav) => setToc(nav.toc || []));
 
-      r.on("relocated", (loc: any) => {
+      r.on("relocated", (loc) => {
         const cfi = loc?.start?.cfi;
         if (cfi && typeof cfi === "string") {
           setLocation(cfi);
@@ -127,7 +128,7 @@ export function useEpubRendition({
             }
           }
         })
-        .catch((err: any) => {
+        .catch((err) => {
           console.error("Erro ao gerar as localizações:", err);
         });
     },

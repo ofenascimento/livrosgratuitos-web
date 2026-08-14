@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect } from "react";
 import { useSaveProgress } from "@/hooks/useReadingProgress";
+import type { EpubRendition } from "@/types/epubjs";
 
 interface PageData {
   percentage: number;
@@ -10,7 +11,7 @@ interface UseEpubProgressPersistenceParams {
   bookId: string | undefined;
   isAuth: boolean | undefined;
   location: string | number | null;
-  rendition: any;
+  rendition: EpubRendition | null;
   pageData: PageData | null;
   saveLocation: string | null;
 }
