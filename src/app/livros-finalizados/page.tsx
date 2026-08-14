@@ -6,17 +6,15 @@ import CustomLayout from "@/components/CustomLayout/CustomLayout";
 import Footer from "@/components/Footer/Footer";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
 import Navbar from "@/components/Navbar/Navbar";
-import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import Title from "@/components/Title/Title";
 import useAuth from "@/hooks/useAuth";
-import useFetchFavoriteBooks from "@/hooks/useFetchFavoriteBooks";
 import useFetchFinishedBooks from "@/hooks/useFetchFinishedBooks";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-function FavoritosPage() {
+function FinalizadosPage() {
   const isAuth = useAuth();
   const router = useRouter();
 
@@ -169,4 +167,4 @@ function FavoritosPage() {
   );
 }
 
-export default FavoritosPage;
+export default FinalizadosPage;

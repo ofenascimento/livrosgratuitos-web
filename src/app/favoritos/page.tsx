@@ -10,7 +10,7 @@ import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import TabBar from "@/components/TabBar/TabBar";
 import Title from "@/components/Title/Title";
 import useAuth from "@/hooks/useAuth";
-import useFetchFavoriteBooks from "@/hooks/useFetchFavoriteBooks";
+import { useFavoriteBooksList } from "@/hooks/useFavorites";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,7 @@ function FavoritosPage() {
   const isAuth = useAuth();
   const router = useRouter();
 
-  const { favoriteBooks, isLoading } = useFetchFavoriteBooks();
+  const { favoriteBooks, isLoading } = useFavoriteBooksList();
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {

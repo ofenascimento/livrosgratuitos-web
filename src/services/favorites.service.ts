@@ -3,7 +3,7 @@ import { getUserIdFromToken } from "@/hooks/getUserIdFromToken";
 
 async function getAuth() {
   const token = localStorage.getItem("userToken");
-  const userId = await getUserIdFromToken();
+  const userId = token ? await getUserIdFromToken() : null;
   return { token, userId };
 }
 
@@ -36,6 +36,20 @@ export const favoritesService = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro HTTP: ${response.status}`);
+    }
+
+    return response.json();
+  },
+
+  async getAll() {
+    const { token, userId } = await getAuth();
+
+    const response = await fetch(`${urlApi}/users/${userId}/favorite-books`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     if (!response.ok) {

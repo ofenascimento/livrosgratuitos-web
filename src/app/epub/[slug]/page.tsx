@@ -11,8 +11,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
-import { addEpubProgress } from "@/hooks/addEpubProgress";
-import { getEpubProgress } from "@/hooks/getEpubProgress";
+import { useSaveProgress } from "@/hooks/useReadingProgress";
+import { readingProgressService } from "@/services/readingProgress.service";
 import useAuth from "@/hooks/useAuth";
 import ModalToc from "@/components/Modals/TocModal/TocModal";
 import ModalInfo from "@/components/Modals/ModalInfo/ModalInfo";
@@ -28,7 +28,6 @@ interface PageData {
     percentage: number;
 }
 
-/** 🔧 Hook para travar um 100vh estável em webviews (Instagram, etc.) */
 function useStableVhForIG() {
     useEffect(() => {
         const setVh = () => {
@@ -54,9 +53,11 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
     const searchParams = useSearchParams();
     const slug = params?.slug as string;
     const { book, isLoading, error } = useBookBySlug(slug);
-    
+
     const isAuth = useAuth();
     const router = useRouter();
+
+    const saveProgress = useSaveProgress();
 
     const [bookUrl, setBookUrl] = useState<string>("");
     const [location, setLocation] = useState<string | number | null>(null);
@@ -152,7 +153,6 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
 
         (async () => {
 
-
             if (!book?._id || !isAuth) {
 
                 if (!didCancel && location === null) {
@@ -163,12 +163,11 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
 
             try {
 
-                const data = await getEpubProgress(book._id);
+                const data = await readingProgressService.getProgress(book._id);
 
-
-                if (!didCancel && data?.cfi && typeof data.cfi === "string") {
-                    setInitialCfi(data.cfi);
-                    setLocation(data.cfi);
+                if (!didCancel && data?.currentCfi && typeof data.currentCfi === "string") {
+                    setInitialCfi(data.currentCfi);
+                    setLocation(data.currentCfi);
                 } else if (!didCancel && location === null) {
                     setLocation(0);
                 }
@@ -198,16 +197,15 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                 percentage = pageData.percentage;
             }
 
-
-            await addEpubProgress(
-                book._id,
-                Math.max(0, Math.min(100, Math.round(percentage * 100))),
-                location
-            );
+            saveProgress.mutate({
+                livroId: book._id,
+                progressPercentage: Math.max(0, Math.min(100, Math.round(percentage * 100))),
+                currentCfi: location,
+            });
         } catch (e) {
             console.error("Erro ao salvar progresso EPUB:", e);
         }
-    }, [isAuth, book?._id, location, rendition, pageData?.percentage]);
+    }, [isAuth, book?._id, location, rendition, pageData?.percentage, saveProgress]);
 
     useEffect(() => {
         if (!isAuth) return;
@@ -249,15 +247,15 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
         const timeout = setTimeout(() => {
             const percentage = rendition.book.locations.percentageFromCfi(saveLocation);
 
-            addEpubProgress(
-                book._id,
-                Math.max(0, Math.min(100, Math.round(percentage * 100))),
-                saveLocation
-            );
+            saveProgress.mutate({
+                livroId: book._id,
+                progressPercentage: Math.max(0, Math.min(100, Math.round(percentage * 100))),
+                currentCfi: saveLocation,
+            });
         }, 2000);
 
         return () => clearTimeout(timeout);
-    }, [saveLocation, isAuth, book?._id, rendition]);
+    }, [saveLocation, isAuth, book?._id, rendition, saveProgress]);
 
     const onLocationChanged = useCallback(
         (loc: string) => {
