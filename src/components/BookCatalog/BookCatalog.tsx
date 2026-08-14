@@ -6,8 +6,6 @@ import Title from "../Title/Title";
 import Card from "../Card/Card";
 import { IBookCatalog } from "./types";
 import CardBookSkeleton from "../Skeleton/CardBookSkeleton";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
 
 function BookCatalog({ titulo, categoria }: IBookCatalog) {
   const { books, isLoading } = useBooksList({
