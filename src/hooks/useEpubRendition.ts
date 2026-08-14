@@ -9,6 +9,16 @@ interface PageData {
   percentage: number;
 }
 
+interface EpubNavigation {
+  toc: EpubNavItem[];
+}
+
+interface EpubLocation {
+  start?: {
+    cfi?: string;
+  };
+}
+
 interface UseEpubRenditionParams {
   bookId: string | undefined;
   isAuth: boolean | undefined;
@@ -102,9 +112,9 @@ export function useEpubRendition({
 
       applyThemeToRendition(r, background, fontSizeEpub);
 
-      r.book.loaded.navigation.then((nav) => setToc(nav.toc || []));
+      r.book.loaded.navigation.then((nav: EpubNavigation) => setToc(nav.toc || []));
 
-      r.on("relocated", (loc) => {
+      r.on("relocated", (loc: EpubLocation) => {
         const cfi = loc?.start?.cfi;
         if (cfi && typeof cfi === "string") {
           setLocation(cfi);
@@ -128,7 +138,7 @@ export function useEpubRendition({
             }
           }
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           console.error("Erro ao gerar as localizações:", err);
         });
     },
