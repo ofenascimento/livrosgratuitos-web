@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { MdClose, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import styles from "./styles.module.scss";
 
-import { urlApi } from "@/utils/url";
 import SpinnerLoader from "@/components/Loader/Spinner";
+import { useLogin } from "@/hooks/useUsers";
 
 interface IModalLogin {
   isOpen: boolean;
@@ -16,9 +16,10 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const login = useLogin();
 
   useEffect(() => {
     if (modalRef.current) {
@@ -32,34 +33,20 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const handleLogin = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${urlApi}/users/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+  const handleLogin = () => {
+    login.mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          localStorage.setItem("userToken", data.token);
+          document.cookie = `userToken=${data.token}; path=/; domain=.livrosgratuitos.com; Secure; SameSite=Strict`;
+          window.location.reload();
         },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-      const data = await response.json();
-
-      if (response.status === 201) {
-        await localStorage.setItem("userToken", data.token);
-        document.cookie = `userToken=${data.token}; path=/; domain=.livrosgratuitos.com; Secure; SameSite=Strict`;
-        window.location.reload();
+        onError: () => {
+          setError(true);
+        },
       }
-      if (response.status === 400) {
-        setError(true);
-      }
-    } catch (error) {
-      setError(true);
-    } finally {
-      setIsLoading(false);
-    }
+    );
   };
 
   return (
@@ -69,12 +56,10 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
       <div className={styles.modalOverlay} onClick={onClose}></div>
       <div ref={modalRef} className={`${styles.modalContent} font-redRat`}>
 
-        {/* Close */}
         <div className="flex justify-end items-end">
           <MdClose className="cursor-pointer" size={20} onClick={onClose} />
         </div>
 
-        {/* Header */}
         <h2 className="text-3xl font-redRat font-bold text-center text-main-100">
           Bem vindo de volta
         </h2>
@@ -82,7 +67,6 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           Entre com o seu email
         </p>
 
-        {/* Error */}
         {error && (
           <div className="w-full pb-2 rounded-lg flex justify-center items-center">
             <span className="text-center w-full text-red-400 font-redRat font-normal text-sm">
@@ -91,7 +75,6 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           </div>
         )}
 
-        {/* Input email */}
         <div className="flex flex-col gap-1 mx-2 mb-1">
           <label className="text-xs font-redRat font-normal text-gray-400 pl-1">
             Email
@@ -108,7 +91,6 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           />
         </div>
 
-        {/* Input senha */}
         <div className="flex flex-col gap-1 mx-2 mb-1">
           <label className="text-xs font-redRat font-normal text-gray-400 pl-1">
             Senha
@@ -139,15 +121,13 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Button */}
         <button
           onClick={handleLogin}
           className="mt-4 bg-main-400 rounded-lg text-white px-4 py-2 mx-2 font-redRat font-semibold text-base"
         >
-          {isLoading ? <SpinnerLoader /> : "Entrar"}
+          {login.isPending ? <SpinnerLoader /> : "Entrar"}
         </button>
 
-        {/* Terms */}
         <div className="mt-6 px-4">
           <p className="text-xs text-center border-b-2 border-b-gray-600 pb-4 font-redRat font-normal">
             Ao continuar você concorda com nossos{" "}
@@ -156,7 +136,6 @@ const ModalLogin: React.FC<IModalLogin> = ({ isOpen, onClose }) => {
           </p>
         </div>
 
-        {/* Footer links */}
         <div className="text-sm mt-6 flex flex-col justify-center items-center gap-2 font-redRat font-normal">
           <h5>
             Esqueceu a senha?{" "}

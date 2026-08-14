@@ -1,11 +1,10 @@
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { MdClose, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { AiOutlineWarning } from "react-icons/ai";
 import styles from "./styles.module.scss";
 
-import { urlApi } from "@/utils/url";
 import SpinnerLoader from "@/components/Loader/Spinner";
+import { useRegister } from "@/hooks/useUsers";
 
 interface IModalCreateAccount {
   isOpen: boolean;
@@ -18,10 +17,11 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showWarnings, setShowWarnings] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+
+  const register = useRegister();
 
   useEffect(() => {
     if (modalRef.current) {
@@ -46,30 +46,19 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
     return emailRegex.test(email);
   };
 
-  const handleCreateAccount = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${urlApi}/users/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+  const handleCreateAccount = () => {
+    register.mutate(
+      { email, password, name },
+      {
+        onSuccess: (data) => {
+          localStorage.setItem("userToken", data.token);
+          window.location.reload();
         },
-        body: JSON.stringify({ email, password, name }),
-      });
-      const data = await response.json();
-
-      if (response.status === 201) {
-        await localStorage.setItem("userToken", data.token);
-        window.location.reload();
-      } else {
-        setError(data.message || "Erro ao criar a conta.");
+        onError: (err: Error) => {
+          setError(err.message || "Ocorreu um erro inesperado. Tente novamente.");
+        },
       }
-    } catch (error) {
-      console.error(error);
-      setError("Ocorreu um erro inesperado. Tente novamente.");
-    } finally {
-      setIsLoading(false);
-    }
+    );
   };
 
   const handleValidation = () => {
@@ -97,12 +86,10 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
       <div className={styles.modalOverlay} onClick={handleClose}></div>
       <div ref={modalRef} className={`${styles.modalContent} font-redRat`}>
 
-        {/* Close */}
         <div className="flex justify-end items-end">
           <MdClose className="cursor-pointer" size={20} onClick={handleClose} />
         </div>
 
-        {/* Header */}
         <h2 className="text-3xl font-redRat font-bold text-center text-main-100">
           Criar conta
         </h2>
@@ -110,7 +97,6 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
           Crie sua conta para salvar seu progresso
         </p>
 
-        {/* Error */}
         {error && (
           <div className="w-full pb-2 rounded-lg flex justify-center items-center">
             <span className="text-center w-full text-red-400 font-redRat font-normal text-sm">
@@ -119,10 +105,8 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
           </div>
         )}
 
-        {/* Form */}
         {!showWarnings && (
           <>
-            {/* Input email */}
             <div className="flex flex-col gap-1 mx-2 mb-1">
               <label className="text-xs font-redRat font-normal text-gray-400 pl-1">
                 Email
@@ -140,7 +124,6 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
               />
             </div>
 
-            {/* Input nome */}
             <div className="flex flex-col gap-1 mx-2 mb-1">
               <label className="text-xs font-redRat font-normal text-gray-400 pl-1">
                 Nome
@@ -158,7 +141,6 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
               />
             </div>
 
-            {/* Input senha */}
             <div className="flex flex-col gap-1 mx-2 mb-1">
               <label className="text-xs font-redRat font-normal text-gray-400 pl-1">
                 Senha
@@ -190,7 +172,6 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
               </div>
             </div>
 
-            {/* Button */}
             <button
               onClick={handleValidation}
               className="mt-4 bg-main-400 rounded-lg text-white px-4 py-2 mx-2 font-redRat font-semibold text-base"
@@ -200,7 +181,6 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
           </>
         )}
 
-        {/* Warnings */}
         {showWarnings && (
           <>
             <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md flex items-start space-x-2">
@@ -221,12 +201,11 @@ const ModalCreateAccount: React.FC<IModalCreateAccount> = ({ isOpen, onClose }) 
               onClick={handleCreateAccount}
               className="mt-4 bg-main-400 rounded-lg text-white px-4 py-2 mx-2 font-redRat font-semibold text-base"
             >
-              {isLoading ? <SpinnerLoader /> : "Continuar"}
+              {register.isPending ? <SpinnerLoader /> : "Continuar"}
             </button>
           </>
         )}
 
-        {/* Terms */}
         <div className="mt-6 px-4">
           <p className="text-xs text-center pb-4 font-redRat font-normal">
             Ao continuar você concorda com nossos{" "}
