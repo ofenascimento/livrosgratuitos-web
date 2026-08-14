@@ -14,10 +14,12 @@ export interface EpubSpine {
     each: (callback: (item: EpubSpineItem) => void | false) => void;
 }
 
+export type EpubRendition = Rendition;
+
 export interface EpubNavItem {
-    href: string;
-    label: string;
-    subitems?: EpubNavItem[];
+  href: string;
+  label: string;
+  subitems?: EpubNavItem[];
 }
 
 export interface EpubNavigation {
