@@ -53,13 +53,16 @@ const AdBannerMobile = ({
   return (
     !adUnfilled && (
       <div
-        className={`${customClassName || ""} w-full justify-center items-center flex md:hidden ${
+        className={`${customClassName || ""} w-full flex-col justify-center items-center flex md:hidden gap-1 ${
           fixed ? "fixed bottom-0 left-0 z-50" : ""
         }`}
       >
+        <span className="text-[10px] uppercase tracking-wide text-slate-400 font-medium">
+          Anúncio
+        </span>
         <ins
           ref={insRef}
-          className={`adsbygoogle bg-slate-700 rounded-lg relative ${isLoading ? "animate-pulse" : ""}`}
+          className={`adsbygoogle rounded-lg relative ${isLoading ? "bg-slate-700 animate-pulse" : "bg-transparent"}`}
           style={{ display: "inline-block", width: 350, height: 50 }}
           data-ad-client="ca-pub-2529229033686497"
           data-ad-slot={dataAdSlot}

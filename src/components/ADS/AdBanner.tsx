@@ -67,13 +67,18 @@ const AdBanner = ({
         className={`
           ${customClassName || ""}
           w-full justify-center items-center hidden md:flex
+          ${vertical ? "flex-col" : "flex-row"}
+          gap-1
           transition-all duration-500 ease-out overflow-hidden
           ${fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""}
         `}
       >
+        <span className="text-[10px] uppercase tracking-wide text-slate-400 font-medium">
+          Anúncio
+        </span>
         <ins
           ref={insRef}
-          className={`adsbygoogle rounded-lg ${!vertical ? "bg-slate-700" : "bg-transparent"} relative ${isLoading && !vertical ? "animate-pulse" : ""}`}
+          className={`adsbygoogle rounded-lg ${!vertical && isLoading ? "bg-slate-700" : "bg-transparent"} relative ${isLoading && !vertical ? "animate-pulse" : ""}`}
           style={{ display: "inline-block", width, height }}
           data-ad-client="ca-pub-2529229033686497"
           data-ad-slot={dataAdSlot}
