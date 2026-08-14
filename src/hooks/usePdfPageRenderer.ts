@@ -1,10 +1,11 @@
 import { useCallback, useRef, useState, MutableRefObject } from "react";
+import type { PDFDocumentProxy, PDFRenderTask } from "@/types/pdfjs";
 
 export function usePdfPageRenderer(
-  pdf: any,
+  pdf: PDFDocumentProxy | null,
   canvasRef: MutableRefObject<HTMLCanvasElement | null>
 ) {
-  const renderTaskRef = useRef<any>(null);
+  const renderTaskRef = useRef<PDFRenderTask | null>(null);
   const [pageLoading, setPageLoading] = useState(false);
 
   const renderPage = useCallback(
@@ -27,8 +28,8 @@ export function usePdfPageRenderer(
         const task = page.render({ canvasContext: canvas.getContext("2d")!, viewport });
         renderTaskRef.current = task;
         await task.promise;
-      } catch (e: any) {
-        if (e?.name === "RenderingCancelledException") return;
+      } catch (e) {
+        if (e instanceof Error && e.name === "RenderingCancelledException") return;
       } finally {
         setPageLoading(false);
       }

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import type { PDFDocumentProxy } from "@/types/pdfjs";
 
 export function usePdfDocument(pdfUrl: string, ready: boolean) {
-  const pdfRef = useRef<any>(null);
+  const pdfRef = useRef<PDFDocumentProxy | null>(null);
 
   const [numPages, setNumPages] = useState(0);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
@@ -40,7 +41,7 @@ export function usePdfDocument(pdfUrl: string, ready: boolean) {
     };
   }, [ready, pdfUrl]);
 
-  const generateThumbnails = async (pdf: any, cancelled: boolean) => {
+  const generateThumbnails = async (pdf: PDFDocumentProxy, cancelled: boolean) => {
     const total = pdf.numPages;
     const thumbs = new Array(total).fill("");
     setThumbnails(new Array(total).fill(""));
