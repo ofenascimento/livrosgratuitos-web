@@ -10,6 +10,7 @@ import { useBookBySlug } from '@/hooks/useBooks';
 import Metadata from '@/components/Metadata';
 import { usePdfJsLoader } from '@/hooks/usePdfJsLoader';
 import { usePdfDocument } from '@/hooks/usePdfDocument';
+import { usePdfPageRenderer } from '@/hooks/usePdfPageRenderer';
 
 const FALLBACK_PDF =
     'https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Fo-pequeno-principe.pdf?alt=media&token=cb7b8f63-e9ac-4154-bc40-2fad4bbec002';
@@ -20,6 +21,8 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
     const bookId = searchParams.get('id') ?? '';
     const { slug } = params;
 
+
+
     const { book, isLoading: bookLoading } = useBookBySlug(slug);
     const pdfUrl = book?.pdf || FALLBACK_PDF;
 
@@ -29,13 +32,18 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
         pdfReady && !bookLoading
     );
 
+
+
+
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const renderTaskRef = useRef<any>(null);
+
+    const { renderPage, pageLoading } = usePdfPageRenderer(pdf, canvasRef);
+    
     const touchX = useRef(0);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [scale, setScale] = useState(1);
-    const [pageLoading, setPageLoading] = useState(false);
     const [error, setError] = useState('');
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [inputPage, setInputPage] = useState('1');
@@ -55,34 +63,6 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
         if (isMobile) setScale(0.6);
     }, [isMobile]);
 
-    const renderPage = useCallback(async (pageNum: number, sc: number) => {
-        if (!pdf || !canvasRef.current) return;
-        renderTaskRef.current?.cancel();
-        setPageLoading(true);
-        try {
-            const page = await pdf.getPage(pageNum);
-
-            const dpr = window.devicePixelRatio || 1;
-
-            const viewport = page.getViewport({ scale: sc * dpr });
-
-            const canvas = canvasRef.current;
-
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-
-            canvas.style.width = `${viewport.width / dpr}px`;
-            canvas.style.height = `${viewport.height / dpr}px`;
-
-            const task = page.render({ canvasContext: canvas.getContext('2d')!, viewport });
-            renderTaskRef.current = task;
-            await task.promise;
-        } catch (e: any) {
-            if (e?.name === 'RenderingCancelledException') return;
-        } finally {
-            setPageLoading(false);
-        }
-    }, [pdf]);
 
     useEffect(() => {
         if (!loading && pdf) renderPage(currentPage, scale);
