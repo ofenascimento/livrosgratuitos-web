@@ -9,19 +9,13 @@ import useIsMobile from '@/hooks/isMobile';
 import { useBookBySlug } from '@/hooks/useBooks';
 import Metadata from '@/components/Metadata';
 import { usePdfJsLoader } from '@/hooks/usePdfJsLoader';
+import { usePdfDocument } from '@/hooks/usePdfDocument';
 
 const FALLBACK_PDF =
     'https://firebasestorage.googleapis.com/v0/b/livrosgratuitos-14482.appspot.com/o/pdf%2Fo-pequeno-principe.pdf?alt=media&token=cb7b8f63-e9ac-4154-bc40-2fad4bbec002';
 
 
 export default function PDFSlugPage({ params }: { params: { slug: string } }) {
-
-    const { pdfReady, error: scriptError } = usePdfJsLoader();
-
-    useEffect(() => {
-        if (scriptError) setError(scriptError);
-    }, [scriptError]);
-
     const searchParams = useSearchParams();
     const bookId = searchParams.get('id') ?? '';
     const { slug } = params;
@@ -29,21 +23,27 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
     const { book, isLoading: bookLoading } = useBookBySlug(slug);
     const pdfUrl = book?.pdf || FALLBACK_PDF;
 
+    const { pdfReady, error: scriptError } = usePdfJsLoader();
+    const { pdf, numPages, thumbnails, loading, error: pdfError } = usePdfDocument(
+        pdfUrl,
+        pdfReady && !bookLoading
+    );
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const pdfRef = useRef<any>(null);
     const renderTaskRef = useRef<any>(null);
     const touchX = useRef(0);
 
-    const [numPages, setNumPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [scale, setScale] = useState(1);
-    const [loading, setLoading] = useState(true);
     const [pageLoading, setPageLoading] = useState(false);
     const [error, setError] = useState('');
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [thumbnails, setThumbnails] = useState<string[]>([]);
-
     const [inputPage, setInputPage] = useState('1');
+
+    useEffect(() => {
+        if (scriptError) setError(scriptError);
+        else if (pdfError) setError(pdfError);
+    }, [scriptError, pdfError]);
 
     useEffect(() => {
         setInputPage(String(currentPage));
@@ -55,63 +55,12 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
         if (isMobile) setScale(0.6);
     }, [isMobile]);
 
-    useEffect(() => {
-        if (!pdfReady || bookLoading) return;
-
-        let cancelled = false;
-
-        (async () => {
-            try {
-                setLoading(true);
-                setThumbnails([]);
-                setCurrentPage(1);
-                pdfRef.current = null;
-
-                const pdf = await window.pdfjsLib.getDocument(pdfUrl).promise;
-                if (cancelled) return;
-
-                pdfRef.current = pdf;
-                setNumPages(pdf.numPages);
-                setLoading(false);
-                generateThumbnails(pdf);
-            } catch {
-                if (!cancelled) {
-                    setError('Não foi possível carregar o livro.');
-                    setLoading(false);
-                }
-            }
-        })();
-
-        return () => { cancelled = true; };
-    }, [pdfReady, pdfUrl, bookLoading]);
-
-    const generateThumbnails = async (pdf: any) => {
-        const total = pdf.numPages;
-        const thumbs = new Array(total).fill('');
-        setThumbnails(new Array(total).fill(''));
-
-        const promises = Array.from({ length: total }, async (_, i) => {
-            try {
-                const page = await pdf.getPage(i + 1);
-                const viewport = page.getViewport({ scale: 0.3 });
-                const canvas = document.createElement('canvas');
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-                await page.render({ canvasContext: canvas.getContext('2d')!, viewport }).promise;
-                thumbs[i] = canvas.toDataURL();
-                setThumbnails([...thumbs]);
-            } catch { }
-        });
-
-        await Promise.all(promises);
-    };
-
     const renderPage = useCallback(async (pageNum: number, sc: number) => {
-        if (!pdfRef.current || !canvasRef.current) return;
+        if (!pdf || !canvasRef.current) return;
         renderTaskRef.current?.cancel();
         setPageLoading(true);
         try {
-            const page = await pdfRef.current.getPage(pageNum);
+            const page = await pdf.getPage(pageNum);
 
             const dpr = window.devicePixelRatio || 1;
 
@@ -133,11 +82,11 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
         } finally {
             setPageLoading(false);
         }
-    }, []);
+    }, [pdf]);
 
     useEffect(() => {
-        if (!loading && pdfRef.current) renderPage(currentPage, scale);
-    }, [currentPage, scale, loading, renderPage]);
+        if (!loading && pdf) renderPage(currentPage, scale);
+    }, [currentPage, scale, loading, pdf, renderPage]);
 
     const goTo = (p: number) => {
         setCurrentPage(Math.max(1, Math.min(p, numPages)));
@@ -337,7 +286,7 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
                 <div
                     className="fixed bottom-6 z-50 pointer-events-none flex justify-center"
                     style={{
-                        left: sidebarOpen && !isMobile ? '12rem' : '0', // 12rem = w-48 da sidebar + toggle (w-5)
+                        left: sidebarOpen && !isMobile ? '12rem' : '0',
                         right: 0,
                         transition: 'left 0.3s',
                     }}
