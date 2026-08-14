@@ -4,6 +4,12 @@ import type { IReactReaderStyle } from "react-reader";
 import { ReactReaderStyle } from "react-reader";
 import type { EpubRendition } from "@/types/epubjs";
 
+interface EpubView {
+  pane?: {
+    render?: () => void;
+  };
+}
+
 export function useEpubTheme(background: string, fontSizeEpub: number, mounted: boolean) {
   const isDark = background === "dark";
   const isSepia = background === "sepia";
@@ -69,7 +75,7 @@ export function useEpubTheme(background: string, fontSizeEpub: number, mounted: 
       });
 
       r.themes.fontSize(`${f}%`);
-      r.views().forEach((view) => view.pane?.render?.());
+      r.views().forEach((view: EpubView) => view.pane?.render?.());
     } catch (e) {
       console.warn("Erro ao aplicar tema:", e);
     }
