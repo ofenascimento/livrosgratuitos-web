@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AdBanner from '@/components/ADS/AdBanner';
 import AdBannerMobile from '@/components/ADS/AdsBannerMobile';
 import AdResponsive from '@/components/ADS/AdResponsive';
-import useIsMobile from '@/hooks/isMobile';
+
 import { useBookBySlug } from '@/hooks/useBooks';
 import Metadata from '@/components/Metadata';
 import { usePdfJsLoader } from '@/hooks/usePdfJsLoader';
@@ -15,6 +15,7 @@ import PDFReaderHeader from '@/components/PDFReader/PDFReaderHeader';
 import ThumbnailSidebar from '@/components/PDFReader/ThumbnailSidebar';
 import PDFCanvas from '@/components/PDFReader/PDFCanvas';
 import PageNavigator from '@/components/PDFReader/PageNavigator';
+import useIsMobile from '@/utils/isMobile';
 
 export default function PDFSlugPage({ params }: { params: { slug: string } }) {
     const router = useRouter();

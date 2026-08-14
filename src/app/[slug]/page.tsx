@@ -13,7 +13,6 @@ import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import LivroPageSkeleton from "@/components/Skeleton/LivroPageSkeleton";
 import { useToast } from "@/components/Toast/ToastProvider";
 import useAuth from "@/hooks/useAuth";
-import { useBook } from "@/hooks/useBook";
 import { useBookBySlug } from "@/hooks/useBooks";
 import useCopyToClipboard from "@/utils/useToClipboard";
 import Link from "next/link";
@@ -28,7 +27,6 @@ function Livros() {
     const slug = params?.slug as string;
     const { book, isLoading } = useBookBySlug(slug);
     const [imageLoaded, setImageLoaded] = useState(false);
-    const { setTitle, setUrlBook, setBookId, setPdfUrlBook } = useBook();
     const [isFavorited, setIsFavorited] = useState<boolean | null>(null);
     const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
     const [modalLoginIsOpen, setModalLoginIsOpen] = useState<boolean>(false);
@@ -56,12 +54,6 @@ function Livros() {
 
     useEffect(() => {
         if (book && book.capa) {
-            setTitle(book.titulo);
-            setUrlBook(book.txt);
-            if (book.pdf) {
-                setPdfUrlBook(book.pdf);
-            }
-            setBookId(book._id);
             setIsFavorited(book.isFavorite ?? false);
             const img = new Image();
             img.src = book.capa;
