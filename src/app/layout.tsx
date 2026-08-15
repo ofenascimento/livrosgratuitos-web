@@ -10,7 +10,6 @@ import {
   Nunito,
   Red_Hat_Display,
   DM_Sans,
-
 } from "next/font/google";
 import "./globals.css";
 import { metadata } from "./metadata";
@@ -18,6 +17,7 @@ import { metadata } from "./metadata";
 import GoogleAdsense from "@/components/Ads";
 import Providers from "./providers";
 import { ToastProvider } from "@/components/Toast/ToastProvider";
+import AuthBootstrap from "@/components/AuthBootstrap/AuthBootstrap";
 
 const poppins = Poppins({
   weight: ["400", "500", "700"],
@@ -139,21 +139,22 @@ export default function RootLayout({
 
       <body
         className={`
-          ${poppins.variable}
-          ${inter.variable}
-          ${raleway.variable}
-          ${lora.variable}
-          ${merriweather.variable}
-          ${lexend.variable}
-          ${darkerGrotesque.variable}
-          ${nunito.variable}
-          ${redHat.variable}
-          ${dmSans.variable}
+${poppins.variable}
+${inter.variable}
+${raleway.variable}
+${lora.variable}
+${merriweather.variable}
+${lexend.variable}
+${darkerGrotesque.variable}
+${nunito.variable}
+${redHat.variable}
+${dmSans.variable}
           font-raleway
           bg-black
           bg-blured
         `}
       >
+        <AuthBootstrap />
         <ToastProvider>
           <Providers>
             {children}
