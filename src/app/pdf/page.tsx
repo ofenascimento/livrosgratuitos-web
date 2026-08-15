@@ -25,13 +25,13 @@ const BookCard = ({ book }: { book: IBook }) => {
     <Link
       href={href}
       className="group flex flex-col gap-3 cursor-pointer"
-      aria-label={`Ler ${book.titulo} de ${book.autor} em PDF gratuitamente`}
+      aria-label={`Ler ${book.title} de ${book.author} em PDF gratuitamente`}
     >
       <div className="relative overflow-hidden rounded-2xl aspect-[2/3] bg-stone-100 shadow-sm ring-1 ring-stone-200 transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-lg group-hover:shadow-stone-300/60">
-        {book.capa ? (
+        {book.cover ? (
           <img
-            src={book.capa}
-            alt={`Capa do livro ${book.titulo} de ${book.autor}`}
+            src={book.cover}
+            alt={`Capa do livro ${book.title} de ${book.author}`}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             loading="lazy"
           />
@@ -47,9 +47,9 @@ const BookCard = ({ book }: { book: IBook }) => {
 
       <div className="flex flex-col gap-0.5 px-0.5">
         <h2 className="font-redHat text-sm font-semibold text-stone-800 leading-snug line-clamp-2 group-hover:text-stone-950 transition-colors">
-          {book.titulo}
+          {book.title}
         </h2>
-        <p className="font-dmSans text-xs text-stone-500 line-clamp-1">{book.autor}</p>
+        <p className="font-dmSans text-xs text-stone-500 line-clamp-1">{book.author}</p>
 
       </div>
     </Link>
@@ -68,12 +68,12 @@ export default function LivrosPDFPage() {
   const filtered = books.filter((b) => {
     const q = search.toLowerCase();
     const matchesSearch =
-      b.titulo.toLowerCase().includes(q) ||
-      b.autor.toLowerCase().includes(q) ||
-      b.categoria?.some((c) => c.toLowerCase().includes(q));
+      b.title.toLowerCase().includes(q) ||
+      b.author.toLowerCase().includes(q) ||
+      b.categories?.some((c) => c.toLowerCase().includes(q));
     const matchesCategory =
       activeCategory === "Todos" ||
-      b.categoria?.some((c) => c.toLowerCase() === activeCategory.toLowerCase());
+      b.categories?.some((c) => c.toLowerCase() === activeCategory.toLowerCase());
     return matchesSearch && matchesCategory;
   });
 
@@ -128,7 +128,7 @@ export default function LivrosPDFPage() {
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Buscar por título, autor ou categoria"
+                  placeholder="Buscar por título, author ou categoria"
                   className="font-dmSans w-full rounded-xl bg-white py-3 pl-11 pr-4 text-sm text-stone-900 placeholder-stone-600 ring-1 ring-gray-300 outline-none focus:ring-2 focus:ring-main-400/70 transition-shadow shadow-sm"
                   aria-label="Buscar livros em PDF"
                 />
@@ -234,7 +234,7 @@ export default function LivrosPDFPage() {
                     Domínio público e gratuito
                   </h2>
                   <p className="font-dmSans text-sm text-stone-800 leading-relaxed">
-                    Todos os títulos estão em domínio público ou foram disponibilizados com autorização. Acervo 100% legal e gratuito para sempre.
+                    Todos os títulos estão em domínio público ou foram disponibilizados com authorização. Acervo 100% legal e gratuito para sempre.
                   </p>
                 </div>
               </div>
