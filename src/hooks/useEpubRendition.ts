@@ -45,9 +45,13 @@ export function useEpubRendition({
   useEffect(() => {
     let didCancel = false;
 
+    // Ainda não sabemos o bookId (useBookBySlug ainda não resolveu).
+    // Não decide nada enquanto isso — evita "chutar" location=0 cedo demais.
+    if (!bookId) return;
+
     (async () => {
-      if (!bookId || !isAuth) {
-        if (!didCancel && location === null) setLocation(0);
+      if (!isAuth) {
+        if (!didCancel) setLocation(0);
         return;
       }
 
@@ -57,12 +61,12 @@ export function useEpubRendition({
         if (!didCancel && data?.currentCfi && typeof data.currentCfi === "string") {
           setInitialCfi(data.currentCfi);
           setLocation(data.currentCfi);
-        } else if (!didCancel && location === null) {
+        } else if (!didCancel) {
           setLocation(0);
         }
       } catch (e) {
         console.warn("[EPUB] Falha ao carregar CFI da API:", e);
-        if (!didCancel && location === null) setLocation(0);
+        if (!didCancel) setLocation(0);
       }
     })();
 
