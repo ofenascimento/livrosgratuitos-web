@@ -53,7 +53,7 @@ const AdResponsive = ({ dataAdSlot, customClassName }: AdResponsiveProps) => {
         ${customClassName || ""}
       `}
     >
-      <span className="text-[10px] uppercase tracking-wide text-slate-400 font-medium">
+      <span className="text-[10px] uppercase tracking-wide text-slate-300 font-medium">
         Anúncio
       </span>
       <ins

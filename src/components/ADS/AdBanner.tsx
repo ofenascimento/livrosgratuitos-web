@@ -74,8 +74,8 @@ const AdBanner = ({
         `}
       >
         <span
-          className={`text-[10px] uppercase tracking-wide text-slate-400 font-medium whitespace-nowrap ${
-            vertical ? "rotate-[270deg] origin-center" : ""
+          className={`text-[10px] uppercase tracking-wide text-slate-300 font-medium whitespace-nowrap ${
+            !vertical ? "rotate-[270deg] origin-center" : ""
           }`}
         >
           Anúncio
