@@ -17,10 +17,10 @@ export const readingProgressService = {
     return response.json();
   },
 
-  async getProgress(livroId: string) {
+  async getProgress(bookId: string) {
     const token = localStorage.getItem("userToken");
 
-    const response = await fetch(`${urlApi}/reading-progress/${livroId}`, {
+    const response = await fetch(`${urlApi}/reading-progress/${bookId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -31,7 +31,7 @@ export const readingProgressService = {
     return response.json();
   },
 
-  async saveProgress(livroId: string, progressPercentage: number, currentCfi?: string) {
+  async saveProgress(bookId: string, progressPercentage: number, currentCfi?: string) {
     const token = localStorage.getItem("userToken");
 
     const response = await fetch(`${urlApi}/reading-progress`, {
@@ -40,7 +40,7 @@ export const readingProgressService = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ livroId, progressPercentage, currentCfi }),
+      body: JSON.stringify({ bookId, progressPercentage, currentCfi }),
     });
 
     if (!response.ok) {
