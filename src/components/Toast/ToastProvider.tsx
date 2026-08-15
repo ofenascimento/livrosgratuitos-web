@@ -18,7 +18,7 @@ type ToastContextType = {
     showToast: (toast: Omit<ToastItem, "id">) => void;
 };
 
-export const ToastContext = createContext<ToastContextType | null>(null);
+const ToastContext = createContext<ToastContextType | null>(null);
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
     const [toasts, setToasts] = useState<ToastItem[]>([]);

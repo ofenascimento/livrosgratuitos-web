@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import StorySliderSkeleton from "../Skeleton/StorySliderSkeleton";
 
-export const categoriesMock = [
+const categoriesMock = [
   { id: "1", title: "Romance", cover: "/images/categories/romance.png", url: "Romance" }, { id: "2", title: "Poesia", cover: "/images/categories/poesia.png", url: "Poesia" },
   { id: "3", title: "Terror", cover: "/images/categories/terror.png", url: "Terror" },
   { id: "4", title: "Filosofia", cover: "/images/categories/filosofia.webp", url: "Filosofia" },
