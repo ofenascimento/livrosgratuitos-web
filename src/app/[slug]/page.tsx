@@ -189,7 +189,7 @@ function Livros() {
                                     className="w-full"
                                 >
                                     <div className="w-full bg-main-400 hover:bg-main-500 bg-main my-2 md:hidden px-4 py-2 rounded-full  text-center font-bold">
-                                        {(book.epubProgress?.progressPercentage ?? 0) > 0 ? 'Continuar leitura' : 'Ler online'}
+                                        {(book.epubProgress?.progressPercentage ?? 0) >= 1 ? 'Continuar leitura' : 'Ler online'}
                                     </div>
 
                                 </Link>
