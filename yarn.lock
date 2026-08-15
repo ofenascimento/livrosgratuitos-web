@@ -181,20 +181,6 @@
     "@parcel/watcher-win32-ia32" "2.5.0"
     "@parcel/watcher-win32-x64" "2.5.0"
 
-"@pdf-lib/standard-fonts@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/@pdf-lib/standard-fonts/-/standard-fonts-1.0.0.tgz"
-  integrity sha512-hU30BK9IUN/su0Mn9VdlVKsWBS6GyhVfqjwl1FjZN4TxP6cCw0jP2w7V3Hf5uX7M0AZJ16vey9yE0ny7Sa59ZA==
-  dependencies:
-    pako "^1.0.6"
-
-"@pdf-lib/upng@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@pdf-lib/upng/-/upng-1.0.1.tgz"
-  integrity sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==
-  dependencies:
-    pako "^1.0.10"
-
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
@@ -1328,15 +1314,6 @@ fraction.js@^4.3.7:
   resolved "https://registry.npmjs.org/fraction.js/-/fraction.js-4.3.7.tgz"
   integrity sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==
 
-framer-motion@^11.2.10:
-  version "11.16.4"
-  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-11.16.4.tgz"
-  integrity sha512-7ncPlBjrYX6iQXcTSw1kvZcHSVjEuOAW3uWuu+/+chUS4UWBMe8kCjniE4VMc2/BMo0su0Uw9sw0aWS9anpPWA==
-  dependencies:
-    motion-dom "^11.16.4"
-    motion-utils "^11.16.0"
-    tslib "^2.4.0"
-
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
@@ -1989,18 +1966,6 @@ minimist@^1.2.0, minimist@^1.2.6:
   resolved "https://registry.npmjs.org/minipass/-/minipass-7.0.4.tgz"
   integrity sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==
 
-motion-dom@^11.16.4:
-  version "11.16.4"
-  resolved "https://registry.npmjs.org/motion-dom/-/motion-dom-11.16.4.tgz"
-  integrity sha512-2wuCie206pCiP2K23uvwJeci4pMFfyQKpWI0Vy6HrCTDzDCer4TsYtT7IVnuGbDeoIV37UuZiUr6SZMHEc1Vww==
-  dependencies:
-    motion-utils "^11.16.0"
-
-motion-utils@^11.16.0:
-  version "11.16.0"
-  resolved "https://registry.npmjs.org/motion-utils/-/motion-utils-11.16.0.tgz"
-  integrity sha512-ngdWPjg31rD4WGXFi0eZ00DQQqKKu04QExyv/ymlC+3k+WIgYVFbt6gS5JsFPbJODTF/r8XiE/X+SsoT9c0ocw==
-
 ms@^2.1.1, ms@2.1.2:
   version "2.1.2"
   resolved "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz"
@@ -2182,7 +2147,7 @@ p-locate@^5.0.0:
   dependencies:
     p-limit "^3.0.2"
 
-pako@^1.0.10, pako@^1.0.11, pako@^1.0.6, pako@~1.0.2:
+pako@~1.0.2:
   version "1.0.11"
   resolved "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
@@ -2231,16 +2196,6 @@ path-webpack@0.0.3:
   version "0.0.3"
   resolved "https://registry.npmjs.org/path-webpack/-/path-webpack-0.0.3.tgz"
   integrity sha512-AmeDxedoo5svf7aB3FYqSAKqMxys014lVKBzy1o/5vv9CtU7U4wgGWL1dA2o6MOzcD53ScN4Jmiq6VbtLz1vIQ==
-
-pdf-lib@^1.17.1:
-  version "1.17.1"
-  resolved "https://registry.npmjs.org/pdf-lib/-/pdf-lib-1.17.1.tgz"
-  integrity sha512-V/mpyJAoTsN4cnP31vc0wfNA1+p20evqqnap0KLoRUN0Yk/p3wN52DOEsL4oBFcLdb76hlpKPtzJIgo67j/XLw==
-  dependencies:
-    "@pdf-lib/standard-fonts" "^1.0.0"
-    "@pdf-lib/upng" "^1.0.1"
-    pako "^1.0.11"
-    tslib "^1.11.1"
 
 picocolors@^1.0.0:
   version "1.0.0"
@@ -2358,7 +2313,7 @@ queue-microtask@^1.2.2:
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-"react-dom@^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19", "react-dom@^16.0.0 || ^17.0.0 || ^18.0.0", react-dom@^18, "react-dom@^18.0.0 || ^19.0.0", react-dom@^18.2.0:
+"react-dom@^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19", "react-dom@^16.0.0 || ^17.0.0 || ^18.0.0", react-dom@^18, react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
@@ -2409,7 +2364,7 @@ react-swipeable@^7.0.2:
   resolved "https://registry.npmjs.org/react-swipeable/-/react-swipeable-7.0.2.tgz"
   integrity sha512-v1Qx1l+aC2fdxKa9aKJiaU/ZxmJ5o98RMoFwUqAAzVWUcxgfHFXDDruCKXhw6zIYXm6V64JiHgP9f6mlME5l8w==
 
-react@*, "react@^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0", "react@^16.8.3 || ^17 || ^18 || ^19.0.0 || ^19.0.0-rc", react@^18, "react@^18 || ^19", "react@^18.0.0 || ^19.0.0", react@^18.2.0, "react@>= 16.8.0 || 17.x.x || ^18.0.0-0":
+react@*, "react@^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.3 || ^17 || ^18 || ^19.0.0 || ^19.0.0-rc", react@^18, "react@^18 || ^19", react@^18.2.0, "react@>= 16.8.0 || 17.x.x || ^18.0.0-0":
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -2785,14 +2740,6 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-swr@^2.4.0:
-  version "2.4.1"
-  resolved "https://registry.npmjs.org/swr/-/swr-2.4.1.tgz"
-  integrity sha512-2CC6CiKQtEwaEeNiqWTAw9PGykW8SR5zZX8MZk6TeAvEAnVS7Visz8WzphqgtQ8v2xz/4Q5K+j+SeMaKXeeQIA==
-  dependencies:
-    dequal "^2.0.3"
-    use-sync-external-store "^1.6.0"
-
 tailwindcss@^3.3.0:
   version "3.4.1"
   resolved "https://registry.npmjs.org/tailwindcss/-/tailwindcss-3.4.1.tgz"
@@ -2871,11 +2818,6 @@ tsconfig-paths@^3.15.0:
     json5 "^1.0.2"
     minimist "^1.2.6"
     strip-bom "^3.0.0"
-
-tslib@^1.11.1:
-  version "1.14.1"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
-  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
 tslib@^2.4.0:
   version "2.6.2"
@@ -2977,11 +2919,6 @@ uri-js@^4.2.2:
   integrity sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==
   dependencies:
     punycode "^2.1.0"
-
-use-sync-external-store@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.6.0.tgz"
-  integrity sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==
 
 util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
