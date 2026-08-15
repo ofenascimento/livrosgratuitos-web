@@ -73,7 +73,11 @@ const AdBanner = ({
           ${fixed ? "fixed bottom-0 left-0 z-50 my-0" : ""}
         `}
       >
-        <span className="text-[10px] uppercase tracking-wide text-slate-400 font-medium">
+        <span
+          className={`text-[10px] uppercase tracking-wide text-slate-400 font-medium whitespace-nowrap ${
+            vertical ? "rotate-[270deg] origin-center" : ""
+          }`}
+        >
           Anúncio
         </span>
         <ins

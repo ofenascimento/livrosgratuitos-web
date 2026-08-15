@@ -47,16 +47,19 @@ const AdResponsive = ({ dataAdSlot, customClassName }: AdResponsiveProps) => {
   return (
     <div
       className={`
-        w-full py-3 flex justify-center items-center
+        w-full py-3 flex flex-col justify-center items-center gap-1
         transition-all duration-500 overflow-hidden
         ${isLoading ? "min-h-[90px]" : ""}
         ${customClassName || ""}
       `}
     >
+      <span className="text-[10px] uppercase tracking-wide text-slate-400 font-medium">
+        Anúncio
+      </span>
       <ins
         ref={insRef}
         className={`
-          adsbygoogle block w-full rounded-md bg-slate-700 relative overflow-hidden
+          adsbygoogle block w-full rounded-md bg-transparent relative overflow-hidden
           ${isLoading ? "animate-pulse min-h-[90px]" : ""}
         `}
         style={{ display: "block" }}
@@ -64,13 +67,7 @@ const AdResponsive = ({ dataAdSlot, customClassName }: AdResponsiveProps) => {
         data-ad-slot={dataAdSlot}
         data-ad-format="auto"
         data-full-width-responsive="true"
-      >
-        {isLoading && (
-          <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold select-none">
-            Anúncio
-          </p>
-        )}
-      </ins>
+      />
     </div>
   );
 };
