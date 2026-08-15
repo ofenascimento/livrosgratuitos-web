@@ -8,14 +8,6 @@ export function useEpubReadingList() {
   });
 }
 
-export function useReadingProgress(livroId: string) {
-  return useQuery({
-    queryKey: ["readingProgress", livroId],
-    queryFn: () => readingProgressService.getProgress(livroId),
-    enabled: !!livroId,
-  });
-}
-
 export function useSaveProgress() {
   const queryClient = useQueryClient();
 
