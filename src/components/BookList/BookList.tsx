@@ -14,10 +14,10 @@ export default function BookList({ options, label }: IBookList) {
 
   useEffect(() => {
     if (books.length > 0 && !isLoading) {
-      const imagePromises = books.map((book: any) => {
+      const imagePromises = books.map((book: IBooks) => {
         return new Promise((resolve) => {
           const img = new Image();
-          img.src = book.capa;
+          img.src = book.cover;
           img.onload = resolve;
           img.onerror = resolve;
         });
@@ -87,13 +87,13 @@ export default function BookList({ options, label }: IBookList) {
           className="overflow-x-auto w-full py-4 scrollbar-hide"
         >
           <div className="flex gap-4">
-            {books.map((item: any, index: any) => (
+            {books.map((item: IBooks, index: number) => (
               <Card
                 key={index}
                 id={item._id}
-                capa={item.capa}
-                titulo={item.titulo}
-                autor={item.autor}
+                capa={item.cover}
+                titulo={item.title}
+                autor={item.author}
                 slug={item.slug}
               />
             ))}

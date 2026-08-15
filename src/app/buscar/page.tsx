@@ -2,11 +2,9 @@
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
-import BookList from "@/components/BookList/BookList";
 import CustomLayout from "@/components/CustomLayout/CustomLayout";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
-import Title from "@/components/Title/Title";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -32,7 +30,7 @@ function BuscarPage() {
           customClassName="mt-4"
         />
         <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
-        <BookCatalog titulo={search} />
+        <BookCatalog title={search} />
         <br />
         <Footer />
       </div>

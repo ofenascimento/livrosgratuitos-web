@@ -26,7 +26,7 @@ function FavoritosPage() {
       const imagePromises = favoriteBooks.map((book) => {
         return new Promise((resolve) => {
           const img = new window.Image();
-          img.src = book.capa;
+          img.src = book.cover;
           img.onload = resolve;
           img.onerror = resolve;
         });
@@ -148,9 +148,9 @@ function FavoritosPage() {
           <Card
             key={index}
             id={item._id}
-            capa={item.capa}
-            titulo={item.titulo}
-            autor={item.autor}
+            capa={item.cover}
+            titulo={item.title}
+            autor={item.author}
             slug={item.slug}
           />
         ))}

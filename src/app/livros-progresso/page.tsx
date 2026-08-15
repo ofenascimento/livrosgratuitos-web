@@ -20,10 +20,10 @@ function FavoritosPage() {
 
   useEffect(() => {
     if (epubReadingList.length > 0 && !isLoading) {
-      const imagePromises = epubReadingList.map((book: any) =>
+      const imagePromises = epubReadingList.map((book: IBooks) =>
         new Promise((resolve) => {
           const img = new window.Image();
-          img.src = book.capa;
+          img.src = book.cover;
           img.onload = resolve;
           img.onerror = resolve;
         })
@@ -142,12 +142,12 @@ function FavoritosPage() {
         }
       />
       <div className="w-full flex flex-wrap gap-4 items-center justify-center mt-2">
-        {epubReadingList.map((item: any, index: number) => (
+        {epubReadingList.map((item: IBooks, index: number) => (
           <Card
             key={index}
             id={item._id}
-            capa={item.capa}
-            titulo={item.titulo}
+            capa={item.cover}
+            titulo={item.title}
             progress={item.progressPercentage}
             slug={item.slug}
           />

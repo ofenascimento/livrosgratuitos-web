@@ -53,10 +53,10 @@ function Livros() {
     }, []);
 
     useEffect(() => {
-        if (book && book.capa) {
+        if (book && book.cover) {
             setIsFavorited(book.isFavorite ?? false);
             const img = new Image();
-            img.src = book.capa;
+            img.src = book.cover;
             img.onload = () => setImageLoaded(true);
         }
     }, [book]);
@@ -69,7 +69,7 @@ function Livros() {
     return (
         <>
             <CustomLayout>
-                <Metadata seoTitle={`${book.titulo} - ${book.autor}`} seoDescription={book.descricao} />
+                <Metadata seoTitle={`${book.title} - ${book.author}`} seoDescription={book.description} />
                 <Navbar />
                 <AdBanner
                     dataAdFormat=""
@@ -81,7 +81,7 @@ function Livros() {
                 <div className=" text-white flex-col md:flex-row flex mt-6 md:mt-4 mb-6 ">
                     <div className="w-full md:w-[30%] flex justify-center items-center">
                         <img
-                            src={book.capa}
+                            src={book.cover}
                             alt=""
                             style={{
                                 width: 200,
@@ -91,7 +91,7 @@ function Livros() {
                     </div>
                     <div className="w-full md:w-[70%] lg:w-[80%] mt-4 md:mt-auto">
                         <div className=" flex justify-between items-center">
-                            <h1 className="text-2xl font-bold text-white">{book.titulo}</h1>
+                            <h1 className="text-2xl font-bold text-white">{book.title}</h1>
 
                             <div className=" flex justify-center items-center gap-2">
                                 <div>
@@ -168,9 +168,9 @@ function Livros() {
                             </div>
                         </div>
 
-                        <h3 className="mb-2 text-white font-lexend">{book.autor}</h3>
+                        <h3 className="mb-2 text-white font-lexend">{book.author}</h3>
                         <div className="flex gap-2 mb-4">
-                            {book.categoria.map((item, index) => (
+                            {book.categories.map((item, index) => (
                                 <div
                                     key={index}
                                     className=" bg-gray-700 text-white font-medium rounded-lg px-2 py-1 text-sm "
@@ -180,7 +180,7 @@ function Livros() {
                             ))}
                         </div>
                         <p className="mt-2 text-white font-lexend font-light">
-                            {book.descricao}
+                            {book.description}
                         </p>
                         {book.epub && (
                             <>
@@ -277,9 +277,9 @@ function Livros() {
                 />
                 <Footer />
                 <ModalShare
-                    bookName={book.titulo}
+                    bookName={book.title}
                     isOpen={modalShareIsOpen}
-                    bookImage={book.capa}
+                    bookImage={book.cover}
                     onClose={() => setModalShareIsOpen(false)}
                 />
                 <ModalLogin

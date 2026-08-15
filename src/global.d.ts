@@ -15,37 +15,37 @@ declare global {
   }
 
   interface IBook {
-    capa: string;
-    titulo: string;
-    autor: string;
+    cover: string;
+    title: string;
+    author: string;
     txt: string;
     pdf?: string;
     epub?: string;
     _id: string;
-    categoria: string[];
-    descricao: string;
+    categories: string[];
+    description: string;
     currentParagraph?: number;
     isFavorite?: boolean;
     progressPercentage?: number;
-    urlHtml?: string;
+    htmlUrl?: string;
     slug?: string;
     epubInfo?: IEpubInfo;
     epubProgress?: IEpubProgress;
   }
 
   interface IBooks {
-    capa: string;
-    titulo: string;
-    autor: string;
+    cover: string;
+    title: string;
+    author: string;
     txt: string;
     pdf?: string;
     epub?: string;
     _id: string;
     progressPercentage?: number;
-    urlHtml?: string;
+    htmlUrl?: string;
     slug?: string;
-    categoria: string[];
-    descricao: string;
+    categories: string[];
+    description: string;
   }
 }
 

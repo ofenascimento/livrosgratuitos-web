@@ -1,10 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import Head from "next/head";
-import Image from "next/image";
 import { urlApi } from "@/utils/url";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar/Navbar";
 
 export default function Login() {
   const [email, setEmail] = useState("");

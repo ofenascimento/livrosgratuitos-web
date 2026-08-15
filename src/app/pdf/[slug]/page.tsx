@@ -74,7 +74,7 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = book ? `${book.titulo}.pdf` : 'livro.pdf';
+        a.download = book ? `${book.title}.pdf` : 'livro.pdf';
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -89,20 +89,20 @@ export default function PDFSlugPage({ params }: { params: { slug: string } }) {
             <Metadata
                 seoTitle={
                     book
-                        ? `${book.titulo} - ${book.autor} PDF Grátis`
+                        ? `${book.title} - ${book.author} PDF Grátis`
                         : "Livros Gratuitos PDF Grátis"
                 }
                 seoDescription={
                     book
-                        ? `${book.descricao} PDF Grátis`
+                        ? `${book.description} PDF Grátis`
                         : "Livros Gratuitos PDF Grátis"
                 }
             />
 
             <PDFReaderHeader
                 bookLoading={bookLoading}
-                titulo={book?.titulo}
-                autor={book?.autor}
+                titulo={book?.title}
+                autor={book?.author}
                 scale={scale}
                 onZoomIn={() => setScale(s => Math.min(s + 0.2, 3))}
                 onZoomOut={() => setScale(s => Math.max(s - 0.2, 0.4))}

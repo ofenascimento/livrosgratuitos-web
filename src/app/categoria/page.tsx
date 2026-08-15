@@ -2,11 +2,9 @@
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import BookCatalog from "@/components/BookCatalog/BookCatalog";
-import BookList from "@/components/BookList/BookList";
 import CustomLayout from "@/components/CustomLayout/CustomLayout";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
-import useAuth from "@/hooks/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -14,10 +12,9 @@ function CategoriaPage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("s") || "";
   const router = useRouter();
-  const isAuth = useAuth();
 
   useEffect(() => {
-    if (search === ("" || "undefined")) {
+    if (!search || search === "undefined") {
       router.push("/");
     }
   }, [search]);
@@ -33,7 +30,7 @@ function CategoriaPage() {
           customClassName="mt-4"
         />
         <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
-        <BookCatalog categoria={search} />
+        <BookCatalog categories={search} />
         <br />
         <Footer />
       </div>

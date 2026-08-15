@@ -7,10 +7,10 @@ import Card from "../Card/Card";
 import { IBookCatalog } from "./types";
 import CardBookSkeleton from "../Skeleton/CardBookSkeleton";
 
-function BookCatalog({ titulo, categoria }: IBookCatalog) {
+function BookCatalog({ title, categories }: IBookCatalog) {
   const { books, isLoading } = useBooksList({
-    titulo: titulo ?? "",
-    categoria: categoria ?? "",
+    title: title ?? "",
+    categories: categories ?? "",
   });
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -22,10 +22,10 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
     }
 
     if (books && books.length > 0 && !isLoading) {
-      const imagePromises = books.map((book: any) => {
+      const imagePromises = books.map((book: IBooks) => {
         return new Promise((resolve) => {
           const img = new window.Image();
-          img.src = book.capa;
+          img.src = book.cover;
           img.onload = resolve;
           img.onerror = resolve;
         });
@@ -66,7 +66,7 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
                     textDecorationLine: "underline",
                   }}
                 >
-                  {titulo || categoria}
+                  {title || categories}
                 </span>
               </div>
             }
@@ -100,20 +100,20 @@ function BookCatalog({ titulo, categoria }: IBookCatalog) {
                     textDecorationLine: "underline",
                   }}
                 >
-                  {titulo || categoria}
+                  {title || categories}
                 </span>
               </div>
             </>
           }
         />
         <div className="w-full flex flex-wrap gap-4 items-center justify-center mt-2">
-          {books.map((item: any, index: any) => (
+          {books.map((item: IBooks, index: number) => (
             <Card
               key={index}
               id={item._id}
-              capa={item.capa}
-              titulo={item.titulo}
-              autor={item.autor}
+              capa={item.cover}
+              titulo={item.title}
+              autor={item.author}
               slug={item.slug}
             />
           ))}

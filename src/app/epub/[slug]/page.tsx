@@ -125,12 +125,12 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
             <Metadata
                 seoTitle={
                     book
-                        ? `${book.titulo} - ${book.autor} EPUB Grátis`
+                        ? `${book.title} - ${book.author} EPUB Grátis`
                         : "Livros Gratuitos EPUB Grátis"
                 }
                 seoDescription={
                     book
-                        ? `${book.descricao} EPUB Grátis`
+                        ? `${book.description} EPUB Grátis`
                         : "Livros Gratuitos EPUB Grátis"
                 }
             />
@@ -167,8 +167,8 @@ export default function EpubReaderPage({ params }: { params: { slug: string } })
                 <ModalInfo
                     isOpen={isAutorInfoOpen}
                     onRequestClose={() => setIsAutorInfoOpen(false)}
-                    title={book?.titulo ?? ""}
-                    autor={book?.autor ?? ""}
+                    title={book?.title ?? ""}
+                    autor={book?.author ?? ""}
                     license={book?.epubInfo?.license}
                     licenseLink={book?.epubInfo?.licenseLink}
                     modified={book?.epubInfo?.modified}

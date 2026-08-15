@@ -1,4 +1,4 @@
 export interface IBookCatalog {
-    titulo?: string;
-    categoria?: string;
+  title?: string;
+  categories?: string;
 }

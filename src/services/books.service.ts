@@ -14,14 +14,14 @@ function authHeaders(token: string | null) {
 export const booksService = {
   async getPublicBooks(params: Record<string, string> = {}) {
     const queryString = new URLSearchParams(params).toString();
-    const url = `${urlApi}/livros/public${queryString ? `?${queryString}` : ""}`;
+    const url = `${urlApi}/books/public${queryString ? `?${queryString}` : ""}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Http error: ${res.status}`);
     return res.json();
   },
 
   async getBooksWithPdf() {
-    const res = await fetch(`${urlApi}/livros/public/pdfs`);
+    const res = await fetch(`${urlApi}/books/public/pdfs`);
     if (!res.ok) throw new Error(`Http error: ${res.status}`);
     const data = await res.json();
     return Array.isArray(data) ? data : [data];
@@ -30,8 +30,8 @@ export const booksService = {
   async getBookById(id: string) {
     const { token, userId } = await getAuth();
     const url = token
-      ? `${urlApi}/livros/${id}/${userId}`
-      : `${urlApi}/livros/public/${id}`;
+      ? `${urlApi}/books/${id}/${userId}`
+      : `${urlApi}/books/public/${id}`;
 
     const res = await fetch(url, { headers: authHeaders(token) });
     if (!res.ok) throw new Error(`Http error: ${res.status}`);
@@ -41,8 +41,8 @@ export const booksService = {
   async getBookBySlug(slug: string) {
     const { token, userId } = await getAuth();
     const url = token
-      ? `${urlApi}/livros/content/${slug}/${userId}`
-      : `${urlApi}/livros/public/content/${slug}`;
+      ? `${urlApi}/books/content/${slug}/${userId}`
+      : `${urlApi}/books/public/content/${slug}`;
 
     const res = await fetch(url, { headers: authHeaders(token) });
     if (!res.ok) throw new Error(`Http error: ${res.status}`);
