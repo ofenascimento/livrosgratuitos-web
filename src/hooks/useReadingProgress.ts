@@ -13,16 +13,16 @@ export function useSaveProgress() {
 
   return useMutation({
     mutationFn: ({
-      livroId,
+      bookId,
       progressPercentage,
       currentCfi,
     }: {
-      livroId: string;
+      bookId: string;
       progressPercentage: number;
       currentCfi?: string;
-    }) => readingProgressService.saveProgress(livroId, progressPercentage, currentCfi),
+    }) => readingProgressService.saveProgress(bookId, progressPercentage, currentCfi),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["readingProgress", variables.livroId] });
+      queryClient.invalidateQueries({ queryKey: ["readingProgress", variables.bookId] });
       queryClient.invalidateQueries({ queryKey: ["epubReadingList"] });
     },
   });

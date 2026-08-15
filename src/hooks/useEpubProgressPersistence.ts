@@ -41,7 +41,7 @@ export function useEpubProgressPersistence({
       }
 
       saveProgress.mutate({
-        livroId: bookId,
+        bookId,
         progressPercentage: Math.max(0, Math.min(100, Math.round(percentage * 100))),
         currentCfi: location,
       });
@@ -82,7 +82,7 @@ export function useEpubProgressPersistence({
       const percentage = rendition.book.locations.percentageFromCfi(saveLocation);
 
       saveProgress.mutate({
-        livroId: bookId,
+        bookId,
         progressPercentage: Math.max(0, Math.min(100, Math.round(percentage * 100))),
         currentCfi: saveLocation,
       });
