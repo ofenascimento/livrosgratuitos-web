@@ -9,6 +9,10 @@ const images = [
   { src: "./banner/banner-sherlock-2.png?v=1", href: "/buscar?s=sherlock" },
 ];
 
+interface IImageSlider {
+    auto?: boolean;
+}
+
 export default function ImageSlider({ auto = false }: IImageSlider) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
