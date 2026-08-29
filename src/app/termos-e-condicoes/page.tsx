@@ -3,14 +3,14 @@ import CustomLayout from '@/components/CustomLayout/CustomLayout';
 import Footer from '@/components/Footer/Footer'
 import Navbar from '@/components/Navbar/Navbar'
 import { useSearchParams } from 'next/navigation';
-import React from 'react'
+import React, { Suspense } from 'react'
 
-function TermosDeServico() {
+function TermosDeServicoContent() {
     const searchParams = useSearchParams();
     const isApp = searchParams.get('app');
-    
+
     return (
-        <CustomLayout>
+        <>
             {
                 !isApp && <Navbar />
             }
@@ -97,11 +97,20 @@ function TermosDeServico() {
                     </p>
                 </div>
             </div>
-            
+
             {
                 !isApp &&  <Footer />
             }
-            
+        </>
+    )
+}
+
+function TermosDeServico() {
+    return (
+        <CustomLayout>
+            <Suspense fallback={null}>
+                <TermosDeServicoContent />
+            </Suspense>
         </CustomLayout>
     )
 }

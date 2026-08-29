@@ -9,8 +9,8 @@ const FeaturedBooks: React.FC = () => {
                 <div className='pb-[100%]'>
                     <Image
                         src='/featured-books/1.webp'
-                        layout='fill'
-                        objectFit='cover'
+                        fill
+                        style={{ objectFit: 'cover' }}
                         alt='Featured Book'
                     />
                 </div>

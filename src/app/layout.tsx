@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import {
   Poppins,
   Inter,
@@ -107,21 +108,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* ✅ Consent Mode ANTES de qualquer script do Google */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('consent', 'default', {
-                ad_storage: 'denied',
-                analytics_storage: 'denied',
-                personalization_storage: 'denied',
-                wait_for_update: 500
-              });
-            `,
-          }}
-        />
         <meta
           name="description"
           content={metadata.description ?? "Livros Gratuitos"}
@@ -154,6 +140,20 @@ ${dmSans.variable}
           bg-blured
         `}
       >
+        {/* ✅ Consent Mode ANTES de qualquer script do Google */}
+        <Script id="consent-mode" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+              ad_storage: 'denied',
+              analytics_storage: 'denied',
+              personalization_storage: 'denied',
+              wait_for_update: 500
+            });
+          `}
+        </Script>
+
         <AuthBootstrap />
         <ToastProvider>
           <Providers>

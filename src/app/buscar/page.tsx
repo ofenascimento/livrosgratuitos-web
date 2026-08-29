@@ -6,9 +6,9 @@ import CustomLayout from "@/components/CustomLayout/CustomLayout";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 
-function BuscarPage() {
+function BuscarContent() {
   const searchParams = useSearchParams();
   const search = searchParams.get("s") || "";
   const router = useRouter();
@@ -20,20 +20,28 @@ function BuscarPage() {
   }, [search]);
 
   return (
+    <div className=" min-h-screen">
+      <Navbar />
+      <AdBanner
+        dataAdFormat=""
+        dataFullWidthResponsive={false}
+        dataAdSlot="2423907456"
+        customClassName="mt-4"
+      />
+      <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
+      <BookCatalog title={search} />
+      <br />
+      <Footer />
+    </div>
+  );
+}
+
+function BuscarPage() {
+  return (
     <CustomLayout>
-      <div className=" min-h-screen">
-        <Navbar />
-        <AdBanner
-          dataAdFormat=""
-          dataFullWidthResponsive={false}
-          dataAdSlot="2423907456"
-          customClassName="mt-4"
-        />
-        <AdBannerMobile dataAdSlot="6603126932" customClassName="mt-3" />
-        <BookCatalog title={search} />
-        <br />
-        <Footer />
-      </div>
+      <Suspense fallback={null}>
+        <BuscarContent />
+      </Suspense>
     </CustomLayout>
   );
 }
