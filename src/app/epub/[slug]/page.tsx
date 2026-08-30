@@ -2,7 +2,7 @@
 import ModalEpubConfig from "@/components/Modals/ModalConfigEpub/ModalConfigEpub";
 import { useReaderConfig } from "@/hooks/useReaderConfig";
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
@@ -39,10 +39,10 @@ function useStableVhForIG() {
     }, []);
 }
 
-export default function EpubReaderPage({ params }: { params: { slug: string } }) {
+export default function EpubReaderPage({ params }: { params: Promise<{ slug: string }> }) {
     useStableVhForIG();
 
-    const slug = params?.slug as string;
+    const { slug } = use(params);
     const { book, isLoading, error } = useBookBySlug(slug);
 
     const isAuth = useAuth();
