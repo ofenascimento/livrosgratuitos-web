@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AdBanner from '@/components/ADS/AdBanner';
 import AdBannerMobile from '@/components/ADS/AdsBannerMobile';
@@ -17,11 +17,11 @@ import PDFCanvas from '@/components/PDFReader/PDFCanvas';
 import PageNavigator from '@/components/PDFReader/PageNavigator';
 import useIsMobile from '@/utils/isMobile';
 
-export default function PDFSlugPage({ params }: { params: { slug: string } }) {
+export default function PDFSlugPage({ params }: { params: Promise<{ slug: string }> }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const bookId = searchParams.get('id') ?? '';
-    const { slug } = params;
+    const { slug } = use(params);
 
     const { book, isLoading: bookLoading } = useBookBySlug(slug);
     const pdfUrl = book?.pdf ?? '';
