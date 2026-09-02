@@ -31,7 +31,7 @@ export default function Home() {
         </div>
         <StorySlider />
         <BookList
-          options={{ destaque: "true" }}
+          options={{ featured: "true" }}
           label={
             <>
               Dá uma 👀{"  "}
