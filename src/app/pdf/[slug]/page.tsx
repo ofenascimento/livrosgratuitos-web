@@ -1,7 +1,7 @@
 'use client';
 
 import { use, useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import AdBanner from '@/components/ADS/AdBanner';
 import AdBannerMobile from '@/components/ADS/AdsBannerMobile';
 import AdResponsive from '@/components/ADS/AdResponsive';
@@ -19,12 +19,14 @@ import useIsMobile from '@/utils/isMobile';
 
 export default function PDFSlugPage({ params }: { params: Promise<{ slug: string }> }) {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const bookId = searchParams.get('id') ?? '';
     const { slug } = use(params);
 
-    const { book, isLoading: bookLoading } = useBookBySlug(slug);
+    const { book, isLoading: bookLoading, error: BookError } = useBookBySlug(slug);
     const pdfUrl = book?.pdf ?? '';
+
+    if (!bookLoading && (BookError || !book)) {
+        notFound();
+    }
 
     useEffect(() => {
         if (!bookLoading && book && !book.pdf) {

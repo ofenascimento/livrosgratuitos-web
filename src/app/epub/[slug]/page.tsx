@@ -3,7 +3,7 @@ import ModalEpubConfig from "@/components/Modals/ModalConfigEpub/ModalConfigEpub
 import { useReaderConfig } from "@/hooks/useReaderConfig";
 import dynamic from "next/dynamic";
 import { use, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import AdBanner from "@/components/ADS/AdBanner";
 import AdBannerMobile from "@/components/ADS/AdsBannerMobile";
 import FullScreenLoader from "@/components/FullScreenLoader/FullScreenLoader";
@@ -44,6 +44,10 @@ export default function EpubReaderPage({ params }: { params: Promise<{ slug: str
 
     const { slug } = use(params);
     const { book, isLoading, error } = useBookBySlug(slug);
+
+    if (!isLoading && (error || !book)) {
+        notFound();
+    }
 
     const isAuth = useAuth();
     const router = useRouter();
