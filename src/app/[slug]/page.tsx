@@ -20,12 +20,13 @@ import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { MdOutlineShare } from "react-icons/md";
 import { useAddFavoriteBook, useRemoveFavoriteBook } from "@/hooks/useFavorites";
+import { notFound } from "next/navigation";
 
 
 function Livros() {
     const params = useParams();
     const slug = params?.slug as string;
-    const { book, isLoading } = useBookBySlug(slug);
+    const { book, isLoading, error } = useBookBySlug(slug);
     const [imageLoaded, setImageLoaded] = useState(false);
     const [isFavorited, setIsFavorited] = useState<boolean | null>(null);
     const [modalShareIsOpen, setModalShareIsOpen] = useState<boolean>(false);
@@ -61,9 +62,15 @@ function Livros() {
         }
     }, [book]);
 
+    if (error || !book) {
+        notFound();
+    }
+
     if (isLoading || !book || !imageLoaded) {
         return <LivroPageSkeleton />;
     }
+
+
 
 
     return (
@@ -286,7 +293,7 @@ function Livros() {
                     isOpen={modalLoginIsOpen}
                     onClose={() => setModalLoginIsOpen(false)}
                 />
-                
+
             </CustomLayout>
         </>
     );
