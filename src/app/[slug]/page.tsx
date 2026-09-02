@@ -62,15 +62,17 @@ function Livros() {
         }
     }, [book]);
 
+    if (isLoading) {
+        return <LivroPageSkeleton />;
+    }
+
     if (error || !book) {
         notFound();
     }
 
-    if (isLoading || !book || !imageLoaded) {
+    if (!imageLoaded) {
         return <LivroPageSkeleton />;
-    }
-
-
+    } 
 
 
     return (
